@@ -15,10 +15,16 @@
 <body class="p-4 md:p-8 min-h-screen">
 
     <div class="max-w-7xl mx-auto space-y-6">
-        <div class="flex justify-between items-center glass p-6 rounded-3xl">
+        <!-- Cabecera y Anuncio Global -->
+        <div class="flex flex-col md:flex-row justify-between items-center glass p-6 rounded-3xl gap-4">
             <div>
                 <h1 class="text-2xl font-black text-blue-400">PANEL ADMINISTRADOR</h1>
                 <p class="text-xs text-gray-400">Gestión en tiempo real por Firebase</p>
+            </div>
+            <!-- Sección de Notificación Global -->
+            <div class="flex flex-col sm:flex-row gap-2 w-full md:w-auto">
+                <input type="text" id="input-anuncio-global" placeholder="Escribe un anuncio global..." class="input-admin text-xs flex-grow md:w-72">
+                <button onclick="enviarAnuncioGlobal()" class="bg-purple-600 hover:bg-purple-500 px-4 py-2 rounded-xl text-xs font-bold transition"> Enviar Anuncio Global</button>
             </div>
         </div>
 
@@ -28,11 +34,12 @@
                 <thead>
                     <tr class="border-b border-white/10 text-gray-400 uppercase">
                         <th class="p-3">ID / Fecha</th>
-                        <th class="p-3">Arma / Cant</th>
+                        <th class="p-3">Armas / Cant</th>
                         <th class="p-3">Cliente</th>
                         <th class="p-3">Precio ($)</th>
                         <th class="p-3">Comprobante</th>
                         <th class="p-3">Enviar Servidor</th>
+                        <th class="p-3">Notificación al Cliente</th>
                         <th class="p-3 text-center">Acciones</th>
                     </tr>
                 </thead>
@@ -45,7 +52,7 @@
     <!-- Firebase SDK Modular -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getDatabase, ref, onValue, update, remove } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+        import { getDatabase, ref, onValue, update, remove, set } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyCScDrnMGvBQh8g7Z2yCkwtWqdVNu8fqJI",
@@ -61,6 +68,20 @@
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
 
+        // Cargar anuncio global actual si existe
+        onValue(ref(db, 'config/anuncioGlobal'), (snapshot) => {
+            if(snapshot.exists()) {
+                document.getElementById('input-anuncio-global').value = snapshot.val();
+            }
+        });
+
+        window.enviarAnuncioGlobal = function() {
+            const texto = document.getElementById('input-anuncio-global').value;
+            set(ref(db, 'config/anuncioGlobal'), texto)
+                .then(() => alert('¡Anuncio global enviado correctamente a todos los usuarios!'))
+                .catch((err) => alert('Error al enviar anuncio: ' + err.message));
+        }
+
         const pedidosRef = ref(db, 'pedidos');
         onValue(pedidosRef, (snapshot) => {
             const data = snapshot.val();
@@ -68,12 +89,22 @@
             tbody.innerHTML = '';
 
             if (!data) {
-                tbody.innerHTML = `<tr><td colspan="7" class="text-center p-6 text-gray-500 font-bold">No hay pedidos pendientes.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="8" class="text-center p-6 text-gray-500 font-bold">No hay pedidos pendientes.</td></tr>`;
                 return;
             }
 
             Object.keys(data).reverse().forEach((key) => {
                 const p = data[key];
+
+                // Renderizar armas múltiples o individuales
+                let armasHtml = '';
+                if (p.armas && Array.isArray(p.armas)) {
+                    p.armas.forEach(item => {
+                        armasHtml += `<p class="text-white font-bold">• ${item.arma} <span class="text-gray-400 font-normal">(x${item.cantidad})</span></p>`;
+                    });
+                } else {
+                    armasHtml = `<p class="font-bold text-white">${p.arma || 'N/A'}</p><p class="text-[10px] text-gray-400">Cantidad: ${p.cantidad || 1}</p>`;
+                }
 
                 tbody.innerHTML += `
                     <tr class="hover:bg-white/5 transition">
@@ -82,13 +113,14 @@
                             <p class="text-[10px] text-gray-400">${p.fecha}</p>
                         </td>
                         <td class="p-3">
-                            <p class="font-bold text-white">${p.arma}</p>
-                            <p class="text-[10px] text-gray-400">Cantidad: ${p.cantidad}</p>
+                            <div class="space-y-0.5">
+                                ${armasHtml}
+                            </div>
                         </td>
                         <td class="p-3">
                             <p class="text-white font-bold">${p.titular}</p>
-                            <p class="text-blue-300 text-[10px]">🎮 ${p.roblox} | 💬 ${p.discord}</p>
-                            <p class="text-gray-400 text-[10px]">📱 ${p.nequi}</p>
+                            <p class="text-blue-300 text-[10px]"> ${p.roblox} |  ${p.discord}</p>
+                            <p class="text-gray-400 text-[10px]"> ${p.nequi}</p>
                         </td>
                         <td class="p-3">
                             ${p.precio 
@@ -117,8 +149,14 @@
                                 : `<span class="text-gray-600">Subir pago 1°</span>`
                             }
                         </td>
+                        <td class="p-3">
+                            <div class="flex flex-col gap-1">
+                                <input type="text" id="input-notif-${p.id}" value="${p.notificacion || ''}" placeholder="Escribe mensaje..." class="input-admin w-36 text-xs">
+                                <button onclick="guardarNotificacion('${p.id}')" class="bg-amber-600 hover:bg-amber-500 px-2 py-1 rounded text-[10px] font-bold">Guardar Aviso</button>
+                            </div>
+                        </td>
                         <td class="p-3 text-center">
-                            <button onclick="borrarPedido('${p.id}')" class="text-red-400 hover:text-red-600 font-bold">🗑️</button>
+                            <button onclick="borrarPedido('${p.id}')" class="text-red-400 hover:text-red-600 font-bold"></button>
                         </td>
                     </tr>
                 `;
@@ -135,6 +173,12 @@
             const link = document.getElementById(`input-link-${id}`).value;
             if(!link) return alert('Ingresa el link del servidor privado');
             update(ref(db, 'pedidos/' + id), { serverLink: link });
+        }
+
+        window.guardarNotificacion = function(id) {
+            const notif = document.getElementById(`input-notif-${id}`).value;
+            update(ref(db, 'pedidos/' + id), { notificacion: notif })
+                .then(() => alert('¡Notificación enviada al cliente con éxito!'));
         }
 
         window.borrarPedido = function(id) {
