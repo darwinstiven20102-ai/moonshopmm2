@@ -39,11 +39,17 @@
 </head>
 <body class="bg-gradient-moon min-h-screen">
 
+    <!-- Anuncio Global en vivo -->
+    <div id="banner-global" class="hidden bg-blue-600/20 border-b border-blue-500/30 py-2.5 px-6 text-center text-xs md:text-sm font-bold text-blue-300 tracking-wide">
+         <span id="texto-anuncio-global">Cargando anuncios...</span>
+    </div>
+
     <nav class="flex flex-col md:flex-row justify-between items-center px-6 py-6 max-w-7xl mx-auto relative z-50 gap-4">
         <h1 class="text-2xl font-extrabold tracking-tighter text-blue-400">MOON <span class="text-white">SHOP</span></h1>
         
-        <div class="flex space-x-6 md:space-x-8 text-[11px] md:text-sm font-bold text-gray-300 uppercase tracking-widest">
+        <div class="flex items-center space-x-6 md:space-x-8 text-[11px] md:text-sm font-bold text-gray-300 uppercase tracking-widest">
             <a href="#" class="hover:text-blue-400 transition border-b-2 border-transparent hover:border-blue-400 pb-1">Inicio</a>
+            <button onclick="abrirMisPedidos()" class="text-blue-400 hover:text-blue-300 transition bg-blue-950/40 border border-blue-500/30 px-3 py-1.5 rounded-xl text-xs font-bold"> Mis Pedidos</button>
             <a href="https://mail.google.com/mail/?view=cm&fs=1&to=moonshopmm@gmail.com&su=Soporte/Queja%20Moon%20Shop" target="_blank" class="hover:text-blue-400 transition border-b-2 border-transparent hover:border-blue-400 pb-1">Soporte</a>
         </div>
 
@@ -57,7 +63,7 @@
             <p class="text-gray-400 text-sm md:text-lg leading-relaxed max-w-lg mx-auto md:mx-0">En <b>Moon Shop</b>, nuestro propósito es convertirnos en la tienda más barata de MM2 en Colombia. Queremos que cada jugador crezca su inventario.</p>
             <div class="flex flex-wrap justify-center md:justify-start gap-4">
                 <button onclick="openModal()" class="bg-white text-black px-6 py-3 md:px-8 md:py-4 rounded-2xl font-bold hover:bg-blue-500 hover:text-white transition-all shadow-lg text-sm md:text-base">Comprar</button>
-                <div class="flex items-center gap-2 text-xs md:text-sm font-semibold text-blue-400"><span>●</span> Stock 2026</div>
+                <div class="flex items-center gap-2 text-xs md:text-sm font-semibold text-blue-400"><span></span> Stock 2026</div>
             </div>
         </div>
         <div class="relative h-[280px] md:h-[400px] flex items-center justify-center mt-8 md:mt-0">
@@ -71,12 +77,12 @@
     <!-- Modal Formulario de Compra / Estado -->
     <div id="buy-modal" class="fixed inset-0 bg-black/80 backdrop-blur-md hidden flex items-center justify-center z-[100] p-4 overflow-y-auto">
         <div class="bg-[#0b0f19] border border-white/10 w-full max-w-lg rounded-3xl p-6 md:p-8 relative my-auto shadow-2xl">
-            <button onclick="closeModal()" class="absolute top-6 right-6 text-gray-400 hover:text-white transition text-xl font-bold">✕</button>
+            <button onclick="closeModal()" class="absolute top-6 right-6 text-gray-400 hover:text-white transition text-xl font-bold"></button>
 
             <!-- Encabezado de Pago -->
             <div class="text-center mb-6">
                 <div class="w-16 h-16 bg-white rounded-2xl flex items-center justify-center mx-auto mb-4 p-2 shadow-lg">
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a2/Nequi_logo.svg/1200px-Nequi_logo.svg.png" alt="Nequi" class="max-h-full max-w-full object-contain">
+                    <img src="https://cdn.discordapp.com/attachments/1420182445382439075/1557789079473623170/Screenshot_20261008-1116492.jpg?ex=6ac913a2&is=6ac7c222&hm=67fcc5cee768dd0b9d5e5389c7adfcf025050a189412d5981ed17c1f89d09391&" alt="Nequi" class="max-h-full max-w-full object-contain">
                 </div>
                 <h3 class="text-xl font-bold text-white">Total a Pagar</h3>
                 
@@ -88,18 +94,23 @@
 
             <!-- Formularios dinámicos -->
             <div id="my-form">
-                <h4 class="text-base font-bold text-white mb-4">Detalles del Envío</h4>
+                <h4 id="modal-titulo" class="text-base font-bold text-white mb-4">Detalles del Envío</h4>
 
-                <!-- PASO 1: Formulario Inicial -->
+                <!-- PASO 1: Formulario Inicial con múltiples armas -->
                 <form id="orderForm" class="space-y-3" onsubmit="enviarDatosIniciales(event)">
-                    <div>
-                        <label>NOMBRE DE LA ARMA</label>
-                        <input type="text" id="nombre-arma" placeholder="Ej: Harvester, Icebreaker..." class="input-field" required>
-                    </div>
-
-                    <div>
-                        <label>CANTIDAD</label>
-                        <input type="number" id="cantidad" value="1" min="1" class="input-field" required>
+                    
+                    <div id="armas-container" class="space-y-3">
+                        <div class="flex items-end gap-2 arma-row">
+                            <div class="flex-1">
+                                <label>NOMBRE DEL ARMA</label>
+                                <input type="text" name="nombre-arma" placeholder="Ej: Harvester, Icebreaker..." class="input-field" required>
+                            </div>
+                            <div class="w-24">
+                                <label>CANTIDAD</label>
+                                <input type="number" name="cantidad" value="1" min="1" class="input-field" required>
+                            </div>
+                            <button type="button" onclick="agregarArma()" class="bg-blue-600 hover:bg-blue-500 text-white font-black px-3.5 py-[12px] rounded-xl transition text-base h-[46px] flex items-center justify-center">+</button>
+                        </div>
                     </div>
 
                     <div>
@@ -134,16 +145,25 @@
                     </button>
                 </form>
 
-                <!-- PASO 2: Esperando precio / Pago -->
+                <!-- PASO 2: Esperando precio / Notificaciones del Admin -->
                 <div id="step-precio" class="hidden space-y-4 text-center">
-                    <div id="loading-precio" class="p-6 bg-blue-950/20 border border-blue-500/20 rounded-2xl">
-                        <p class="text-sm font-bold text-blue-400 animate-pulse">🕒 Esperando a que el administrador establezca el precio...</p>
+                    <div id="loading-precio" class="p-6 bg-blue-950/20 border border-blue-500/20 rounded-2xl space-y-2">
+                        <p class="text-sm font-bold text-blue-400 animate-pulse"> Esperando a que el administrador establezca el precio...</p>
+                        <!-- Notificación personalizada en vivo -->
+                        <div id="cliente-notif-box" class="hidden bg-amber-500/10 border border-amber-500/30 p-3 rounded-xl text-xs text-amber-300 font-semibold text-left">
+                             <span id="cliente-notif-text"></span>
+                        </div>
                     </div>
 
                     <div id="box-subir-comprobante" class="hidden space-y-4">
                         <div class="bg-blue-600/10 border border-blue-500/40 p-4 rounded-2xl">
                             <p class="text-xs text-gray-400 uppercase font-bold">Monto Total Calculado:</p>
                             <p id="precio-display" class="text-3xl font-black text-blue-400 mt-1">$0 COP</p>
+                        </div>
+
+                        <!-- Notificación en paso 2 -->
+                        <div id="cliente-notif-box-2" class="hidden bg-amber-500/10 border border-amber-500/30 p-3 rounded-xl text-xs text-amber-300 font-semibold text-left">
+                             <span id="cliente-notif-text-2"></span>
                         </div>
 
                         <div class="text-left">
@@ -157,16 +177,19 @@
                     </div>
                 </div>
 
-                <!-- PASO 3: Esperando / Recibido Servidor Link -->
+                <!-- PASO 3: Servidor Privado -->
                 <div id="step-servidor" class="hidden space-y-4 text-center">
-                    <div id="loading-servidor" class="p-6 bg-blue-950/20 border border-blue-500/20 rounded-2xl">
-                        <p class="text-sm font-bold text-blue-400 animate-pulse">⏳ Comprobante enviado. Esperando link del servidor de Roblox...</p>
+                    <div id="loading-servidor" class="p-6 bg-blue-950/20 border border-blue-500/20 rounded-2xl space-y-2">
+                        <p class="text-sm font-bold text-blue-400 animate-pulse"> Comprobante enviado. Esperando link del servidor de Roblox...</p>
+                        <div id="cliente-notif-box-3" class="hidden bg-amber-500/10 border border-amber-500/30 p-3 rounded-xl text-xs text-amber-300 font-semibold text-left">
+                             <span id="cliente-notif-text-3"></span>
+                        </div>
                     </div>
 
                     <div id="box-entrar-servidor" class="hidden space-y-4">
-                        <p class="text-sm text-green-400 font-bold">¡Tu pago ha sido verificado correctamente!</p>
+                        <p class="text-sm text-green-400 font-bold">¡Tu pago ha sido verificado y completado con éxito!</p>
                         <a id="btn-entrar" href="#" target="_blank" class="block w-full bg-emerald-500 hover:bg-emerald-400 text-black font-extrabold py-4 px-4 rounded-xl transition text-base uppercase shadow-lg">
-                            🚀 ENTRAR AL SERVIDOR
+                             ENTRAR AL SERVIDOR
                         </a>
                     </div>
                 </div>
@@ -193,9 +216,33 @@
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
 
-        let activeOrderId = null;
+        let activeOrderId = localStorage.getItem('moonshop_active_order') || null;
+
+        // Escuchar Anuncio Global en tiempo real
+        onValue(ref(db, 'config/anuncioGlobal'), (snapshot) => {
+            const banner = document.getElementById('banner-global');
+            const texto = document.getElementById('texto-anuncio-global');
+            if (snapshot.exists() && snapshot.val().trim() !== "") {
+                texto.innerText = snapshot.val();
+                banner.classList.remove('hidden');
+            } else {
+                banner.classList.add('hidden');
+            }
+        });
 
         window.openModal = function() {
+            if (activeOrderId) {
+                // Si ya tiene un pedido activo, lo lleva directo al seguimiento de su pedido en proceso
+                document.getElementById('orderForm').classList.add('hidden');
+                document.getElementById('modal-titulo').innerText = "Estado de tu Pedido Activo";
+                document.getElementById('step-precio').classList.remove('hidden');
+                escucharEstadoPedido(activeOrderId);
+            } else {
+                document.getElementById('orderForm').classList.remove('hidden');
+                document.getElementById('modal-titulo').innerText = "Detalles del Envío";
+                document.getElementById('step-precio').classList.add('hidden');
+                document.getElementById('step-servidor').classList.add('hidden');
+            }
             document.getElementById('buy-modal').classList.remove('hidden');
         }
 
@@ -203,16 +250,51 @@
             document.getElementById('buy-modal').classList.add('hidden');
         }
 
+        window.abrirMisPedidos = function() {
+            if (!activeOrderId) {
+                alert("No tienes ningún pedido reciente registrado en este dispositivo.");
+                return;
+            }
+            openModal();
+        }
+
+        // Agregar fila de arma dinámica
+        window.agregarArma = function() {
+            const container = document.getElementById('armas-container');
+            const newRow = document.createElement('div');
+            newRow.className = 'flex items-end gap-2 arma-row mt-2';
+            newRow.innerHTML = `
+                <div class="flex-1">
+                    <input type="text" name="nombre-arma" placeholder="Ej: Croma, Godly..." class="input-field" required>
+                </div>
+                <div class="w-24">
+                    <input type="number" name="cantidad" value="1" min="1" class="input-field" required>
+                </div>
+                <button type="button" onclick="this.parentElement.remove()" class="bg-red-600/80 hover:bg-red-600 text-white font-bold px-3 py-[12px] rounded-xl transition text-sm h-[46px] flex items-center justify-center"></button>
+            `;
+            container.appendChild(newRow);
+        }
+
         window.enviarDatosIniciales = function(event) {
             event.preventDefault();
-
             activeOrderId = 'ORD-' + Date.now();
+            localStorage.setItem('moonshop_active_order', activeOrderId);
+
+            const nombresArmas = document.querySelectorAll('input[name="nombre-arma"]');
+            const cantidadesArmas = document.querySelectorAll('input[name="cantidad"]');
+            const listaArmas = [];
+
+            for (let i = 0; i < nombresArmas.length; i++) {
+                listaArmas.push({
+                    arma: nombresArmas[i].value,
+                    cantidad: cantidadesArmas[i].value
+                });
+            }
 
             const orderData = {
                 id: activeOrderId,
                 fecha: new Date().toLocaleString('es-CO'),
-                arma: document.getElementById('nombre-arma').value,
-                cantidad: document.getElementById('cantidad').value,
+                armas: listaArmas,
                 titular: document.getElementById('titular').value,
                 roblox: document.getElementById('roblox').value,
                 discord: document.getElementById('discord').value,
@@ -220,12 +302,14 @@
                 gmail: document.getElementById('gmail').value,
                 precio: null,
                 comprobante: null,
-                serverLink: null
+                serverLink: null,
+                notificacion: ""
             };
 
             set(ref(db, 'pedidos/' + activeOrderId), orderData);
 
             document.getElementById('orderForm').classList.add('hidden');
+            document.getElementById('modal-titulo').innerText = "Estado de tu Pedido";
             document.getElementById('step-precio').classList.remove('hidden');
 
             escucharEstadoPedido(activeOrderId);
@@ -237,14 +321,24 @@
                 const data = snapshot.val();
                 if (!data) return;
 
-                // Si ya se asignó precio
+                // Mostrar notificación personalizada del admin si existe
+                if (data.notificacion && data.notificacion.trim() !== "") {
+                    ['cliente-notif-box', 'cliente-notif-box-2', 'cliente-notif-box-3'].forEach(id => {
+                        const box = document.getElementById(id);
+                        if(box) box.classList.remove('hidden');
+                    });
+                    ['cliente-notif-text', 'cliente-notif-text-2', 'cliente-notif-text-3'].forEach(id => {
+                        const txt = document.getElementById(id);
+                        if(txt) txt.innerText = data.notificacion;
+                    });
+                }
+
                 if (data.precio && !data.comprobante) {
                     document.getElementById('loading-precio').classList.add('hidden');
                     document.getElementById('box-subir-comprobante').classList.remove('hidden');
                     document.getElementById('precio-display').innerText = '$' + Number(data.precio).toLocaleString('es-CO') + ' COP';
                 }
 
-                // Si ya se envió link del servidor
                 if (data.serverLink) {
                     document.getElementById('step-precio').classList.add('hidden');
                     document.getElementById('step-servidor').classList.remove('hidden');
