@@ -68,7 +68,7 @@
       </div>
       <input type="password" id="secretPasswordInput" placeholder="Contraseña..." class="w-full dynamic-input border rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-pink-500 text-center tracking-widest">
       <div class="flex gap-2 pt-1">
-        <button onclick="closeSecretPasswordModal()" class="flex-1 bg-black/20 hover:bg-black/30 text-xs font-bold py-2.5 rounded-xl transition">Cancelar</button>
+        <button onclick="closeSecretPasswordModal()" class="flex-1 bg-black/25 hover:bg-black/40 text-xs font-bold py-2.5 rounded-xl transition">Cancelar</button>
         <button onclick="verifySecretPassword()" class="flex-1 bg-gradient-to-r from-pink-500 to-purple-600 hover:opacity-90 text-white text-xs font-bold py-2.5 rounded-xl transition shadow-md">Ingresar</button>
       </div>
     </div>
@@ -89,7 +89,7 @@
             <p class="text-[9px] sm:text-[10px] text-pink-400 font-bold" id="adminRoleStatusBadge">Verificando permisos...</p>
           </div>
         </div>
-        <button onclick="closeAdminPanel()" class="bg-black/20 hover:bg-pink-500 hover:text-white w-8 h-8 sm:w-9 sm:h-9 rounded-full flex items-center justify-center transition cursor-pointer shrink-0">
+        <button onclick="closeAdminPanel()" class="bg-black/25 hover:bg-pink-500 hover:text-white w-8 h-8 sm:w-9 sm:h-9 rounded-full flex items-center justify-center transition cursor-pointer shrink-0">
           <i class="fa-solid fa-xmark text-xs sm:text-sm"></i>
         </button>
       </div>
@@ -113,7 +113,7 @@
 
           <div class="overflow-x-auto no-scrollbar rounded-2xl border border-purple-500/20">
             <table class="w-full text-left text-xs min-w-[500px]">
-              <thead class="bg-black/20 uppercase font-extrabold text-[8px] sm:text-[9px] tracking-wider border-b border-purple-500/20">
+              <thead class="bg-black/25 uppercase font-extrabold text-[8px] sm:text-[9px] tracking-wider border-b border-purple-500/20">
                 <tr>
                   <th class="p-2.5 sm:p-3">Usuario</th>
                   <th class="p-2.5 sm:p-3">Contacto</th>
@@ -135,7 +135,7 @@
 
           <div class="overflow-x-auto no-scrollbar rounded-2xl border border-purple-500/20">
             <table class="w-full text-left text-xs min-w-[480px]">
-              <thead class="bg-black/20 uppercase font-extrabold text-[8px] sm:text-[9px] tracking-wider border-b border-purple-500/20">
+              <thead class="bg-black/25 uppercase font-extrabold text-[8px] sm:text-[9px] tracking-wider border-b border-purple-500/20">
                 <tr>
                   <th class="p-2.5 sm:p-3">Autor / Título</th>
                   <th class="p-2.5 sm:p-3">Likes</th>
@@ -316,7 +316,7 @@
       </div>
     </section>
 
-    <!-- 3. FEED ESTILO MOONFED (LAYOUT CON PANEL DE PUBLICAR CONGELADO / ESTÁTICO) -->
+    <!-- 3. FEED ESTILO MOONFED (LAYOUT CON PANEL DE PUBLICAR MÁS GRANDE Y FLOTANTE / STICKY QUE BAJA CONTIGO) -->
     <section id="tabFeed" class="hidden w-full max-w-7xl mx-auto">
       <div class="grid grid-cols-1 md:grid-cols-12 gap-6 items-start w-full">
         
@@ -380,38 +380,38 @@
           <div id="feedPostsContainer" class="space-y-4 w-full"></div>
         </div>
 
-        <!-- COLUMNA DERECHA: PANEL DE CREAR PUBLICACIÓN (ESTÁTICO / CONGELADO CON STICKY) -->
+        <!-- COLUMNA DERECHA: PANEL DE CREAR PUBLICACIÓN MÁS GRANDE Y FLOTANTE (BAJA CONTIGO CON STICKY) -->
         <div class="hidden md:block md:col-span-5 lg:col-span-4 sticky top-24 self-start">
-          <div class="dynamic-card border rounded-3xl p-6 shadow-2xl backdrop-blur-md space-y-5">
+          <div class="dynamic-card border rounded-3xl p-7 lg:p-8 shadow-2xl backdrop-blur-md space-y-6">
             <div class="text-center pb-3 border-b border-purple-500/20">
-              <h2 class="text-sm font-black uppercase tracking-wider flex items-center justify-center gap-2">
-                <i class="fa-solid fa-wand-magic-sparkles text-pink-400"></i> CREAR PUBLICACIÓN
+              <h2 class="text-sm sm:text-base font-black uppercase tracking-wider flex items-center justify-center gap-2">
+                <i class="fa-solid fa-wand-magic-sparkles text-pink-400 text-lg"></i> CREAR PUBLICACIÓN
               </h2>
             </div>
 
-            <form id="desktopPublishForm" class="space-y-4" onsubmit="handleDesktopPublish(event)">
-              <div class="flex items-center gap-3 dynamic-input p-3 rounded-2xl border">
-                <img id="deskFormUserAvatar" src="https://via.placeholder.com/40" class="w-10 h-10 rounded-full border-2 border-pink-400 object-cover">
+            <form id="desktopPublishForm" class="space-y-5" onsubmit="handleDesktopPublish(event)">
+              <div class="flex items-center gap-3 dynamic-input p-3.5 rounded-2xl border">
+                <img id="deskFormUserAvatar" src="https://via.placeholder.com/40" class="w-11 h-11 rounded-full border-2 border-pink-400 object-cover">
                 <div>
-                  <p id="deskFormUserName" class="text-xs font-bold">Usuario</p>
+                  <p id="deskFormUserName" class="text-xs sm:text-sm font-bold">Usuario</p>
                   <span class="text-[10px] text-pink-400 font-bold"><i class="fa-solid fa-globe"></i> Público</span>
                 </div>
               </div>
 
               <div>
-                <label class="block text-[10px] font-bold uppercase opacity-70 mb-1">Título <span class="opacity-50 lowercase">(opcional en cotidianas)</span></label>
-                <input type="text" id="deskPubTitle" placeholder="Ej. Vendo ítem MM2 o Mi experiencia hoy" class="w-full dynamic-input border rounded-xl px-3.5 py-3 text-xs focus:outline-none focus:border-pink-500">
+                <label class="block text-[11px] font-bold uppercase opacity-70 mb-1.5">Título <span class="opacity-50 lowercase">(opcional en cotidianas)</span></label>
+                <input type="text" id="deskPubTitle" placeholder="Ej. Vendo ítem MM2 o Mi experiencia hoy" class="w-full dynamic-input border rounded-2xl px-4 py-3.5 text-xs sm:text-sm focus:outline-none focus:border-pink-500">
               </div>
 
               <div>
-                <label class="block text-[10px] font-bold uppercase opacity-70 mb-1">Descripción <span class="text-pink-400 lowercase">(usa #hashtags)</span></label>
-                <textarea id="deskPubDescription" rows="3" placeholder="¿Qué estás pensando u ofreciendo hoy? #roblox #anime" required class="w-full dynamic-input border rounded-xl px-3.5 py-3 text-xs focus:outline-none resize-none"></textarea>
+                <label class="block text-[11px] font-bold uppercase opacity-70 mb-1.5">Descripción <span class="text-pink-400 lowercase">(usa #hashtags)</span></label>
+                <textarea id="deskPubDescription" rows="4" placeholder="¿Qué estás pensando u ofreciendo hoy? #roblox #anime" required class="w-full dynamic-input border rounded-2xl px-4 py-3.5 text-xs sm:text-sm focus:outline-none resize-none"></textarea>
               </div>
 
-              <div class="grid grid-cols-2 gap-3">
+              <div class="grid grid-cols-2 gap-3.5">
                 <div>
-                  <label class="block text-[10px] font-bold uppercase opacity-70 mb-1">Categoría</label>
-                  <select id="deskPubCategory" class="w-full dynamic-input border rounded-xl px-3 py-2.5 text-xs focus:outline-none focus:border-pink-500">
+                  <label class="block text-[11px] font-bold uppercase opacity-70 mb-1.5">Categoría</label>
+                  <select id="deskPubCategory" class="w-full dynamic-input border rounded-2xl px-3.5 py-3 text-xs sm:text-sm focus:outline-none focus:border-pink-500">
                     <option value="">Categoría...</option>
                     <option value="Arte / Dibujo">Arte / Dibujo</option>
                     <option value="Videojuegos">Videojuegos</option>
@@ -422,19 +422,19 @@
                   </select>
                 </div>
                 <div>
-                  <label class="block text-[10px] font-bold uppercase opacity-70 mb-1">Juego / Tema</label>
-                  <input type="text" id="deskPubGameName" placeholder="Ej. Roblox, Charla" class="w-full dynamic-input border rounded-xl px-3 py-2.5 text-xs focus:outline-none focus:border-pink-500">
+                  <label class="block text-[11px] font-bold uppercase opacity-70 mb-1.5">Juego / Tema</label>
+                  <input type="text" id="deskPubGameName" placeholder="Ej. Roblox, Charla" class="w-full dynamic-input border rounded-2xl px-3.5 py-3 text-xs sm:text-sm focus:outline-none focus:border-pink-500">
                 </div>
               </div>
 
-              <div class="grid grid-cols-2 gap-3">
+              <div class="grid grid-cols-2 gap-3.5">
                 <div>
-                  <label class="block text-[10px] font-bold uppercase opacity-70 mb-1">Precio</label>
-                  <input type="number" step="any" id="deskPubPrice" placeholder="Sin precio = Cotidiana" class="w-full dynamic-input border rounded-xl px-3 py-2.5 text-xs focus:outline-none focus:border-pink-500">
+                  <label class="block text-[11px] font-bold uppercase opacity-70 mb-1.5">Precio</label>
+                  <input type="number" step="any" id="deskPubPrice" placeholder="Sin precio = Cotidiana" class="w-full dynamic-input border rounded-2xl px-3.5 py-3 text-xs sm:text-sm focus:outline-none focus:border-pink-500">
                 </div>
                 <div>
-                  <label class="block text-[10px] font-bold uppercase opacity-70 mb-1">Moneda</label>
-                  <select id="deskPubCurrency" class="w-full dynamic-input border rounded-xl px-3 py-2.5 text-xs focus:outline-none focus:border-pink-500">
+                  <label class="block text-[11px] font-bold uppercase opacity-70 mb-1.5">Moneda</label>
+                  <select id="deskPubCurrency" class="w-full dynamic-input border rounded-2xl px-3.5 py-3 text-xs sm:text-sm focus:outline-none focus:border-pink-500">
                     <option value="USD">USD ($)</option>
                     <option value="COP">COP ($)</option>
                     <option value="MXN">MXN ($)</option>
@@ -443,26 +443,26 @@
                 </div>
               </div>
 
-              <div class="border border-purple-500/20 rounded-2xl p-3 dynamic-input flex items-center justify-between">
+              <div class="border border-purple-500/20 rounded-2xl p-3.5 dynamic-input flex items-center justify-between">
                 <span class="text-xs font-semibold">Multimedia adjunta</span>
                 <div class="flex gap-2">
-                  <label class="bg-pink-500/20 hover:bg-pink-500 text-pink-400 hover:text-white px-3 py-2 rounded-xl text-xs font-bold transition cursor-pointer flex items-center gap-1.5">
+                  <label class="bg-pink-500/20 hover:bg-pink-500 text-pink-400 hover:text-white px-3.5 py-2 rounded-xl text-xs font-bold transition cursor-pointer flex items-center gap-1.5">
                     <i class="fa-solid fa-image"></i> Foto
                     <input type="file" id="deskPubImageFile" accept="image/*" class="hidden" onchange="previewDeskMedia(this, 'image')">
                   </label>
-                  <label class="bg-purple-500/20 hover:bg-purple-500 text-purple-400 hover:text-white px-3 py-2 rounded-xl text-xs font-bold transition cursor-pointer flex items-center gap-1.5">
+                  <label class="bg-purple-500/20 hover:bg-purple-500 text-purple-400 hover:text-white px-3.5 py-2 rounded-xl text-xs font-bold transition cursor-pointer flex items-center gap-1.5">
                     <i class="fa-solid fa-video"></i> Video
                     <input type="file" id="deskPubVideoFile" accept="video/*" class="hidden" onchange="previewDeskMedia(this, 'video')">
                   </label>
                 </div>
               </div>
 
-              <div id="deskMediaPreviewBox" class="hidden rounded-2xl overflow-hidden border border-purple-500/20 max-h-36 flex items-center justify-center bg-black">
+              <div id="deskMediaPreviewBox" class="hidden rounded-2xl overflow-hidden border border-purple-500/20 max-h-40 flex items-center justify-center bg-black">
                 <img id="deskImagePreview" class="w-full h-full object-cover hidden">
                 <video id="deskVideoPreview" class="w-full h-full object-cover hidden" controls></video>
               </div>
 
-              <button type="submit" class="w-full bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-400 hover:to-purple-500 text-white font-bold py-3 rounded-2xl transition shadow-lg shadow-pink-500/30 cursor-pointer text-xs">
+              <button type="submit" class="w-full bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-400 hover:to-purple-500 text-white font-black py-4 rounded-2xl transition shadow-lg shadow-pink-500/30 cursor-pointer text-xs sm:text-sm tracking-wide">
                 Publicar en Moonfed✨
               </button>
             </form>
@@ -571,7 +571,7 @@
     <section id="tabUserProfile" class="hidden w-full max-w-2xl mx-auto space-y-4">
       <div id="profileCardContainer" class="dynamic-card border rounded-3xl shadow-2xl overflow-hidden backdrop-blur-md">
         
-        <div class="relative h-32 sm:h-44 w-full overflow-hidden bg-black/20">
+        <div class="relative h-32 sm:h-44 w-full overflow-hidden bg-black/25">
           <div id="profileBannerBox" class="absolute inset-0 bg-cover bg-center transition-all duration-500"></div>
           <div class="absolute inset-0 bg-black/10"></div>
         </div>
@@ -580,7 +580,7 @@
           <div class="flex flex-col sm:flex-row items-center sm:items-end justify-between gap-4 -mt-12 sm:-mt-16 pb-6 border-b border-purple-500/20">
             <div class="flex flex-col sm:flex-row items-center sm:items-end gap-4 text-center sm:text-left">
               <div class="relative group">
-                <img id="profilePageAvatar" src="https://via.placeholder.com/100" class="w-24 h-24 sm:w-28 sm:h-28 rounded-full border-4 border-purple-500/30 object-cover shadow-2xl bg-black/20">
+                <img id="profilePageAvatar" src="https://via.placeholder.com/100" class="w-24 h-24 sm:w-28 sm:h-28 rounded-full border-4 border-purple-500/30 object-cover shadow-2xl bg-black/25">
                 <label class="absolute bottom-1 right-1 bg-pink-500 hover:bg-pink-400 text-white w-8 h-8 rounded-full flex items-center justify-center cursor-pointer shadow-md transition">
                   <i class="fa-solid fa-camera text-xs"></i>
                   <input type="file" accept="image/*" class="hidden" onchange="window.updateProfilePhoto(this)">
@@ -648,7 +648,7 @@
                 </div>
               </div>
               <div class="flex justify-end gap-2 pt-1">
-                <button onclick="window.toggleEditNameModal()" class="bg-black/20 text-xs font-bold px-3 py-2 rounded-xl transition">Cancelar</button>
+                <button onclick="window.toggleEditNameModal()" class="bg-black/25 text-xs font-bold px-3 py-2 rounded-xl transition">Cancelar</button>
                 <button onclick="window.saveNewProfileData()" class="bg-pink-500 hover:bg-pink-400 text-white font-bold text-xs px-4 py-2 rounded-xl transition cursor-pointer">Guardar Cambios</button>
               </div>
             </div>
@@ -665,14 +665,14 @@
     <!-- VISTA PÚBLICA DE PERFIL DE OTRO USUARIO -->
     <section id="tabPublicProfile" class="hidden w-full max-w-2xl mx-auto space-y-4">
       <div id="pubProfileCardContainer" class="dynamic-card border rounded-3xl shadow-2xl overflow-hidden backdrop-blur-md">
-        <div class="relative h-32 sm:h-44 w-full overflow-hidden bg-black/20">
+        <div class="relative h-32 sm:h-44 w-full overflow-hidden bg-black/25">
           <div id="pubProfileBannerBox" class="absolute inset-0 bg-cover bg-center transition-all duration-500"></div>
           <div class="absolute inset-0 bg-black/10"></div>
         </div>
         <div class="p-6 relative pt-0">
           <div class="flex flex-col sm:flex-row items-center sm:items-end justify-between gap-4 -mt-12 sm:-mt-16 pb-6 border-b border-purple-500/20">
             <div class="flex flex-col sm:flex-row items-center sm:items-end gap-4 text-center sm:text-left">
-              <img id="pubProfileAvatar" src="https://via.placeholder.com/100" class="w-24 h-24 sm:w-28 sm:h-28 rounded-full border-4 border-purple-500/30 object-cover shadow-2xl bg-black/20">
+              <img id="pubProfileAvatar" src="https://via.placeholder.com/100" class="w-24 h-24 sm:w-28 sm:h-28 rounded-full border-4 border-purple-500/30 object-cover shadow-2xl bg-black/25">
               <div class="space-y-1">
                 <h2 id="pubProfileName" class="text-xl sm:text-2xl font-black flex items-center justify-center sm:justify-start gap-1.5 flex-wrap">Nombre del Usuario</h2>
                 <p id="pubProfileBio" class="text-xs font-medium leading-relaxed pt-0.5 max-w-md opacity-80">✨ Sin descripción aún...</p>
@@ -769,7 +769,7 @@
             </div>
           </div>
           <div class="flex justify-end gap-2 pt-2">
-            <button type="button" onclick="window.closeEditPostModal()" class="bg-black/20 text-xs font-bold px-4 py-2 rounded-xl transition cursor-pointer">Cancelar</button>
+            <button type="button" onclick="window.closeEditPostModal()" class="bg-black/25 text-xs font-bold px-4 py-2 rounded-xl transition cursor-pointer">Cancelar</button>
             <button type="submit" class="bg-pink-500 hover:bg-pink-400 text-white text-xs font-bold px-4 py-2 rounded-xl transition cursor-pointer">Guardar Cambios</button>
           </div>
         </form>
@@ -1923,7 +1923,7 @@
         `;
       } else {
         mediaContentHTML = `
-          <div class="rounded-2xl overflow-hidden border border-purple-500/20 bg-black/20 max-h-96 flex items-center justify-center cursor-pointer" onclick="window.openCommentsModal('${postId}')">
+          <div class="rounded-2xl overflow-hidden border border-purple-500/20 bg-black/25 max-h-96 flex items-center justify-center cursor-pointer" onclick="window.openCommentsModal('${postId}')">
             <img src="${mediaSrc}" class="w-full object-cover hover:scale-102 transition duration-300">
           </div>
         `;
@@ -2430,7 +2430,7 @@
                 <button onclick="acceptCreatorRole('${k}')" class="bg-gradient-to-r from-amber-500 to-yellow-600 hover:opacity-90 text-slate-950 font-black px-4 py-2 rounded-xl transition cursor-pointer shadow-md">
                   ✓ Aceptar ser creador
                 </button>
-                <button onclick="deleteNotification('${k}')" class="bg-black/20 text-xs font-bold px-3 py-2 rounded-xl transition cursor-pointer">
+                <button onclick="deleteNotification('${k}')" class="bg-black/25 text-xs font-bold px-3 py-2 rounded-xl transition cursor-pointer">
                   Rechazar
                 </button>
               </div>
@@ -2803,9 +2803,9 @@
 
       if (tabName === 'feed') document.getElementById('tabFeed').classList.remove('hidden');
       if (tabName === 'publish') document.getElementById('tabPublish').classList.remove('hidden');
-      if (tabName === 'posts') document.getElementById('tabPosts').classList.remove('hidden');
-      if (tabName === 'userProfile') document.getElementById('tabUserProfile').classList.remove('hidden');
-      if (tabName === 'publicProfile') document.getElementById('tabPublicProfile').classList.remove('hidden');
+      if (tabName === 'posts') document.getElementById('tabPosts').classList.add('hidden');
+      if (tabName === 'userProfile') document.getElementById('tabUserProfile').classList.add('hidden');
+      if (tabName === 'publicProfile') document.getElementById('tabPublicProfile').classList.add('hidden');
       if (tabName === 'messages') {
         document.getElementById('tabMessages').classList.remove('hidden');
         if (window.innerWidth < 768) {
