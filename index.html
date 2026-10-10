@@ -787,6 +787,17 @@
     let deskTempImageBase64 = null;
     let activeModalPostId = null;
 
+    // FUNCIÓN PARA FORMATEAR NÚMEROS DE SEGUIDORES (1k, 1M, etc.)
+    function formatFollowerCount(num) {
+      if (num >= 1000000) {
+        return (num / 1000000).toFixed(1).replace(/\.0$/, '') + 'M';
+      }
+      if (num >= 1000) {
+        return (num / 1000).toFixed(1).replace(/\.0$/, '') + 'k';
+      }
+      return num.toString();
+    }
+
     // LÓGICA DE 6 TOQUES PARA EL PANEL ADMIN
     let logoTapCount = 0;
     let logoTapTimer = null;
@@ -1189,7 +1200,7 @@
         globalFollowsData = snapshot.exists() ? snapshot.val() : {};
         myFollowsMap = globalFollowsData[currentUser.uid] || {};
 
-        document.getElementById('profileFollowingCount').textContent = Object.keys(myFollowsMap).length;
+        document.getElementById('profileFollowingCount').textContent = formatFollowerCount(Object.keys(myFollowsMap).length);
         updateMyProfileFollowersUI();
         listenToPostsFB();
       });
@@ -1205,7 +1216,7 @@
       });
       const extra = currentUserData.followersExtraCount || 0;
       const totalFollowers = realFollowersCount + extra;
-      document.getElementById('profileFollowersCount').textContent = totalFollowers;
+      document.getElementById('profileFollowersCount').textContent = formatFollowerCount(totalFollowers);
     }
 
     async function checkVendorRegistration(user) {
@@ -1507,7 +1518,7 @@
       const targetTotalFollowers = targetRealFollowers + targetExtraFollowers;
 
       document.getElementById('pubProfilePostsCount').textContent = postCount;
-      document.getElementById('pubProfileFollowersCount').textContent = targetTotalFollowers;
+      document.getElementById('pubProfileFollowersCount').textContent = formatFollowerCount(targetTotalFollowers);
 
       switchTab('publicProfile');
     };
