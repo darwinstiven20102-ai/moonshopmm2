@@ -31,10 +31,6 @@
 </head>
 <body id="globalBody" class="bg-slate-950 text-slate-100 min-h-screen flex flex-col pb-20 md:pb-0 overflow-x-hidden relative transition-colors duration-500">
 
-  <!-- FONDO GLOBAL BORROSO DINÁMICO -->
-  <div id="globalBlurBackground" class="fixed inset-0 pointer-events-none z-0 overflow-hidden opacity-40 transition-all duration-700 bg-cover bg-center filter blur-3xl scale-110"></div>
-  <div class="fixed inset-0 pointer-events-none z-0 bg-slate-950/80"></div>
-
   <!-- MODAL SECRETO DE CONTRASEÑA ADMIN (6 TOQUES) -->
   <div id="adminPasswordModal" class="hidden fixed inset-0 z-[200] bg-slate-950/90 backdrop-blur-md flex items-center justify-center p-4">
     <div class="bg-slate-900 border border-purple-500/40 rounded-3xl p-6 max-w-sm w-full space-y-4 shadow-2xl text-center relative z-10">
@@ -53,33 +49,33 @@
     </div>
   </div>
 
-  <!-- MODAL INTEGRADO PANEL DE ADMINISTRACIÓN -->
-  <div id="integratedAdminModal" class="hidden fixed inset-0 z-[150] bg-slate-950/95 backdrop-blur-xl flex flex-col overflow-y-auto p-4 sm:p-6">
+  <!-- MODAL INTEGRADO PANEL DE ADMINISTRACIÓN OPTIMIZADO PARA MÓVILES -->
+  <div id="integratedAdminModal" class="hidden fixed inset-0 z-[150] bg-slate-950/95 backdrop-blur-xl flex flex-col overflow-y-auto p-2 sm:p-6">
     <div class="max-w-4xl w-full mx-auto bg-slate-900 border border-purple-500/40 rounded-3xl shadow-2xl overflow-hidden flex flex-col my-auto relative z-10">
       
       <!-- Header Admin -->
-      <div class="p-4 sm:p-6 border-b border-slate-800 flex items-center justify-between bg-slate-950/80">
-        <div class="flex items-center gap-3">
-          <div class="w-10 h-10 rounded-xl bg-purple-500/20 border border-purple-500/30 flex items-center justify-center text-purple-400">
-            <i class="fa-solid fa-shield-halved text-lg"></i>
+      <div class="p-3 sm:p-6 border-b border-slate-800 flex items-center justify-between bg-slate-950/80">
+        <div class="flex items-center gap-2.5 sm:gap-3">
+          <div class="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-purple-500/20 border border-purple-500/30 flex items-center justify-center text-purple-400 shrink-0">
+            <i class="fa-solid fa-shield-halved text-sm sm:text-lg"></i>
           </div>
           <div>
-            <h2 class="font-black text-base sm:text-lg text-slate-100">Panel de Administración Moonfed 🛡️</h2>
-            <p class="text-[10px] text-pink-400 font-bold" id="adminRoleStatusBadge">Verificando permisos...</p>
+            <h2 class="font-black text-xs sm:text-lg text-slate-100 leading-tight">Panel Admin Moonfed 🛡️</h2>
+            <p class="text-[9px] sm:text-[10px] text-pink-400 font-bold" id="adminRoleStatusBadge">Verificando permisos...</p>
           </div>
         </div>
-        <button onclick="closeAdminPanel()" class="bg-slate-800 hover:bg-pink-500 text-slate-300 hover:text-white w-9 h-9 rounded-full flex items-center justify-center transition cursor-pointer">
-          <i class="fa-solid fa-xmark text-sm"></i>
+        <button onclick="closeAdminPanel()" class="bg-slate-800 hover:bg-pink-500 text-slate-300 hover:text-white w-8 h-8 sm:w-9 sm:h-9 rounded-full flex items-center justify-center transition cursor-pointer shrink-0">
+          <i class="fa-solid fa-xmark text-xs sm:text-sm"></i>
         </button>
       </div>
 
       <!-- Contenido Admin -->
-      <div class="p-4 sm:p-6 space-y-6 flex-1 overflow-y-auto">
+      <div class="p-3 sm:p-6 space-y-5 flex-1 overflow-y-auto">
 
-        <!-- Solicitudes de Acceso (Solo Super Admin) -->
-        <div id="adminRequestsSection" class="hidden bg-slate-950 border border-yellow-500/30 rounded-2xl p-4 space-y-3">
-          <h3 class="text-xs font-black text-yellow-400 uppercase tracking-wider flex items-center gap-2">
-            <i class="fa-solid fa-bell animate-bounce"></i> Solicitudes de Ingreso al Panel
+        <!-- Solicitudes de Acceso -->
+        <div id="adminRequestsSection" class="hidden bg-slate-950 border border-yellow-500/30 rounded-2xl p-3 sm:p-4 space-y-2.5">
+          <h3 class="text-[10px] sm:text-xs font-black text-yellow-400 uppercase tracking-wider flex items-center gap-2">
+            <i class="fa-solid fa-bell animate-bounce"></i> Solicitudes de Ingreso
           </h3>
           <div id="adminRequestsList" class="space-y-2"></div>
         </div>
@@ -87,47 +83,45 @@
         <!-- Cuentas Ingresadas / Gestión de Usuarios -->
         <div class="space-y-3">
           <div class="flex items-center justify-between">
-            <h3 class="text-xs font-black text-slate-300 uppercase tracking-wider flex items-center gap-2">
-              <i class="fa-solid fa-users text-pink-400"></i> Cuentas Ingresadas en la Plataforma
+            <h3 class="text-[10px] sm:text-xs font-black text-slate-300 uppercase tracking-wider flex items-center gap-1.5">
+              <i class="fa-solid fa-users text-pink-400"></i> Cuentas Registradas
             </h3>
-            <span id="adminTotalUsersBadge" class="bg-purple-500/10 text-purple-300 text-[10px] font-bold px-2.5 py-1 rounded-full border border-purple-500/20">0 Usuarios</span>
+            <span id="adminTotalUsersBadge" class="bg-purple-500/10 text-purple-300 text-[9px] sm:text-[10px] font-bold px-2 py-0.5 rounded-full border border-purple-500/20">0 Usuarios</span>
           </div>
 
-          <div class="overflow-x-auto">
-            <table class="w-full text-left text-xs text-slate-300">
-              <thead class="bg-slate-950 text-slate-400 uppercase font-extrabold text-[9px] tracking-wider border-b border-slate-800">
+          <div class="overflow-x-auto no-scrollbar rounded-2xl border border-slate-800">
+            <table class="w-full text-left text-xs text-slate-300 min-w-[500px]">
+              <thead class="bg-slate-950 text-slate-400 uppercase font-extrabold text-[8px] sm:text-[9px] tracking-wider border-b border-slate-800">
                 <tr>
-                  <th class="p-3">Usuario</th>
-                  <th class="p-3">Contacto</th>
-                  <th class="p-3">País</th>
-                  <th class="p-3">Estado</th>
-                  <th class="p-3">Acciones</th>
+                  <th class="p-2.5 sm:p-3">Usuario</th>
+                  <th class="p-2.5 sm:p-3">Contacto</th>
+                  <th class="p-2.5 sm:p-3">Estado</th>
+                  <th class="p-2.5 sm:p-3 text-right">Acciones</th>
                 </tr>
               </thead>
-              <tbody id="adminUsersTableBody" class="divide-y divide-slate-800/60 font-medium"></tbody>
+              <tbody id="adminUsersTableBody" class="divide-y divide-slate-800/60 font-medium bg-slate-950/40"></tbody>
             </table>
           </div>
         </div>
 
-        <!-- Gestión de Publicaciones y Likes (Admin) -->
-        <div class="space-y-3 pt-4 border-t border-slate-800">
+        <!-- Gestión de Publicaciones y Likes -->
+        <div class="space-y-3 pt-3 border-t border-slate-800">
           <div class="flex items-center justify-between">
-            <h3 class="text-xs font-black text-slate-300 uppercase tracking-wider flex items-center gap-2">
-              <i class="fa-solid fa-newspaper text-purple-400"></i> Publicaciones Globales (Gestión de Likes)
+            <h3 class="text-[10px] sm:text-xs font-black text-slate-300 uppercase tracking-wider flex items-center gap-1.5">
+              <i class="fa-solid fa-newspaper text-purple-400"></i> Publicaciones (Likes)
             </h3>
           </div>
 
-          <div class="overflow-x-auto">
-            <table class="w-full text-left text-xs text-slate-300">
-              <thead class="bg-slate-950 text-slate-400 uppercase font-extrabold text-[9px] tracking-wider border-b border-slate-800">
+          <div class="overflow-x-auto no-scrollbar rounded-2xl border border-slate-800">
+            <table class="w-full text-left text-xs text-slate-300 min-w-[480px]">
+              <thead class="bg-slate-950 text-slate-400 uppercase font-extrabold text-[8px] sm:text-[9px] tracking-wider border-b border-slate-800">
                 <tr>
-                  <th class="p-3">Autor / Título</th>
-                  <th class="p-3">Tipo</th>
-                  <th class="p-3">Likes Actuales</th>
-                  <th class="p-3">Acción Admin</th>
+                  <th class="p-2.5 sm:p-3">Autor / Título</th>
+                  <th class="p-2.5 sm:p-3">Likes</th>
+                  <th class="p-2.5 sm:p-3 text-right">Acción Admin</th>
                 </tr>
               </thead>
-              <tbody id="adminPostsTableBody" class="divide-y divide-slate-800/60 font-medium"></tbody>
+              <tbody id="adminPostsTableBody" class="divide-y divide-slate-800/60 font-medium bg-slate-950/40"></tbody>
             </table>
           </div>
         </div>
@@ -295,28 +289,9 @@
             <label class="block text-xs font-bold uppercase text-slate-400 mb-1">Correo Electrónico</label>
             <input type="email" id="formEmail" readonly class="w-full bg-slate-950/60 border border-slate-800/80 text-slate-400 rounded-xl px-4 py-3 text-sm cursor-not-allowed">
           </div>
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <label class="block text-xs font-bold uppercase text-slate-400 mb-1">Número de Teléfono</label>
-              <input type="tel" id="formPhone" placeholder="0000000000" required class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-sm text-slate-100 focus:outline-none focus:border-pink-500">
-            </div>
-            <div>
-              <label class="block text-xs font-bold uppercase text-slate-400 mb-1">País</label>
-              <select id="formCountry" required class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-sm text-slate-100 focus:outline-none focus:border-pink-500">
-                <option value="">Selecciona tu país...</option>
-                <option value="Colombia">Colombia</option>
-                <option value="México">México</option>
-                <option value="Argentina">Argentina</option>
-                <option value="Chile">Chile</option>
-                <option value="Perú">Perú</option>
-                <option value="España">España</option>
-                <option value="Otro">Otro</option>
-              </select>
-            </div>
-          </div>
-          <div id="otherCountryContainer" class="hidden">
-            <label class="block text-xs font-bold uppercase text-slate-400 mb-1">Especifica tu país</label>
-            <input type="text" id="formOtherCountry" placeholder="Escribe tu país" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-sm text-slate-100 focus:outline-none focus:border-pink-500">
+          <div>
+            <label class="block text-xs font-bold uppercase text-slate-400 mb-1">Número de Teléfono</label>
+            <input type="tel" id="formPhone" placeholder="0000000000" required class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-sm text-slate-100 focus:outline-none focus:border-pink-500">
           </div>
           <button type="submit" class="w-full bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-400 hover:to-purple-500 text-white font-bold py-3.5 rounded-2xl transition shadow-lg shadow-pink-500/30 mt-4 cursor-pointer">
             Guardar Perfil y Continuar
@@ -325,11 +300,36 @@
       </div>
     </section>
 
-    <!-- 3. FEED ESTILO MOONFED -->
+    <!-- 3. FEED ESTILO MOONFED CON BUSCADOR TIKTOK -->
     <section id="tabFeed" class="hidden w-full max-w-7xl mx-auto">
       <div class="grid grid-cols-1 md:grid-cols-12 gap-6 items-start w-full">
         
         <div class="md:col-span-7 lg:col-span-8 space-y-4 w-full order-2 md:order-1">
+          
+          <!-- BARRA DE BÚSQUEDA INTELIGENTE Y FILTROS ESTILO TIKTOK -->
+          <div class="bg-slate-900/90 border border-purple-500/30 rounded-3xl p-4 shadow-xl backdrop-blur-md space-y-3">
+            <div class="relative flex items-center">
+              <i class="fa-solid fa-magnifying-glass absolute left-4 text-slate-400 text-sm"></i>
+              <input type="text" id="feedSearchInput" oninput="handleFeedSearch()" placeholder="Buscar cuentas, publicaciones, gatitos, roblox..." class="w-full bg-slate-950 border border-slate-800 rounded-2xl pl-11 pr-10 py-3 text-xs text-slate-100 focus:outline-none focus:border-pink-500 transition shadow-inner">
+              <button onclick="clearFeedSearch()" id="clearSearchBtn" class="hidden absolute right-3 text-slate-400 hover:text-white p-1 text-xs">
+                <i class="fa-solid fa-circle-xmark"></i>
+              </button>
+            </div>
+
+            <!-- FILTROS DE CATEGORÍA BÚSQUEDA (TODOS / CUENTAS / PUBLICACIONES) -->
+            <div class="flex items-center gap-2 overflow-x-auto no-scrollbar pt-1">
+              <button onclick="setSearchFilter('all')" id="filterBtnAll" class="px-3.5 py-1.5 rounded-full text-xs font-extrabold bg-pink-500 text-white transition cursor-pointer shadow-md">
+                Todos
+              </button>
+              <button onclick="setSearchFilter('users')" id="filterBtnUsers" class="px-3.5 py-1.5 rounded-full text-xs font-bold bg-slate-800 text-slate-300 hover:text-white transition cursor-pointer">
+                Cuentas
+              </button>
+              <button onclick="setSearchFilter('posts')" id="filterBtnPosts" class="px-3.5 py-1.5 rounded-full text-xs font-bold bg-slate-800 text-slate-300 hover:text-white transition cursor-pointer">
+                Publicaciones
+              </button>
+            </div>
+          </div>
+
           <div class="relative overflow-hidden rounded-3xl bg-slate-900/80 border border-purple-500/30 p-4 sm:p-5 shadow-xl backdrop-blur-md flex items-center justify-between">
             <div class="flex items-center gap-3">
               <div class="w-11 h-11 rounded-2xl bg-pink-500/20 border border-pink-500/30 flex items-center justify-center text-pink-400 shadow-inner">
@@ -342,7 +342,7 @@
             </div>
           </div>
           
-          <!-- CONTENEDOR DE SIMULACIÓN DE SUBIDA (1 MINUTO) -->
+          <!-- CONTENEDOR DE SIMULACIÓN DE SUBIDA -->
           <div id="uploadSimulationBox" class="hidden bg-slate-900/90 border border-pink-500/50 rounded-3xl p-4 shadow-2xl space-y-3 backdrop-blur-md">
             <div class="flex items-center justify-between text-xs font-bold text-pink-400">
               <span id="uploadStatusText">Procesando y publicando en el feed...</span>
@@ -360,6 +360,7 @@
             </div>
           </div>
 
+          <!-- CONTENEDOR PRINCIPAL DEL FEED -->
           <div id="feedPostsContainer" class="space-y-4 w-full"></div>
         </div>
 
@@ -549,9 +550,10 @@
       <div id="myPostsContainer" class="space-y-4"></div>
     </section>
 
-    <!-- 6. SECCIÓN PERFIL -->
+    <!-- 6. SECCIÓN PERFIL CON DESCRIPCIÓN Y BANNER NORMAL -->
     <section id="tabUserProfile" class="hidden w-full max-w-2xl mx-auto space-y-4">
       <div id="profileCardContainer" class="bg-slate-900/90 border border-purple-500/30 rounded-3xl shadow-2xl overflow-hidden backdrop-blur-md">
+        
         <!-- Banner Normal -->
         <div class="relative h-32 sm:h-44 w-full overflow-hidden bg-slate-950">
           <div id="profileBannerBox" class="absolute inset-0 bg-cover bg-center transition-all duration-500"></div>
@@ -573,12 +575,14 @@
                 <h2 id="profilePageName" class="text-xl sm:text-2xl font-black text-slate-100 flex items-center justify-center sm:justify-start gap-1.5 flex-wrap">
                   Cargando...
                 </h2>
-                <p id="profilePageEmail" class="text-xs text-slate-400">correo@ejemplo.com</p>
-                <p id="profilePageCountry" class="text-xs text-pink-400 font-bold"><i class="fa-solid fa-location-dot mr-1"></i> Colombia</p>
+                <!-- DESCRIPCIÓN DEL PERFIL (BIO CON SÍMBOLOS/TEXTO) -->
+                <p id="profilePageBio" class="text-xs text-slate-300 font-medium leading-relaxed pt-0.5 max-w-md">
+                  ✨ Sin descripción aún...
+                </p>
               </div>
             </div>
 
-            <button onclick="window.toggleEditNameModal()" class="bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold px-4 py-2.5 rounded-2xl transition border border-slate-700 cursor-pointer shadow-lg">
+            <button onclick="window.toggleEditNameModal()" class="bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold px-4 py-2.5 rounded-2xl transition border border-slate-700 cursor-pointer shadow-lg shrink-0">
               <i class="fa-solid fa-pen mr-1"></i> Editar Perfil
             </button>
           </div>
@@ -605,32 +609,28 @@
 
           <!-- MODAL EDITAR PERFIL -->
           <div id="editNameModal" class="hidden my-4 bg-slate-950 p-4 rounded-2xl border border-slate-800 space-y-4">
-            <h4 class="text-xs font-bold text-slate-300 uppercase">Ajustes de Perfil y Fondo Global</h4>
+            <h4 class="text-xs font-bold text-slate-300 uppercase">Ajustes de Perfil</h4>
             <div class="space-y-3">
               <div>
                 <label class="block text-[10px] font-bold text-slate-400 mb-1">Nombre Completo</label>
                 <input type="text" id="editNameInput" placeholder="Nuevo nombre" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-100 focus:outline-none focus:border-pink-500">
               </div>
-              <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              <div>
+                <label class="block text-[10px] font-bold text-slate-400 mb-1">Descripción / Bio (Emojis, símbolos y enlaces)</label>
+                <textarea id="editBioInput" rows="2" placeholder="Escribe tu bio genial aquí ✨..." class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-100 focus:outline-none focus:border-pink-500 resize-none"></textarea>
+              </div>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
                   <label class="block text-[10px] font-bold text-slate-400 mb-1">Banner Normal</label>
                   <label class="flex items-center justify-between bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-400 cursor-pointer hover:border-pink-500 transition">
-                    <span id="bannerFileName" class="truncate">Imagen banner...</span>
+                    <span id="bannerFileName" class="truncate">Elegir imagen banner...</span>
                     <i class="fa-solid fa-image text-pink-400"></i>
                     <input type="file" id="editBannerInput" accept="image/*" class="hidden" onchange="document.getElementById('bannerFileName').textContent = this.files[0]?.name || 'Imagen banner...';">
                   </label>
                 </div>
                 <div>
-                  <label class="block text-[10px] font-bold text-slate-400 mb-1">Color de Fondo Estético</label>
-                  <input type="color" id="editColorInput" value="#1e1b4b" class="w-full h-9 bg-slate-900 border border-slate-800 rounded-xl px-2 cursor-pointer">
-                </div>
-                <div>
-                  <label class="block text-[10px] font-bold text-slate-400 mb-1">Subir Fondo Borroso (Global)</label>
-                  <label class="flex items-center justify-between bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-400 cursor-pointer hover:border-pink-500 transition">
-                    <span id="blurBgFileName" class="truncate">Fondo borroso...</span>
-                    <i class="fa-solid fa-panorama text-purple-400"></i>
-                    <input type="file" id="editBlurBgInput" accept="image/*" class="hidden" onchange="document.getElementById('blurBgFileName').textContent = this.files[0]?.name || 'Fondo borroso...';">
-                  </label>
+                  <label class="block text-[10px] font-bold text-slate-400 mb-1">Color de Fondo Estético Global</label>
+                  <input type="color" id="editColorInput" value="#020617" class="w-full h-9 bg-slate-900 border border-slate-800 rounded-xl px-2 cursor-pointer">
                 </div>
               </div>
               <div class="flex justify-end gap-2 pt-1">
@@ -661,7 +661,7 @@
               <img id="pubProfileAvatar" src="https://via.placeholder.com/100" class="w-24 h-24 sm:w-28 sm:h-28 rounded-full border-4 border-slate-900 object-cover shadow-2xl bg-slate-950">
               <div class="space-y-1">
                 <h2 id="pubProfileName" class="text-xl sm:text-2xl font-black text-slate-100 flex items-center justify-center sm:justify-start gap-1.5 flex-wrap">Nombre del Usuario</h2>
-                <p id="pubProfileCountry" class="text-xs text-pink-400 font-bold"><i class="fa-solid fa-location-dot mr-1"></i> Colombia</p>
+                <p id="pubProfileBio" class="text-xs text-slate-300 font-medium leading-relaxed pt-0.5 max-w-md">✨ Sin descripción aún...</p>
               </div>
             </div>
             <div id="pubProfileActions" class="flex gap-2"></div>
@@ -831,7 +831,7 @@
 
   </main>
 
-  <!-- SCRIPT PRINCIPAL DE FIREBASE -->
+  <!-- SCRIPT PRINCIPAL DE FIREBASE Y ADAPTACIÓN GLOBAL DE COLOR -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
@@ -880,14 +880,11 @@
 
     let newlyPublishedId = null;
     let feedRenderedInitially = false;
+    let activeSearchFilter = 'all';
 
     function formatFollowerCount(num) {
-      if (num >= 1000000) {
-        return (num / 1000000).toFixed(1).replace(/\.0$/, '') + 'M';
-      }
-      if (num >= 1000) {
-        return (num / 1000).toFixed(1).replace(/\.0$/, '') + 'k';
-      }
+      if (num >= 1000000) return (num / 1000000).toFixed(1).replace(/\.0$/, '') + 'M';
+      if (num >= 1000) return (num / 1000).toFixed(1).replace(/\.0$/, '') + 'k';
       return num.toString();
     }
 
@@ -1020,18 +1017,18 @@
           if (adm.status === 'pending') {
             count++;
             const div = document.createElement('div');
-            div.className = "bg-slate-900 p-3 rounded-xl border border-slate-800 flex items-center justify-between text-xs";
+            div.className = "bg-slate-900 p-2.5 rounded-xl border border-slate-800 flex items-center justify-between text-xs";
             div.innerHTML = `
-              <div class="flex items-center gap-3">
-                <img src="${adm.photoURL || 'https://via.placeholder.com/40'}" class="w-8 h-8 rounded-full object-cover border border-pink-400">
-                <div>
-                  <p class="font-bold text-slate-100">${adm.name}</p>
-                  <p class="text-[10px] text-slate-400">${adm.email}</p>
+              <div class="flex items-center gap-2.5 truncate">
+                <img src="${adm.photoURL || 'https://via.placeholder.com/40'}" class="w-7 h-7 rounded-full object-cover border border-pink-400 shrink-0">
+                <div class="truncate">
+                  <p class="font-bold text-slate-100 truncate">${adm.name}</p>
+                  <p class="text-[9px] text-slate-400 truncate">${adm.email}</p>
                 </div>
               </div>
-              <div class="flex gap-2">
-                <button onclick="approveAdminUser('${adm.uid}')" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-3 py-1.5 rounded-xl transition cursor-pointer">Permitir</button>
-                <button onclick="rejectAdminUser('${adm.uid}')" class="bg-red-600 hover:bg-red-500 text-white font-bold px-3 py-1.5 rounded-xl transition cursor-pointer">Prohibir</button>
+              <div class="flex gap-1.5 shrink-0">
+                <button onclick="approveAdminUser('${adm.uid}')" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-2.5 py-1 rounded-lg transition cursor-pointer text-[10px]">Permitir</button>
+                <button onclick="rejectAdminUser('${adm.uid}')" class="bg-red-600 hover:bg-red-500 text-white font-bold px-2 py-1 rounded-lg transition cursor-pointer text-[10px]">Prohibir</button>
               </div>
             `;
             list.appendChild(div);
@@ -1039,7 +1036,7 @@
         });
 
         if (count === 0) {
-          list.innerHTML = `<p class="text-[11px] text-slate-500 italic">No hay solicitudes pendientes.</p>`;
+          list.innerHTML = `<p class="text-[10px] text-slate-500 italic">No hay solicitudes pendientes.</p>`;
         }
       });
     }
@@ -1059,7 +1056,7 @@
         tbody.innerHTML = '';
 
         if (!snapshot.exists()) {
-          tbody.innerHTML = `<tr><td colspan="5" class="p-4 text-center text-slate-500">No hay cuentas registradas.</td></tr>`;
+          tbody.innerHTML = `<tr><td colspan="4" class="p-4 text-center text-slate-500">No hay cuentas registradas.</td></tr>`;
           badge.textContent = "0 Usuarios";
           return;
         }
@@ -1077,31 +1074,30 @@
           const tr = document.createElement('tr');
           tr.className = "hover:bg-slate-900/60 border-b border-slate-800/50 transition";
           tr.innerHTML = `
-            <td class="p-3 flex items-center gap-2.5">
-              <img src="${u.photoURL || 'https://via.placeholder.com/35'}" class="w-8 h-8 rounded-full object-cover border border-pink-400/50">
-              <div>
-                <p class="font-bold text-slate-100 flex items-center gap-1">
+            <td class="p-2.5 sm:p-3 flex items-center gap-2">
+              <img src="${u.photoURL || 'https://via.placeholder.com/35'}" class="w-7 h-7 sm:w-8 sm:h-8 rounded-full object-cover border border-pink-400/50 shrink-0">
+              <div class="min-w-0">
+                <p class="font-bold text-slate-100 flex items-center gap-1 text-[11px] sm:text-xs truncate">
                   ${u.name || 'Sin nombre'}
-                  ${isVerified ? '<i class="fa-solid fa-circle-check text-pink-400 text-xs"></i>' : ''}
-                  ${isCreator ? '<span class="bg-amber-500/20 text-amber-300 border border-amber-500/40 text-[9px] font-black px-1.5 py-0.5 rounded-full">CREADOR</span>' : ''}
+                  ${isVerified ? '<i class="fa-solid fa-circle-check text-pink-400 text-[10px]"></i>' : ''}
+                  ${isCreator ? '<span class="bg-amber-500/20 text-amber-300 border border-amber-500/40 text-[8px] font-black px-1 rounded-full">CREADOR</span>' : ''}
                 </p>
-                <p class="text-[10px] text-slate-400 truncate max-w-[130px]">${u.email || ''}</p>
+                <p class="text-[9px] text-slate-400 truncate max-w-[110px]">${u.email || ''}</p>
               </div>
             </td>
-            <td class="p-3 text-[11px]">${u.phone || 'N/A'}</td>
-            <td class="p-3 text-[11px]">${u.country || 'N/A'}</td>
-            <td class="p-3">
-              ${isVerified ? '<span class="bg-pink-500/10 text-pink-400 font-bold px-2 py-0.5 rounded-full text-[10px]">Verificado</span>' : '<span class="bg-slate-800 text-slate-400 font-bold px-2 py-0.5 rounded-full text-[10px]">Normal</span>'}
+            <td class="p-2.5 sm:p-3 text-[10px] sm:text-[11px]">${u.phone || 'N/A'}</td>
+            <td class="p-2.5 sm:p-3">
+              ${isVerified ? '<span class="bg-pink-500/10 text-pink-400 font-bold px-1.5 py-0.5 rounded-full text-[9px]">Verificado</span>' : '<span class="bg-slate-800 text-slate-400 font-bold px-1.5 py-0.5 rounded-full text-[9px]">Normal</span>'}
             </td>
-            <td class="p-3">
-              <div class="flex items-center gap-2 flex-wrap">
-                <button onclick="toggleUserVerification('${u.uid}', ${isVerified})" class="${isVerified ? 'bg-slate-800 text-slate-300' : 'bg-pink-500/20 text-pink-300 border border-pink-500/30'} text-[11px] font-bold px-2.5 py-1 rounded-xl transition cursor-pointer">
-                  ${isVerified ? 'Quitar Verif' : '✔ Verificar'}
+            <td class="p-2.5 sm:p-3 text-right">
+              <div class="flex items-center justify-end gap-1.5 flex-wrap">
+                <button onclick="toggleUserVerification('${u.uid}', ${isVerified})" class="${isVerified ? 'bg-slate-800 text-slate-300' : 'bg-pink-500/20 text-pink-300 border border-pink-500/30'} text-[10px] font-bold px-2 py-1 rounded-lg transition cursor-pointer">
+                  ${isVerified ? 'Quitar' : '✔ Verif'}
                 </button>
-                <button onclick="sendCreatorRequestToUser('${u.uid}', '${u.name || 'Usuario'}')" class="${isCreator ? 'bg-amber-600/20 text-amber-400 border border-amber-500/40' : 'bg-amber-500/20 text-amber-300 border border-amber-500/30'} text-[11px] font-bold px-2.5 py-1 rounded-xl transition cursor-pointer">
-                  ${isCreator ? '👑 Creador (Activo)' : '👑 Definir Creador'}
+                <button onclick="sendCreatorRequestToUser('${u.uid}', '${u.name || 'Usuario'}')" class="${isCreator ? 'bg-amber-600/20 text-amber-400 border border-amber-500/40' : 'bg-amber-500/20 text-amber-300 border border-amber-500/30'} text-[10px] font-bold px-2 py-1 rounded-lg transition cursor-pointer">
+                  ${isCreator ? '👑 Creador' : '👑 Definir'}
                 </button>
-                <button onclick="addFollowersToUser('${u.uid}', ${followers})" class="bg-gradient-to-r from-pink-500 to-purple-600 text-white text-[11px] font-bold px-2.5 py-1 rounded-xl transition cursor-pointer shadow-md">
+                <button onclick="addFollowersToUser('${u.uid}', ${followers})" class="bg-gradient-to-r from-pink-500 to-purple-600 text-white text-[10px] font-bold px-2 py-1 rounded-lg transition cursor-pointer shadow-md">
                   ➕ Segs
                 </button>
               </div>
@@ -1131,7 +1127,7 @@
       updateNavUser(currentUser, currentUserData);
 
       await remove(ref(db, `notifications/${currentUser.uid}/${notifKey}`));
-      alert("¡Felicidades! Ahora eres officially el Creador de la Página.");
+      alert("¡Felicidades! Ahora eres oficialmente el Creador de la Página.");
     };
 
     function listenToAdminPostsTable() {
@@ -1140,7 +1136,7 @@
         tbody.innerHTML = '';
 
         if (!snapshot.exists()) {
-          tbody.innerHTML = `<tr><td colspan="4" class="p-4 text-center text-slate-500">No hay publicaciones.</td></tr>`;
+          tbody.innerHTML = `<tr><td colspan="3" class="p-4 text-center text-slate-500">No hay publicaciones.</td></tr>`;
           return;
         }
 
@@ -1155,15 +1151,14 @@
           const tr = document.createElement('tr');
           tr.className = "hover:bg-slate-900/60 border-b border-slate-800/50 transition";
           tr.innerHTML = `
-            <td class="p-3">
-              <p class="font-bold text-slate-100 truncate max-w-[180px]">${postTitle}</p>
-              <p class="text-[10px] text-slate-400">Por: ${authorName}</p>
+            <td class="p-2.5 sm:p-3">
+              <p class="font-bold text-slate-100 truncate max-w-[140px] text-[11px] sm:text-xs">${postTitle}</p>
+              <p class="text-[9px] text-slate-400">Por: ${authorName}</p>
             </td>
-            <td class="p-3 text-[11px] uppercase font-bold text-pink-400">${p.postType || 'daily'}</td>
-            <td class="p-3 font-black text-pink-300">${formatFollowerCount(likesCount)} Likes</td>
-            <td class="p-3">
-              <button onclick="setPostLikesByAdmin('${pId}', ${likesCount})" class="bg-gradient-to-r from-pink-500 to-purple-600 text-white text-[11px] font-bold px-3 py-1.5 rounded-xl transition cursor-pointer shadow-md">
-                ✏️ Editar Likes
+            <td class="p-2.5 sm:p-3 font-black text-pink-300 text-[11px]">${formatFollowerCount(likesCount)} Likes</td>
+            <td class="p-2.5 sm:p-3 text-right">
+              <button onclick="setPostLikesByAdmin('${pId}', ${likesCount})" class="bg-gradient-to-r from-pink-500 to-purple-600 text-white text-[10px] font-bold px-2.5 py-1 rounded-lg transition cursor-pointer shadow-md">
+                ✏️ Editar
               </button>
             </td>
           `;
@@ -1369,22 +1364,28 @@
       });
     }
 
+    // APLICACIÓN ADAPTATIVA DINÁMICA DEL COLOR DE FONDO Y TEXTOS EN TODA LA PÁGINA
     function applyGlobalTheme(vData) {
       const body = document.getElementById('globalBody');
-      const blurBg = document.getElementById('globalBlurBackground');
+      const hexColor = vData.bgColor || '#020617';
 
-      if (vData.blurBgURL) {
-        blurBg.style.backgroundImage = `url('${vData.blurBgURL}')`;
-        blurBg.classList.remove('hidden');
-        body.style.backgroundColor = '#020617';
-      } else if (vData.bgColor) {
-        blurBg.style.backgroundImage = 'none';
-        blurBg.classList.add('hidden');
-        body.style.backgroundColor = vData.bgColor;
+      body.style.backgroundColor = hexColor;
+
+      // Cálculo de Luminancia para adaptar la escala de grises/blancos/negros
+      const hex = hexColor.replace('#', '');
+      const r = parseInt(hex.substring(0, 2) || '02', 16);
+      const g = parseInt(hex.substring(2, 4) || '06', 16);
+      const b = parseInt(hex.substring(4, 6) || '17', 16);
+      const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+
+      if (luminance > 0.6) {
+        // Modo Claro / Pastel / Grises claros
+        body.classList.remove('text-slate-100');
+        body.classList.add('text-slate-900');
       } else {
-        blurBg.style.backgroundImage = 'none';
-        blurBg.classList.add('hidden');
-        body.style.backgroundColor = '#020617';
+        // Modo Oscuro / Tonos profundos
+        body.classList.remove('text-slate-900');
+        body.classList.add('text-slate-100');
       }
     }
 
@@ -1438,19 +1439,15 @@
       e.preventDefault();
       if (!currentUser) return;
 
-      let country = document.getElementById('formCountry').value;
-      if (country === 'Otro') country = document.getElementById('formOtherCountry').value;
-
       currentUserData = {
         uid: currentUser.uid,
         name: document.getElementById('formName').value,
         email: currentUser.email,
         phone: document.getElementById('formPhone').value,
-        country: country,
+        bio: "✨ ¡Hola! Estoy usando Moonfed.",
         photoURL: currentUser.photoURL || 'https://via.placeholder.com/100',
         bannerURL: '',
-        bgColor: '',
-        blurBgURL: '',
+        bgColor: '#020617',
         isCreator: false,
         followersExtraCount: 0,
         registeredAt: new Date().toISOString()
@@ -1481,18 +1478,22 @@
     };
 
     window.toggleEditNameModal = () => {
+      document.getElementById('editNameInput').value = currentUserData.name || '';
+      document.getElementById('editBioInput').value = currentUserData.bio || '';
+      document.getElementById('editColorInput').value = currentUserData.bgColor || '#020617';
       document.getElementById('editNameModal').classList.toggle('hidden');
     };
 
     window.saveNewProfileData = async () => {
       if (!currentUser) return;
       const newName = document.getElementById('editNameInput').value.trim();
+      const newBio = document.getElementById('editBioInput').value.trim();
       const bannerFile = document.getElementById('editBannerInput').files[0];
       const colorVal = document.getElementById('editColorInput').value;
-      const blurBgFile = document.getElementById('editBlurBgInput').files[0];
 
       let updates = {};
       if (newName) updates.name = newName;
+      updates.bio = newBio;
       if (colorVal) updates.bgColor = colorVal;
 
       const processSaves = async () => {
@@ -1507,18 +1508,6 @@
           });
         }
 
-        if (blurBgFile) {
-          await new Promise((resolve) => {
-            const reader = new FileReader();
-            reader.onload = (e) => {
-              updates.blurBgURL = e.target.result;
-              updates.bgColor = '';
-              resolve();
-            };
-            reader.readAsDataURL(blurBgFile);
-          });
-        }
-
         if (Object.keys(updates).length > 0) {
           await update(ref(db, `vendors/${currentUser.uid}`), updates);
           currentUserData = { ...currentUserData, ...updates };
@@ -1527,7 +1516,6 @@
         }
 
         document.getElementById('editNameModal').classList.add('hidden');
-        alert("¡Ajustes de perfil y fondo guardados exitosamente!");
       };
 
       await processSaves();
@@ -1775,7 +1763,7 @@
       const userObj = allUsersData[targetUid] || {};
       const targetName = userObj.name || 'Usuario';
       const targetPhoto = userObj.photoURL || 'https://via.placeholder.com/100';
-      const targetCountry = userObj.country || 'Colombia';
+      const targetBio = userObj.bio || '✨ Sin descripción aún...';
       const targetBanner = userObj.bannerURL || '';
       const isVerifiedUser = userObj.isVerified || false;
       const isCreatorUser = userObj.isCreator || false;
@@ -1786,7 +1774,7 @@
         ${isVerifiedUser ? '<i class="fa-solid fa-circle-check text-pink-400 text-base" title="Verificado"></i>' : ''}
         ${isCreatorUser ? '<span class="bg-gradient-to-r from-amber-400 to-yellow-500 text-slate-950 font-black text-xs px-2.5 py-0.5 rounded-full shadow-[0_0_15px_rgba(245,158,11,0.5)] border border-yellow-200 uppercase tracking-wide inline-flex items-center gap-1"><i class="fa-solid fa-crown text-[10px]"></i> CREADOR</span>' : ''}
       `;
-      document.getElementById('pubProfileCountry').innerHTML = `<i class="fa-solid fa-location-dot mr-1"></i> ${targetCountry}`;
+      document.getElementById('pubProfileBio').textContent = targetBio;
 
       const bannerBox = document.getElementById('pubProfileBannerBox');
       if (targetBanner) {
@@ -2016,6 +2004,137 @@
       return postCard;
     }
 
+    // BUSCADOR INTELIGENTE ESTILO TIKTOK
+    window.setSearchFilter = (filterType) => {
+      activeSearchFilter = filterType;
+      const btnAll = document.getElementById('filterBtnAll');
+      const btnUsers = document.getElementById('filterBtnUsers');
+      const btnPosts = document.getElementById('filterBtnPosts');
+
+      btnAll.className = filterType === 'all' ? "px-3.5 py-1.5 rounded-full text-xs font-extrabold bg-pink-500 text-white transition cursor-pointer shadow-md" : "px-3.5 py-1.5 rounded-full text-xs font-bold bg-slate-800 text-slate-300 hover:text-white transition cursor-pointer";
+      btnUsers.className = filterType === 'users' ? "px-3.5 py-1.5 rounded-full text-xs font-extrabold bg-pink-500 text-white transition cursor-pointer shadow-md" : "px-3.5 py-1.5 rounded-full text-xs font-bold bg-slate-800 text-slate-300 hover:text-white transition cursor-pointer";
+      btnPosts.className = filterType === 'posts' ? "px-3.5 py-1.5 rounded-full text-xs font-extrabold bg-pink-500 text-white transition cursor-pointer shadow-md" : "px-3.5 py-1.5 rounded-full text-xs font-bold bg-slate-800 text-slate-300 hover:text-white transition cursor-pointer";
+
+      handleFeedSearch();
+    };
+
+    window.clearFeedSearch = () => {
+      document.getElementById('feedSearchInput').value = '';
+      document.getElementById('clearSearchBtn').classList.add('hidden');
+      renderFeedItems();
+    };
+
+    window.handleFeedSearch = () => {
+      const query = document.getElementById('feedSearchInput').value.trim().toLowerCase();
+      const clearBtn = document.getElementById('clearSearchBtn');
+
+      if (query.length > 0) {
+        clearBtn.classList.remove('hidden');
+      } else {
+        clearBtn.classList.add('hidden');
+      }
+
+      renderFeedItems(query);
+    };
+
+    function renderFeedItems(searchQuery = '') {
+      const feedContainer = document.getElementById('feedPostsContainer');
+      feedContainer.innerHTML = '';
+
+      if (!allPostsData) {
+        feedContainer.innerHTML = `<div class="text-center text-xs text-slate-500 py-8">No hay publicaciones aún.</div>`;
+        return;
+      }
+
+      let matchingUsers = [];
+      let matchingPosts = [];
+
+      // Filtrar Cuentas
+      if (searchQuery) {
+        Object.keys(allUsersData).forEach(uId => {
+          const u = allUsersData[uId];
+          const name = (u.name || '').toLowerCase();
+          const bio = (u.bio || '').toLowerCase();
+          if (name.includes(searchQuery) || bio.includes(searchQuery)) {
+            matchingUsers.push(u);
+          }
+        });
+      }
+
+      // Filtrar Publicaciones
+      let postKeys = Object.keys(allPostsData);
+      postKeys.reverse().forEach(pId => {
+        const post = allPostsData[pId];
+        const author = allUsersData[post.uid] || {};
+        const title = (post.title || '').toLowerCase();
+        const desc = (post.description || '').toLowerCase();
+        const cat = (post.category || '').toLowerCase();
+        const game = (post.gameName || '').toLowerCase();
+        const authorName = (author.name || '').toLowerCase();
+
+        if (!searchQuery || title.includes(searchQuery) || desc.includes(searchQuery) || cat.includes(searchQuery) || game.includes(searchQuery) || authorName.includes(searchQuery)) {
+          matchingPosts.push({ id: pId, post: post, author: author });
+        }
+      });
+
+      if (searchQuery && matchingUsers.length === 0 && matchingPosts.length === 0) {
+        feedContainer.innerHTML = `<div class="bg-slate-900/90 border border-slate-800 rounded-3xl p-8 text-center text-xs text-slate-400 space-y-2"><i class="fa-solid fa-magnifying-glass text-2xl text-pink-400"></i><p>No se encontraron resultados para "${searchQuery}".</p></div>`;
+        return;
+      }
+
+      // Renderizar según filtro (Todos / Cuentas / Publicaciones) estilo TikTok
+      if (activeSearchFilter === 'users') {
+        matchingUsers.forEach(u => feedContainer.appendChild(buildUserCardForSearch(u)));
+      } else if (activeSearchFilter === 'posts') {
+        matchingPosts.forEach(item => feedContainer.appendChild(buildPostCard(item.id, item.post, item.author)));
+      } else { // 'all' -> Intercalado estilo TikTok (Cuenta -> Publicaciones)
+        if (matchingUsers.length > 0) {
+          const sectionTitle = document.createElement('div');
+          sectionTitle.className = "text-xs font-black text-pink-400 uppercase tracking-wider px-1 pt-1 flex items-center gap-1.5";
+          sectionTitle.innerHTML = `<i class="fa-solid fa-users"></i> Cuentas encontradas`;
+          feedContainer.appendChild(sectionTitle);
+
+          matchingUsers.forEach(u => feedContainer.appendChild(buildUserCardForSearch(u)));
+
+          if (matchingPosts.length > 0) {
+            const postsSectionTitle = document.createElement('div');
+            postsSectionTitle.className = "text-xs font-black text-purple-400 uppercase tracking-wider px-1 pt-3 flex items-center gap-1.5";
+            postsSectionTitle.innerHTML = `<i class="fa-solid fa-newspaper"></i> Publicaciones`;
+            feedContainer.appendChild(postsSectionTitle);
+          }
+        }
+
+        matchingPosts.forEach(item => feedContainer.appendChild(buildPostCard(item.id, item.post, item.author)));
+      }
+    }
+
+    function buildUserCardForSearch(u) {
+      const card = document.createElement('div');
+      card.className = "bg-slate-900/90 border border-purple-500/20 rounded-3xl p-4 flex items-center justify-between gap-3 shadow-lg hover:border-pink-500/40 transition cursor-pointer backdrop-blur-md";
+      card.onclick = () => window.openPublicProfile(u.uid);
+
+      const isVerified = u.isVerified || false;
+      const isCreator = u.isCreator || false;
+
+      card.innerHTML = `
+        <div class="flex items-center gap-3 truncate">
+          <img src="${u.photoURL || 'https://via.placeholder.com/50'}" class="w-12 h-12 rounded-full border-2 border-pink-400 object-cover shrink-0">
+          <div class="truncate">
+            <h4 class="font-extrabold text-sm text-slate-100 flex items-center gap-1.5 truncate">
+              ${u.name || 'Usuario'}
+              ${isVerified ? '<i class="fa-solid fa-circle-check text-pink-400 text-xs"></i>' : ''}
+              ${isCreator ? '<span class="bg-amber-500/20 text-amber-300 border border-amber-500/40 text-[9px] font-black px-1.5 py-0.5 rounded-full">CREADOR</span>' : ''}
+            </h4>
+            <p class="text-xs text-slate-400 truncate mt-0.5">${u.bio || '✨ Sin descripción aún...'}</p>
+          </div>
+        </div>
+        <button class="bg-slate-800 hover:bg-pink-500 hover:text-white text-slate-300 font-bold text-xs px-3.5 py-2 rounded-2xl transition shrink-0">
+          Ver perfil
+        </button>
+      `;
+      return card;
+    }
+
     window.openCommentsModal = (postId) => {
       activeModalPostId = postId;
       const post = allPostsData[postId];
@@ -2132,33 +2251,10 @@
         let myPostsCount = 0;
         let myTotalLikes = 0;
 
-        // Si es la primera carga o se ha publicado un nuevo post, renderizamos la estructura del feed
         if (!feedRenderedInitially) {
-          const feedContainer = document.getElementById('feedPostsContainer');
-          feedContainer.innerHTML = '';
-
-          let postKeys = Object.keys(allPostsData);
-
-          if (newlyPublishedId && allPostsData[newlyPublishedId]) {
-            postKeys = postKeys.filter(id => id !== newlyPublishedId);
-            postKeys.unshift(newlyPublishedId);
-            let topCard = buildPostCard(newlyPublishedId, allPostsData[newlyPublishedId], allUsersData[allPostsData[newlyPublishedId].uid] || {});
-            feedContainer.appendChild(topCard);
-          }
-
-          let remainingKeys = newlyPublishedId ? postKeys.slice(1) : postKeys;
-          remainingKeys.sort(() => Math.random() - 0.5);
-
-          remainingKeys.forEach((postId) => {
-            const post = allPostsData[postId];
-            const authorUser = allUsersData[post.uid] || {};
-            const card = buildPostCard(postId, post, authorUser);
-            feedContainer.appendChild(card);
-          });
-
+          renderFeedItems();
           feedRenderedInitially = true;
         } else {
-          // Si ya estaba renderizado, actualizamos suavemente los likes individuales sin reordenar ni reiniciar el scroll
           Object.keys(allPostsData).forEach(postId => {
             const post = allPostsData[postId];
             const hasLiked = currentUser && post.likes && post.likes[currentUser.uid];
@@ -2179,7 +2275,6 @@
           });
         }
 
-        // Actualizar estadísticas de mis posts y perfil
         const myPostsContainer = document.getElementById('myPostsContainer');
         const userProfileGrid = document.getElementById('userProfilePostsGrid');
         myPostsContainer.innerHTML = '';
@@ -2258,7 +2353,7 @@
 
       await update(ref(db, `posts/${pId}`), updated);
       window.closeEditPostModal();
-    };
+    });
 
     window.deletePost = async (postId) => {
       if (confirm("¿Estás seguro de eliminar esta publicación?")) {
@@ -2341,7 +2436,6 @@
     window.toggleLikeFB = async (postId, currentlyLiked, ownerUid) => {
       if (!currentUser) return;
 
-      // Actualización visual inmediata para respuesta instantánea en pantalla
       const likeBtn = document.getElementById(`like-btn-${postId}`);
       const likeCountSpan = document.getElementById(`like-count-${postId}`);
       let currentCount = parseInt(likeCountSpan ? likeCountSpan.textContent.replace(/[^0-9]/g, '') : 0) || 0;
@@ -2357,7 +2451,6 @@
       if (likeCountSpan) likeCountSpan.textContent = `Me gusta (${formatFollowerCount(currentCount)})`;
       if (likeBtn) likeBtn.setAttribute('onclick', `window.toggleLikeFB('${postId}', ${!currentlyLiked}, '${ownerUid}')`);
 
-      // Persistencia en Firebase en segundo plano
       const postRef = ref(db, `posts/${postId}`);
       const snapshot = await get(postRef);
       if (!snapshot.exists()) return;
@@ -2384,7 +2477,7 @@
 
     window.openChatWithUser = (targetUid, targetName, targetPhoto) => {
       if (currentUser && targetUid === currentUser.uid) {
-        alert("Este es tu propio post.");
+        alert("Este es tu propio perfil.");
         return;
       }
       targetChatUid = targetUid;
@@ -2617,6 +2710,7 @@
       const avatar = vData.photoURL || 'https://via.placeholder.com/40';
       const name = vData.name || 'Usuario';
       const banner = vData.bannerURL || '';
+      const bio = vData.bio || '✨ Sin descripción aún...';
       const isVerified = vData.isVerified || false;
       const isCreator = vData.isCreator || false;
 
@@ -2637,8 +2731,7 @@
         ${isVerified ? '<i class="fa-solid fa-circle-check text-pink-400 text-base" title="Verificado"></i>' : ''}
         ${isCreator ? '<span class="bg-gradient-to-r from-amber-400 to-yellow-500 text-slate-950 font-black text-xs px-2.5 py-0.5 rounded-full shadow-[0_0_15px_rgba(245,158,11,0.5)] border border-yellow-200 uppercase tracking-wide inline-flex items-center gap-1"><i class="fa-solid fa-crown text-[10px]"></i> CREADOR</span>' : ''}
       `;
-      document.getElementById('profilePageEmail').textContent = user.email;
-      document.getElementById('profilePageCountry').innerHTML = `<i class="fa-solid fa-location-dot mr-1"></i> ${vData.country || 'Colombia'}`;
+      document.getElementById('profilePageBio').textContent = bio;
 
       const bannerBox = document.getElementById('profileBannerBox');
       if (banner) {
