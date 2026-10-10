@@ -29,11 +29,15 @@
     }
   </style>
 </head>
-<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col pb-20 md:pb-0 overflow-x-hidden">
+<body id="globalBody" class="bg-slate-950 text-slate-100 min-h-screen flex flex-col pb-20 md:pb-0 overflow-x-hidden relative transition-colors duration-500">
+
+  <!-- FONDO GLOBAL BORROSO DINÁMICO -->
+  <div id="globalBlurBackground" class="fixed inset-0 pointer-events-none z-0 overflow-hidden opacity-40 transition-all duration-700 bg-cover bg-center filter blur-3xl scale-110"></div>
+  <div class="fixed inset-0 pointer-events-none z-0 bg-slate-950/80"></div>
 
   <!-- MODAL SECRETO DE CONTRASEÑA ADMIN (6 TOQUES) -->
   <div id="adminPasswordModal" class="hidden fixed inset-0 z-[200] bg-slate-950/90 backdrop-blur-md flex items-center justify-center p-4">
-    <div class="bg-slate-900 border border-purple-500/40 rounded-3xl p-6 max-w-sm w-full space-y-4 shadow-2xl text-center">
+    <div class="bg-slate-900 border border-purple-500/40 rounded-3xl p-6 max-w-sm w-full space-y-4 shadow-2xl text-center relative z-10">
       <div class="w-14 h-14 bg-purple-500/10 text-purple-400 rounded-2xl flex items-center justify-center mx-auto text-2xl border border-purple-500/30">
         <i class="fa-solid fa-lock"></i>
       </div>
@@ -51,7 +55,7 @@
 
   <!-- MODAL INTEGRADO PANEL DE ADMINISTRACIÓN -->
   <div id="integratedAdminModal" class="hidden fixed inset-0 z-[150] bg-slate-950/95 backdrop-blur-xl flex flex-col overflow-y-auto p-4 sm:p-6">
-    <div class="max-w-4xl w-full mx-auto bg-slate-900 border border-purple-500/40 rounded-3xl shadow-2xl overflow-hidden flex flex-col my-auto">
+    <div class="max-w-4xl w-full mx-auto bg-slate-900 border border-purple-500/40 rounded-3xl shadow-2xl overflow-hidden flex flex-col my-auto relative z-10">
       
       <!-- Header Admin -->
       <div class="p-4 sm:p-6 border-b border-slate-800 flex items-center justify-between bg-slate-950/80">
@@ -251,11 +255,11 @@
   </nav>
 
   <!-- CONTENEDOR PRINCIPAL -->
-  <main class="flex-1 max-w-7xl w-full mx-auto p-3 md:p-6 flex flex-col justify-center items-center overflow-x-hidden">
+  <main class="flex-1 max-w-7xl w-full mx-auto p-3 md:p-6 flex flex-col justify-center items-center overflow-x-hidden relative z-10">
 
     <!-- 1. LOGIN CON GOOGLE -->
     <section id="loginScreen" class="max-w-md w-full text-center py-12 px-4">
-      <div class="bg-slate-900 border border-purple-500/30 rounded-3xl p-6 md:p-8 shadow-[0_0_40px_rgba(168,85,247,0.15)] space-y-6">
+      <div class="bg-slate-900/90 border border-purple-500/30 rounded-3xl p-6 md:p-8 shadow-[0_0_40px_rgba(168,85,247,0.15)] space-y-6 backdrop-blur-md">
         <div class="w-16 h-16 bg-pink-500/10 text-pink-400 rounded-2xl flex items-center justify-center mx-auto text-3xl border border-pink-500/30">
           <i class="fa-solid fa-wand-magic-sparkles"></i>
         </div>
@@ -277,7 +281,7 @@
 
     <!-- 2. ONBOARDING -->
     <section id="onboardingScreen" class="hidden max-w-xl w-full py-4 px-2">
-      <div class="bg-slate-900 border border-purple-500/30 rounded-3xl p-6 md:p-8 shadow-2xl">
+      <div class="bg-slate-900/90 border border-purple-500/30 rounded-3xl p-6 md:p-8 shadow-2xl backdrop-blur-md">
         <div class="mb-6">
           <span class="text-xs font-extrabold uppercase tracking-wider text-pink-400">Paso 2 de 2</span>
           <h2 class="text-2xl font-black mt-1">Completa tu perfil</h2>
@@ -326,7 +330,7 @@
       <div class="grid grid-cols-1 md:grid-cols-12 gap-6 items-start w-full">
         
         <div class="md:col-span-7 lg:col-span-8 space-y-4 w-full order-2 md:order-1">
-          <div class="relative overflow-hidden rounded-3xl bg-gradient-to-r from-slate-900 via-purple-950/40 to-slate-900 border border-purple-500/30 p-4 sm:p-5 shadow-xl backdrop-blur-md flex items-center justify-between">
+          <div class="relative overflow-hidden rounded-3xl bg-slate-900/80 border border-purple-500/30 p-4 sm:p-5 shadow-xl backdrop-blur-md flex items-center justify-between">
             <div class="flex items-center gap-3">
               <div class="w-11 h-11 rounded-2xl bg-pink-500/20 border border-pink-500/30 flex items-center justify-center text-pink-400 shadow-inner">
                 <i class="fa-solid fa-newspaper text-xl"></i>
@@ -339,7 +343,7 @@
           </div>
           
           <!-- CONTENEDOR DE SIMULACIÓN DE SUBIDA (1 MINUTO) -->
-          <div id="uploadSimulationBox" class="hidden bg-slate-900 border border-pink-500/50 rounded-3xl p-4 shadow-2xl space-y-3">
+          <div id="uploadSimulationBox" class="hidden bg-slate-900/90 border border-pink-500/50 rounded-3xl p-4 shadow-2xl space-y-3 backdrop-blur-md">
             <div class="flex items-center justify-between text-xs font-bold text-pink-400">
               <span id="uploadStatusText">Procesando y publicando en el feed...</span>
               <span id="uploadPercentText">0%</span>
@@ -360,7 +364,7 @@
         </div>
 
         <div class="hidden md:block md:col-span-5 lg:col-span-4 sticky top-24 order-1 md:order-2">
-          <div class="bg-slate-900/95 border border-purple-500/40 rounded-3xl p-6 shadow-2xl backdrop-blur-md space-y-5">
+          <div class="bg-slate-900/90 border border-purple-500/40 rounded-3xl p-6 shadow-2xl backdrop-blur-md space-y-5">
             <div class="text-center pb-3 border-b border-slate-800">
               <h2 class="text-sm font-black text-slate-100 uppercase tracking-wider flex items-center justify-center gap-2">
                 <i class="fa-solid fa-wand-magic-sparkles text-pink-400"></i> Crear Publicación
@@ -452,7 +456,7 @@
 
     <!-- 4. PUBLICAR MÓVIL -->
     <section id="tabPublish" class="hidden max-w-xl w-full mx-auto space-y-4 py-2 md:hidden">
-      <div class="bg-slate-900 border border-purple-500/30 rounded-3xl p-4 md:p-6 shadow-2xl space-y-4">
+      <div class="bg-slate-900/90 border border-purple-500/30 rounded-3xl p-4 md:p-6 shadow-2xl space-y-4 backdrop-blur-md">
         <div class="text-center pb-3 border-b border-slate-800">
           <h2 class="text-base font-black text-slate-100">Crear publicación en Moonfed✨</h2>
         </div>
@@ -536,7 +540,7 @@
 
     <!-- 5. MIS PUBLICACIONES -->
     <section id="tabPosts" class="hidden w-full max-w-2xl mx-auto space-y-4">
-      <div class="bg-slate-900 border border-purple-500/30 rounded-3xl p-4 flex justify-between items-center shadow-xl">
+      <div class="bg-slate-900/90 border border-purple-500/30 rounded-3xl p-4 flex justify-between items-center shadow-xl backdrop-blur-md">
         <h1 class="text-xl font-black">Mis Publicaciones</h1>
         <button onclick="switchTab('publish')" class="bg-gradient-to-r from-pink-500 to-purple-600 text-white px-4 py-2 rounded-xl text-xs font-bold transition cursor-pointer shadow-md">
           <i class="fa-solid fa-plus mr-1"></i> Nueva
@@ -547,11 +551,11 @@
 
     <!-- 6. SECCIÓN PERFIL -->
     <section id="tabUserProfile" class="hidden w-full max-w-2xl mx-auto space-y-4">
-      <div id="profileCardContainer" class="bg-slate-900 border border-purple-500/30 rounded-3xl shadow-2xl overflow-hidden transition-colors duration-500">
-        <!-- Banner con Desenfoque Estético -->
+      <div id="profileCardContainer" class="bg-slate-900/90 border border-purple-500/30 rounded-3xl shadow-2xl overflow-hidden backdrop-blur-md">
+        <!-- Banner Normal -->
         <div class="relative h-32 sm:h-44 w-full overflow-hidden bg-slate-950">
-          <div id="profileBannerBox" class="absolute inset-0 bg-cover bg-center filter blur-md opacity-70 scale-105 transition-all duration-500"></div>
-          <div class="absolute inset-0 bg-slate-950/30"></div>
+          <div id="profileBannerBox" class="absolute inset-0 bg-cover bg-center transition-all duration-500"></div>
+          <div class="absolute inset-0 bg-slate-950/20"></div>
         </div>
 
         <div class="p-6 relative pt-0">
@@ -599,26 +603,34 @@
             </div>
           </div>
 
-          <!-- MODAL EDITAR PERFIL (FONDO / COLOR / NOMBRE) -->
+          <!-- MODAL EDITAR PERFIL (BANNER NORMAL / COLOR ESTÉTICO / FONDO BORROSO) -->
           <div id="editNameModal" class="hidden my-4 bg-slate-950 p-4 rounded-2xl border border-slate-800 space-y-4">
-            <h4 class="text-xs font-bold text-slate-300 uppercase">Ajustes de Perfil</h4>
+            <h4 class="text-xs font-bold text-slate-300 uppercase">Ajustes de Perfil y Fondo Global</h4>
             <div class="space-y-3">
               <div>
                 <label class="block text-[10px] font-bold text-slate-400 mb-1">Nombre Completo</label>
                 <input type="text" id="editNameInput" placeholder="Nuevo nombre" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-100 focus:outline-none focus:border-pink-500">
               </div>
-              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
                 <div>
-                  <label class="block text-[10px] font-bold text-slate-400 mb-1">Imagen de Fondo (Banner)</label>
+                  <label class="block text-[10px] font-bold text-slate-400 mb-1">Banner Normal</label>
                   <label class="flex items-center justify-between bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-400 cursor-pointer hover:border-pink-500 transition">
-                    <span id="bannerFileName" class="truncate">Elegir imagen...</span>
+                    <span id="bannerFileName" class="truncate">Imagen banner...</span>
                     <i class="fa-solid fa-image text-pink-400"></i>
-                    <input type="file" id="editBannerInput" accept="image/*" class="hidden" onchange="document.getElementById('bannerFileName').textContent = this.files[0]?.name || 'Elegir imagen...'; document.getElementById('editColorInput').value = '';">
+                    <input type="file" id="editBannerInput" accept="image/*" class="hidden" onchange="document.getElementById('bannerFileName').textContent = this.files[0]?.name || 'Imagen banner...';">
                   </label>
                 </div>
                 <div>
-                  <label class="block text-[10px] font-bold text-slate-400 mb-1">O Color de Fondo Estético</label>
-                  <input type="color" id="editColorInput" value="#1e1b4b" class="w-full h-9 bg-slate-900 border border-slate-800 rounded-xl px-2 cursor-pointer" onchange="document.getElementById('bannerFileName').textContent = 'Color seleccionado'; document.getElementById('editBannerInput').value = '';">
+                  <label class="block text-[10px] font-bold text-slate-400 mb-1">Color de Fondo Estético</label>
+                  <input type="color" id="editColorInput" value="#1e1b4b" class="w-full h-9 bg-slate-900 border border-slate-800 rounded-xl px-2 cursor-pointer">
+                </div>
+                <div>
+                  <label class="block text-[10px] font-bold text-slate-400 mb-1">Subir Fondo Borroso (Global)</label>
+                  <label class="flex items-center justify-between bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-400 cursor-pointer hover:border-pink-500 transition">
+                    <span id="blurBgFileName" class="truncate">Fondo borroso...</span>
+                    <i class="fa-solid fa-panorama text-purple-400"></i>
+                    <input type="file" id="editBlurBgInput" accept="image/*" class="hidden" onchange="document.getElementById('blurBgFileName').textContent = this.files[0]?.name || 'Fondo borroso...';">
+                  </label>
                 </div>
               </div>
               <div class="flex justify-end gap-2 pt-1">
@@ -638,10 +650,10 @@
 
     <!-- 6.5 VISTA PÚBLICA DE PERFIL DE OTRO USUARIO -->
     <section id="tabPublicProfile" class="hidden w-full max-w-2xl mx-auto space-y-4">
-      <div id="pubProfileCardContainer" class="bg-slate-900 border border-purple-500/30 rounded-3xl shadow-2xl overflow-hidden transition-colors duration-500">
+      <div id="pubProfileCardContainer" class="bg-slate-900/90 border border-purple-500/30 rounded-3xl shadow-2xl overflow-hidden backdrop-blur-md">
         <div class="relative h-32 sm:h-44 w-full overflow-hidden bg-slate-950">
-          <div id="pubProfileBannerBox" class="absolute inset-0 bg-cover bg-center filter blur-md opacity-70 scale-105 transition-all duration-500"></div>
-          <div class="absolute inset-0 bg-slate-950/30"></div>
+          <div id="pubProfileBannerBox" class="absolute inset-0 bg-cover bg-center transition-all duration-500"></div>
+          <div class="absolute inset-0 bg-slate-950/20"></div>
         </div>
         <div class="p-6 relative pt-0">
           <div class="flex flex-col sm:flex-row items-center sm:items-end justify-between gap-4 -mt-12 sm:-mt-16 pb-6 border-b border-slate-800">
@@ -752,7 +764,7 @@
 
     <!-- 7. CHAT FIJO -->
     <section id="tabMessages" class="hidden w-full max-w-4xl mx-auto h-[calc(100vh-8rem)] min-h-[500px] max-h-[650px] overflow-hidden">
-      <div class="bg-slate-900 border border-purple-500/30 rounded-3xl shadow-2xl overflow-hidden md:grid md:grid-cols-3 h-full w-full relative">
+      <div class="bg-slate-900/90 border border-purple-500/35 rounded-3xl shadow-2xl overflow-hidden md:grid md:grid-cols-3 h-full w-full relative backdrop-blur-md">
         <div id="chatListPanel" class="w-full md:w-auto h-full border-r border-slate-800 flex flex-col bg-slate-950/60 overflow-hidden">
           <div class="p-4 border-b border-slate-800/80 flex items-center justify-between shrink-0">
             <h2 class="font-black text-sm tracking-tight text-slate-100 flex items-center gap-2">
@@ -762,7 +774,7 @@
           <div id="chatList" class="flex-1 overflow-y-auto overflow-x-hidden divide-y divide-slate-900/60"></div>
         </div>
 
-        <div id="chatConversationPanel" class="hidden md:flex col-span-2 flex-col bg-slate-950/90 h-full w-full absolute md:relative inset-0 z-20 overflow-hidden">
+        <div id="chatConversationPanel" class="hidden md:flex col-span-2 flex-col bg-slate-950/80 h-full w-full absolute md:relative inset-0 z-20 overflow-hidden">
           <div class="p-3 px-4 border-b border-slate-800/80 flex items-center justify-between bg-slate-900/90 backdrop-blur shrink-0">
             <div class="flex items-center gap-3">
               <button onclick="closeMobileChat()" class="md:hidden text-slate-300 hover:text-white p-1 text-base cursor-pointer">
@@ -808,7 +820,7 @@
 
     <!-- 8. NOTIFICACIONES -->
     <section id="tabNotifications" class="hidden max-w-xl w-full mx-auto space-y-4 py-4">
-      <div class="bg-slate-900 border border-purple-500/30 rounded-3xl p-6 shadow-xl space-y-4">
+      <div class="bg-slate-900/90 border border-purple-500/30 rounded-3xl p-6 shadow-xl space-y-4 backdrop-blur-md">
         <h2 class="text-xl font-black flex items-center justify-between">
           <span class="flex items-center gap-2"><i class="fa-solid fa-bell text-pink-400"></i> Notificaciones</span>
           <span id="notifCount" class="text-xs font-bold text-pink-400 bg-pink-500/10 px-2.5 py-1 rounded-full">0 nuevas</span>
@@ -819,7 +831,7 @@
 
   </main>
 
-  <!-- SCRIPT PRINCIPAL DE FIREBASE -->
+  <!-- SCRIPT PRINCIPAL DE FIREBASE Y ADAPTACIÓN GLOBAL DE ESTILOS -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
@@ -1099,7 +1111,6 @@
       });
     }
 
-    // ENVIAR SOLICITUD DE CREADOR A LAS NOTIFICACIONES DEL USUARIO
     window.sendCreatorRequestToUser = async (targetUid, targetName) => {
       const notifRef = ref(db, `notifications/${targetUid}`);
       const newNotifRef = push(notifRef);
@@ -1118,7 +1129,6 @@
       currentUserData.isCreator = true;
       updateNavUser(currentUser, currentUserData);
 
-      // Eliminar o actualizar la notificación de solicitud
       await remove(ref(db, `notifications/${currentUser.uid}/${notifKey}`));
       alert("¡Felicidades! Ahora eres oficialmente el Creador de la Página.");
     };
@@ -1352,9 +1362,30 @@
             currentUserData = allUsersData[currentUser.uid];
             updateNavUser(currentUser, currentUserData);
             updateMyProfileFollowersUI();
+            applyGlobalTheme(currentUserData);
           }
         }
       });
+    }
+
+    // APLICAR TEMA GLOBAL (COLOR ESTÉTICO O FONDO BORROSO) A TODA LA PÁGINA
+    function applyGlobalTheme(vData) {
+      const body = document.getElementById('globalBody');
+      const blurBg = document.getElementById('globalBlurBackground');
+
+      if (vData.blurBgURL) {
+        blurBg.style.backgroundImage = `url('${vData.blurBgURL}')`;
+        blurBg.classList.remove('hidden');
+        body.style.backgroundColor = '#020617';
+      } else if (vData.bgColor) {
+        blurBg.style.backgroundImage = 'none';
+        blurBg.classList.add('hidden');
+        body.style.backgroundColor = vData.bgColor;
+      } else {
+        blurBg.style.backgroundImage = 'none';
+        blurBg.classList.add('hidden');
+        body.style.backgroundColor = '#020617';
+      }
     }
 
     function listenToFollows() {
@@ -1390,6 +1421,7 @@
         if (snapshot.exists()) {
           currentUserData = snapshot.val();
           updateNavUser(user, currentUserData);
+          applyGlobalTheme(currentUserData);
           showScreen('app');
           switchTab('feed');
           listenToChatsList();
@@ -1419,6 +1451,7 @@
         photoURL: currentUser.photoURL || 'https://via.placeholder.com/100',
         bannerURL: '',
         bgColor: '',
+        blurBgURL: '',
         isCreator: false,
         followersExtraCount: 0,
         registeredAt: new Date().toISOString()
@@ -1427,6 +1460,7 @@
       try {
         await set(ref(db, 'vendors/' + currentUser.uid), currentUserData);
         updateNavUser(currentUser, currentUserData);
+        applyGlobalTheme(currentUserData);
         showScreen('app');
         switchTab('feed');
       } catch (error) {
@@ -1456,33 +1490,48 @@
       const newName = document.getElementById('editNameInput').value.trim();
       const bannerFile = document.getElementById('editBannerInput').files[0];
       const colorVal = document.getElementById('editColorInput').value;
+      const blurBgFile = document.getElementById('editBlurBgInput').files[0];
 
       let updates = {};
       if (newName) updates.name = newName;
-      if (colorVal) {
-        updates.bgColor = colorVal;
-        updates.bannerURL = '';
-      }
+      if (colorVal) updates.bgColor = colorVal;
 
-      if (bannerFile) {
-        const reader = new FileReader();
-        reader.onload = async (e) => {
-          updates.bannerURL = e.target.result;
-          updates.bgColor = '';
-          await update(ref(db, `vendors/${currentUser.uid}`), updates);
-          currentUserData = { ...currentUserData, ...updates };
-          updateNavUser(currentUser, currentUserData);
-          document.getElementById('editNameModal').classList.add('hidden');
-        };
-        reader.readAsDataURL(bannerFile);
-      } else {
+      const processSaves = async () => {
+        if (bannerFile) {
+          await new Promise((resolve) => {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+              updates.bannerURL = e.target.result;
+              resolve();
+            };
+            reader.readAsDataURL(bannerFile);
+          });
+        }
+
+        if (blurBgFile) {
+          await new Promise((resolve) => {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+              updates.blurBgURL = e.target.result;
+              updates.bgColor = ''; // Prioriza la imagen borrosa global si se sube
+              resolve();
+            };
+            reader.readAsDataURL(blurBgFile);
+          });
+        }
+
         if (Object.keys(updates).length > 0) {
           await update(ref(db, `vendors/${currentUser.uid}`), updates);
           currentUserData = { ...currentUserData, ...updates };
           updateNavUser(currentUser, currentUserData);
+          applyGlobalTheme(currentUserData);
         }
+
         document.getElementById('editNameModal').classList.add('hidden');
-      }
+        alert("¡Ajustes de perfil y fondo guardados exitosamente!");
+      };
+
+      await processSaves();
     };
 
     window.previewDeskMedia = (input, type) => {
@@ -1728,7 +1777,6 @@
       const targetPhoto = userObj.photoURL || 'https://via.placeholder.com/100';
       const targetCountry = userObj.country || 'Colombia';
       const targetBanner = userObj.bannerURL || '';
-      const targetBgColor = userObj.bgColor || '';
       const isVerifiedUser = userObj.isVerified || false;
       const isCreatorUser = userObj.isCreator || false;
 
@@ -1741,16 +1789,10 @@
       document.getElementById('pubProfileCountry').innerHTML = `<i class="fa-solid fa-location-dot mr-1"></i> ${targetCountry}`;
 
       const bannerBox = document.getElementById('pubProfileBannerBox');
-      const cardContainer = document.getElementById('pubProfileCardContainer');
       if (targetBanner) {
         bannerBox.style.backgroundImage = `url('${targetBanner}')`;
-        cardContainer.style.backgroundColor = '';
-      } else if (targetBgColor) {
-        bannerBox.style.backgroundImage = 'none';
-        cardContainer.style.backgroundColor = targetBgColor;
       } else {
         bannerBox.style.backgroundImage = 'none';
-        cardContainer.style.backgroundColor = '';
       }
 
       const actionsBox = document.getElementById('pubProfileActions');
@@ -1928,7 +1970,7 @@
       }
 
       const postCard = document.createElement('div');
-      postCard.className = "bg-slate-900/90 border border-purple-500/20 rounded-3xl p-4 sm:p-5 shadow-xl space-y-3.5 relative backdrop-blur-sm";
+      postCard.className = "bg-slate-900/90 border border-purple-500/20 rounded-3xl p-4 sm:p-5 shadow-xl space-y-3.5 relative backdrop-blur-md";
 
       const creatorBadgeInPost = isCreator ? `<span class="bg-gradient-to-r from-amber-400 to-yellow-500 text-slate-950 font-black text-[9px] px-2 py-0.5 rounded-full shadow-[0_0_10px_rgba(245,158,11,0.4)] border border-yellow-200 uppercase tracking-wider inline-flex items-center gap-1"><i class="fa-solid fa-crown text-[8px]"></i> CREADOR</span>` : '';
 
@@ -2530,7 +2572,6 @@
       const avatar = vData.photoURL || 'https://via.placeholder.com/40';
       const name = vData.name || 'Usuario';
       const banner = vData.bannerURL || '';
-      const bgColor = vData.bgColor || '';
       const isVerified = vData.isVerified || false;
       const isCreator = vData.isCreator || false;
 
@@ -2555,17 +2596,10 @@
       document.getElementById('profilePageCountry').innerHTML = `<i class="fa-solid fa-location-dot mr-1"></i> ${vData.country || 'Colombia'}`;
 
       const bannerBox = document.getElementById('profileBannerBox');
-      const cardContainer = document.getElementById('profileCardContainer');
-
       if (banner) {
         bannerBox.style.backgroundImage = `url('${banner}')`;
-        cardContainer.style.backgroundColor = '';
-      } else if (bgColor) {
-        bannerBox.style.backgroundImage = 'none';
-        cardContainer.style.backgroundColor = bgColor;
       } else {
         bannerBox.style.backgroundImage = 'none';
-        cardContainer.style.backgroundColor = '';
       }
     }
 
