@@ -11,12 +11,25 @@
   <!-- Google Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
   <style>
+    :root {
+      --bg-color: #020617;
+      --card-bg: rgba(15, 23, 42, 0.85);
+      --card-border: rgba(168, 85, 247, 0.25);
+      --input-bg: rgba(2, 6, 23, 0.8);
+      --text-main: #f8fafc;
+      --text-sub: #94a3b8;
+    }
+
     html, body {
       font-family: 'Plus Jakarta Sans', sans-serif;
       overflow-x: hidden;
       overscroll-behavior-x: none;
       touch-action: pan-y;
+      background-color: var(--bg-color);
+      color: var(--text-main);
+      transition: background-color 0.4s ease, color 0.4s ease;
     }
+
     .no-scrollbar::-webkit-scrollbar { display: none; }
     .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
     
@@ -27,71 +40,80 @@
     .animate-float-cute {
       animation: floatBounce 3s ease-in-out infinite;
     }
+
+    /* Estilos dinámicos adaptables */
+    .dynamic-card {
+      background-color: var(--card-bg);
+      border-color: var(--card-border);
+      color: var(--text-main);
+    }
+    .dynamic-input {
+      background-color: var(--input-bg);
+      border-color: var(--card-border);
+      color: var(--text-main);
+    }
   </style>
 </head>
-<body id="globalBody" class="bg-slate-950 text-slate-100 min-h-screen flex flex-col pb-20 md:pb-0 overflow-x-hidden relative transition-colors duration-500">
+<body id="globalBody" class="min-h-screen flex flex-col pb-20 md:pb-0 overflow-x-hidden relative">
 
-  <!-- MODAL SECRETO DE CONTRASEÑA ADMIN (6 TOQUES) -->
-  <div id="adminPasswordModal" class="hidden fixed inset-0 z-[200] bg-slate-950/90 backdrop-blur-md flex items-center justify-center p-4">
-    <div class="bg-slate-900 border border-purple-500/40 rounded-3xl p-6 max-w-sm w-full space-y-4 shadow-2xl text-center relative z-10">
+  <!-- MODAL SECRETO DE CONTRASEÑA ADMIN -->
+  <div id="adminPasswordModal" class="hidden fixed inset-0 z-[200] bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
+    <div class="dynamic-card border rounded-3xl p-6 max-w-sm w-full space-y-4 shadow-2xl text-center relative z-10">
       <div class="w-14 h-14 bg-purple-500/10 text-purple-400 rounded-2xl flex items-center justify-center mx-auto text-2xl border border-purple-500/30">
         <i class="fa-solid fa-lock"></i>
       </div>
       <div>
-        <h3 class="font-black text-base text-slate-100">Acceso Secreto Admin</h3>
-        <p class="text-xs text-slate-400 mt-1">Introduce la contraseña de seguridad.</p>
+        <h3 class="font-black text-base">Acceso Secreto Admin</h3>
+        <p class="text-xs opacity-70 mt-1">Introduce la contraseña de seguridad.</p>
       </div>
-      <input type="password" id="secretPasswordInput" placeholder="Contraseña..." class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-xs text-slate-100 focus:outline-none focus:border-pink-500 text-center tracking-widest">
+      <input type="password" id="secretPasswordInput" placeholder="Contraseña..." class="w-full dynamic-input border rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-pink-500 text-center tracking-widest">
       <div class="flex gap-2 pt-1">
-        <button onclick="closeSecretPasswordModal()" class="flex-1 bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-bold py-2.5 rounded-xl transition">Cancelar</button>
+        <button onclick="closeSecretPasswordModal()" class="flex-1 bg-black/20 hover:bg-black/30 text-xs font-bold py-2.5 rounded-xl transition">Cancelar</button>
         <button onclick="verifySecretPassword()" class="flex-1 bg-gradient-to-r from-pink-500 to-purple-600 hover:opacity-90 text-white text-xs font-bold py-2.5 rounded-xl transition shadow-md">Ingresar</button>
       </div>
     </div>
   </div>
 
-  <!-- MODAL INTEGRADO PANEL DE ADMINISTRACIÓN OPTIMIZADO PARA MÓVILES -->
-  <div id="integratedAdminModal" class="hidden fixed inset-0 z-[150] bg-slate-950/95 backdrop-blur-xl flex flex-col overflow-y-auto p-2 sm:p-6">
-    <div class="max-w-4xl w-full mx-auto bg-slate-900 border border-purple-500/40 rounded-3xl shadow-2xl overflow-hidden flex flex-col my-auto relative z-10">
+  <!-- MODAL INTEGRADO PANEL DE ADMINISTRACIÓN -->
+  <div id="integratedAdminModal" class="hidden fixed inset-0 z-[150] bg-black/85 backdrop-blur-xl flex flex-col overflow-y-auto p-2 sm:p-6">
+    <div class="max-w-4xl w-full mx-auto dynamic-card border rounded-3xl shadow-2xl overflow-hidden flex flex-col my-auto relative z-10">
       
       <!-- Header Admin -->
-      <div class="p-3 sm:p-6 border-b border-slate-800 flex items-center justify-between bg-slate-950/80">
+      <div class="p-3 sm:p-6 border-b border-purple-500/20 flex items-center justify-between">
         <div class="flex items-center gap-2.5 sm:gap-3">
           <div class="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-purple-500/20 border border-purple-500/30 flex items-center justify-center text-purple-400 shrink-0">
             <i class="fa-solid fa-shield-halved text-sm sm:text-lg"></i>
           </div>
           <div>
-            <h2 class="font-black text-xs sm:text-lg text-slate-100 leading-tight">Panel Admin Moonfed 🛡️</h2>
+            <h2 class="font-black text-xs sm:text-lg leading-tight">Panel Admin Moonfed 🛡️</h2>
             <p class="text-[9px] sm:text-[10px] text-pink-400 font-bold" id="adminRoleStatusBadge">Verificando permisos...</p>
           </div>
         </div>
-        <button onclick="closeAdminPanel()" class="bg-slate-800 hover:bg-pink-500 text-slate-300 hover:text-white w-8 h-8 sm:w-9 sm:h-9 rounded-full flex items-center justify-center transition cursor-pointer shrink-0">
+        <button onclick="closeAdminPanel()" class="bg-black/20 hover:bg-pink-500 hover:text-white w-8 h-8 sm:w-9 sm:h-9 rounded-full flex items-center justify-center transition cursor-pointer shrink-0">
           <i class="fa-solid fa-xmark text-xs sm:text-sm"></i>
         </button>
       </div>
 
       <!-- Contenido Admin -->
       <div class="p-3 sm:p-6 space-y-5 flex-1 overflow-y-auto">
-
-        <!-- Solicitudes de Acceso -->
-        <div id="adminRequestsSection" class="hidden bg-slate-950 border border-yellow-500/30 rounded-2xl p-3 sm:p-4 space-y-2.5">
+        <div id="adminRequestsSection" class="hidden dynamic-input border border-yellow-500/30 rounded-2xl p-3 sm:p-4 space-y-2.5">
           <h3 class="text-[10px] sm:text-xs font-black text-yellow-400 uppercase tracking-wider flex items-center gap-2">
             <i class="fa-solid fa-bell animate-bounce"></i> Solicitudes de Ingreso
           </h3>
           <div id="adminRequestsList" class="space-y-2"></div>
         </div>
 
-        <!-- Cuentas Ingresadas / Gestión de Usuarios -->
         <div class="space-y-3">
           <div class="flex items-center justify-between">
-            <h3 class="text-[10px] sm:text-xs font-black text-slate-300 uppercase tracking-wider flex items-center gap-1.5">
+            <h3 class="text-[10px] sm:text-xs font-black uppercase tracking-wider flex items-center gap-1.5 opacity-80">
               <i class="fa-solid fa-users text-pink-400"></i> Cuentas Registradas
             </h3>
-            <span id="adminTotalUsersBadge" class="bg-purple-500/10 text-purple-300 text-[9px] sm:text-[10px] font-bold px-2 py-0.5 rounded-full border border-purple-500/20">0 Usuarios</span>
+            <span id="adminTotalUsersBadge" class="bg-purple-500/10 text-purple-400 text-[9px] sm:text-[10px] font-bold px-2 py-0.5 rounded-full border border-purple-500/20">0 Usuarios</span>
           </div>
 
-          <div class="overflow-x-auto no-scrollbar rounded-2xl border border-slate-800">
-            <table class="w-full text-left text-xs text-slate-300 min-w-[500px]">
-              <thead class="bg-slate-950 text-slate-400 uppercase font-extrabold text-[8px] sm:text-[9px] tracking-wider border-b border-slate-800">
+          <div class="overflow-x-auto no-scrollbar rounded-2xl border border-purple-500/20">
+            <table class="w-full text-left text-xs min-w-[500px]">
+              <thead class="bg-black/20 uppercase font-extrabold text-[8px] sm:text-[9px] tracking-wider border-b border-purple-500/20">
                 <tr>
                   <th class="p-2.5 sm:p-3">Usuario</th>
                   <th class="p-2.5 sm:p-3">Contacto</th>
@@ -99,122 +121,116 @@
                   <th class="p-2.5 sm:p-3 text-right">Acciones</th>
                 </tr>
               </thead>
-              <tbody id="adminUsersTableBody" class="divide-y divide-slate-800/60 font-medium bg-slate-950/40"></tbody>
+              <tbody id="adminUsersTableBody" class="divide-y divide-purple-500/10 font-medium"></tbody>
             </table>
           </div>
         </div>
 
-        <!-- Gestión de Publicaciones y Likes -->
-        <div class="space-y-3 pt-3 border-t border-slate-800">
+        <div class="space-y-3 pt-3 border-t border-purple-500/20">
           <div class="flex items-center justify-between">
-            <h3 class="text-[10px] sm:text-xs font-black text-slate-300 uppercase tracking-wider flex items-center gap-1.5">
+            <h3 class="text-[10px] sm:text-xs font-black uppercase tracking-wider flex items-center gap-1.5 opacity-80">
               <i class="fa-solid fa-newspaper text-purple-400"></i> Publicaciones (Likes)
             </h3>
           </div>
 
-          <div class="overflow-x-auto no-scrollbar rounded-2xl border border-slate-800">
-            <table class="w-full text-left text-xs text-slate-300 min-w-[480px]">
-              <thead class="bg-slate-950 text-slate-400 uppercase font-extrabold text-[8px] sm:text-[9px] tracking-wider border-b border-slate-800">
+          <div class="overflow-x-auto no-scrollbar rounded-2xl border border-purple-500/20">
+            <table class="w-full text-left text-xs min-w-[480px]">
+              <thead class="bg-black/20 uppercase font-extrabold text-[8px] sm:text-[9px] tracking-wider border-b border-purple-500/20">
                 <tr>
                   <th class="p-2.5 sm:p-3">Autor / Título</th>
                   <th class="p-2.5 sm:p-3">Likes</th>
                   <th class="p-2.5 sm:p-3 text-right">Acción Admin</th>
                 </tr>
               </thead>
-              <tbody id="adminPostsTableBody" class="divide-y divide-slate-800/60 font-medium bg-slate-950/40"></tbody>
+              <tbody id="adminPostsTableBody" class="divide-y divide-purple-500/10 font-medium"></tbody>
             </table>
           </div>
         </div>
-
       </div>
-
     </div>
   </div>
 
   <!-- BURBUJA NOTIFICACIÓN FLOTANTE -->
   <div id="msgFloatingBubble" class="hidden fixed bottom-20 right-4 md:bottom-8 md:right-8 z-[100] cursor-pointer animate-float-cute transition-all duration-300">
-    <div onclick="openBubbleChat()" class="relative bg-slate-900/95 backdrop-blur-xl border-2 border-pink-500/60 hover:border-pink-400 p-3.5 pr-6 md:p-4 md:pr-7 rounded-3xl shadow-[0_0_35px_rgba(244,114,182,0.45)] flex items-center gap-4">
+    <div onclick="openBubbleChat()" class="relative dynamic-card backdrop-blur-xl border-2 border-pink-500/60 hover:border-pink-400 p-3.5 pr-6 md:p-4 md:pr-7 rounded-3xl shadow-[0_0_35px_rgba(244,114,182,0.45)] flex items-center gap-4">
       <div class="relative">
         <img id="bubbleAvatar" src="https://via.placeholder.com/50" class="w-12 h-12 md:w-14 md:h-14 rounded-full object-cover border-2 border-pink-400 shadow-md">
-        <span class="absolute -bottom-1 -right-1 w-4 h-4 bg-emerald-400 border-2 border-slate-900 rounded-full animate-ping"></span>
-        <span class="absolute -bottom-1 -right-1 w-4 h-4 bg-emerald-400 border-2 border-slate-900 rounded-full"></span>
+        <span class="absolute -bottom-1 -right-1 w-4 h-4 bg-emerald-400 border-2 border-black/40 rounded-full animate-ping"></span>
+        <span class="absolute -bottom-1 -right-1 w-4 h-4 bg-emerald-400 border-2 border-black/40 rounded-full"></span>
       </div>
       <div class="max-w-[180px] md:max-w-[240px]">
         <p class="text-[10px] md:text-xs font-black uppercase text-pink-400 tracking-wider">Nuevo mensaje recibido</p>
-        <p id="bubbleName" class="text-xs md:text-sm font-black text-slate-100 truncate mt-0.5">Usuario</p>
-        <p id="bubbleText" class="text-[11px] md:text-xs text-slate-300 truncate font-medium">Toca para abrir el chat...</p>
+        <p id="bubbleName" class="text-xs md:text-sm font-black truncate mt-0.5">Usuario</p>
+        <p id="bubbleText" class="text-[11px] md:text-xs opacity-80 truncate font-medium">Toca para abrir el chat...</p>
       </div>
-      <button onclick="event.stopPropagation(); closeMessageBubble();" class="text-slate-400 hover:text-pink-400 p-1.5 text-sm ml-1">
+      <button onclick="event.stopPropagation(); closeMessageBubble();" class="opacity-60 hover:text-pink-400 p-1.5 text-sm ml-1">
         <i class="fa-solid fa-xmark"></i>
       </button>
     </div>
   </div>
 
   <!-- NAVBAR SUPERIOR -->
-  <header id="mainNavbar" class="hidden border-b border-purple-500/20 bg-slate-900/90 backdrop-blur-md sticky top-0 z-50">
+  <header id="mainNavbar" class="hidden border-b border-purple-500/20 dynamic-card backdrop-blur-md sticky top-0 z-50">
     <div class="max-w-7xl mx-auto px-4 h-20 flex items-center justify-between">
       
-      <!-- LOGO MOONFED (CON 6 TOQUES PARA ABRIR ADMIN) -->
       <div class="flex items-center cursor-pointer select-none group" onclick="handleLogoTap()">
         <span class="font-black text-3xl sm:text-4xl tracking-tight bg-gradient-to-r from-pink-400 via-purple-300 to-indigo-300 bg-clip-text text-transparent drop-shadow-[0_0_18px_rgba(244,114,182,0.6)] group-hover:scale-105 transition-transform duration-300">
           Moonfed✨
         </span>
       </div>
 
-      <!-- NAVEGACIÓN PC Y TABLET -->
       <div class="hidden md:flex items-center gap-2 lg:gap-3">
-        <button onclick="switchTab('feed')" class="text-xs lg:text-sm font-extrabold text-slate-200 hover:text-pink-300 bg-slate-800/60 hover:bg-slate-800 border border-slate-700/60 hover:border-pink-500/40 px-3.5 py-2.5 rounded-2xl transition-all duration-200 cursor-pointer flex items-center gap-2 hover:scale-105 shadow-md">
+        <button onclick="switchTab('feed')" class="text-xs lg:text-sm font-extrabold hover:text-pink-400 dynamic-input border px-3.5 py-2.5 rounded-2xl transition-all duration-200 cursor-pointer flex items-center gap-2 hover:scale-105 shadow-md">
           <i class="fa-solid fa-house text-base text-pink-400"></i> Feed
         </button>
-        <button onclick="switchTab('messages')" class="text-xs lg:text-sm font-extrabold text-slate-200 hover:text-indigo-300 bg-slate-800/60 hover:bg-slate-800 border border-slate-700/60 hover:border-indigo-500/40 px-3.5 py-2.5 rounded-2xl transition-all duration-200 cursor-pointer flex items-center gap-2 hover:scale-105 shadow-md relative">
+        <button onclick="switchTab('messages')" class="text-xs lg:text-sm font-extrabold hover:text-indigo-400 dynamic-input border px-3.5 py-2.5 rounded-2xl transition-all duration-200 cursor-pointer flex items-center gap-2 hover:scale-105 shadow-md relative">
           <i class="fa-solid fa-paper-plane text-base text-indigo-400"></i> Mensajes
         </button>
-        <button onclick="switchTab('userProfile')" class="text-xs lg:text-sm font-extrabold text-slate-200 hover:text-pink-300 bg-slate-800/60 hover:bg-slate-800 border border-slate-700/60 hover:border-pink-500/40 px-3.5 py-2.5 rounded-2xl transition-all duration-200 cursor-pointer flex items-center gap-2 hover:scale-105 shadow-md">
+        <button onclick="switchTab('userProfile')" class="text-xs lg:text-sm font-extrabold hover:text-pink-400 dynamic-input border px-3.5 py-2.5 rounded-2xl transition-all duration-200 cursor-pointer flex items-center gap-2 hover:scale-105 shadow-md">
           <i class="fa-solid fa-user text-base text-pink-400"></i> Mi Perfil
         </button>
-        <button onclick="switchTab('posts')" class="text-xs lg:text-sm font-extrabold text-slate-200 hover:text-purple-300 bg-slate-800/60 hover:bg-slate-800 border border-slate-700/60 hover:border-purple-500/40 px-3.5 py-2.5 rounded-2xl transition-all duration-200 cursor-pointer flex items-center gap-2 hover:scale-105 shadow-md">
+        <button onclick="switchTab('posts')" class="text-xs lg:text-sm font-extrabold hover:text-purple-400 dynamic-input border px-3.5 py-2.5 rounded-2xl transition-all duration-200 cursor-pointer flex items-center gap-2 hover:scale-105 shadow-md">
           <i class="fa-solid fa-store text-base text-purple-400"></i> Mis Posts
         </button>
-        <button onclick="switchTab('notifications')" class="text-xs lg:text-sm font-extrabold text-slate-200 hover:text-indigo-300 bg-slate-800/60 hover:bg-slate-800 border border-slate-700/60 hover:border-indigo-500/40 px-3.5 py-2.5 rounded-2xl transition-all duration-200 cursor-pointer flex items-center gap-2 hover:scale-105 shadow-md relative">
+        <button onclick="switchTab('notifications')" class="text-xs lg:text-sm font-extrabold hover:text-indigo-400 dynamic-input border px-3.5 py-2.5 rounded-2xl transition-all duration-200 cursor-pointer flex items-center gap-2 hover:scale-105 shadow-md relative">
           <i class="fa-solid fa-bell text-base text-indigo-400"></i> Notificaciones
           <span id="deskNotifBadge" class="hidden absolute top-2 right-2 w-2 h-2 rounded-full bg-pink-500"></span>
         </button>
       </div>
 
-      <!-- Menú de Usuario / Cuenta -->
       <div class="flex items-center gap-3 relative">
         <div class="relative">
-          <button id="profileMenuBtn" class="flex items-center gap-2.5 bg-slate-900 hover:bg-slate-800 border border-purple-500/30 p-1.5 pr-3.5 rounded-full transition-all cursor-pointer shadow-lg">
+          <button id="profileMenuBtn" class="flex items-center gap-2.5 dynamic-input border p-1.5 pr-3.5 rounded-full transition-all cursor-pointer shadow-lg">
             <img id="navUserAvatar" src="https://via.placeholder.com/40" alt="Avatar" class="w-9 h-9 sm:w-10 sm:h-10 rounded-full border-2 border-pink-400 object-cover">
-            <span id="navUserName" class="text-xs sm:text-sm font-bold text-slate-200 hidden sm:inline">Usuario</span>
+            <span id="navUserName" class="text-xs sm:text-sm font-bold hidden sm:inline">Usuario</span>
             <i class="fa-solid fa-chevron-down text-xs text-pink-400"></i>
           </button>
 
-          <div id="profileDropdown" class="hidden absolute right-0 mt-2 w-56 bg-slate-900 border border-purple-500/30 rounded-2xl shadow-2xl py-2 z-50">
-            <div class="px-4 py-2 border-b border-slate-800 mb-1">
-              <p id="dropdownName" class="text-xs font-bold text-slate-200">Nombre</p>
-              <p id="dropdownEmail" class="text-[10px] text-slate-400 truncate">correo@ejemplo.com</p>
+          <div id="profileDropdown" class="hidden absolute right-0 mt-2 w-56 dynamic-card border rounded-2xl shadow-2xl py-2 z-50">
+            <div class="px-4 py-2 border-b border-purple-500/20 mb-1">
+              <p id="dropdownName" class="text-xs font-bold">Nombre</p>
+              <p id="dropdownEmail" class="text-[10px] opacity-70 truncate">correo@ejemplo.com</p>
             </div>
             
-            <div class="md:hidden border-b border-slate-800 pb-1 mb-1">
-              <button onclick="switchTab('userProfile')" class="w-full text-left px-4 py-2 text-xs text-slate-200 hover:bg-slate-800 flex items-center gap-3 transition cursor-pointer font-bold">
+            <div class="md:hidden border-b border-purple-500/20 pb-1 mb-1">
+              <button onclick="switchTab('userProfile')" class="w-full text-left px-4 py-2 text-xs font-bold hover:bg-black/10 flex items-center gap-3 transition cursor-pointer">
                 <i class="fa-solid fa-user w-4 text-center text-pink-400"></i> Mi Perfil
               </button>
-              <button onclick="switchTab('posts')" class="w-full text-left px-4 py-2 text-xs text-slate-200 hover:bg-slate-800 flex items-center gap-3 transition cursor-pointer font-bold">
+              <button onclick="switchTab('posts')" class="w-full text-left px-4 py-2 text-xs font-bold hover:bg-black/10 flex items-center gap-3 transition cursor-pointer">
                 <i class="fa-solid fa-store w-4 text-center text-purple-400"></i> Mis Posts
               </button>
-              <button onclick="switchTab('notifications')" class="w-full text-left px-4 py-2 text-xs text-slate-200 hover:bg-slate-800 flex items-center gap-3 transition cursor-pointer font-bold relative">
+              <button onclick="switchTab('notifications')" class="w-full text-left px-4 py-2 text-xs font-bold hover:bg-black/10 flex items-center gap-3 transition cursor-pointer relative">
                 <i class="fa-solid fa-bell w-4 text-center text-indigo-400"></i> Notificaciones
                 <span id="mobileMenuNotifBadge" class="hidden ml-auto w-2 h-2 rounded-full bg-pink-500"></span>
               </button>
             </div>
 
-            <div id="linkedAccountsSection" class="border-t border-slate-800 mt-1 pt-1 hidden">
-              <div class="px-4 py-1 text-[10px] font-bold text-slate-500 uppercase">Cambiar cuenta</div>
+            <div id="linkedAccountsSection" class="border-t border-purple-500/20 mt-1 pt-1 hidden">
+              <div class="px-4 py-1 text-[10px] font-bold opacity-60 uppercase">Cambiar cuenta</div>
               <div id="linkedAccountsList" class="space-y-0.5 px-2"></div>
             </div>
 
-            <div class="border-t border-slate-800 mt-1 pt-1">
+            <div class="border-t border-purple-500/20 mt-1 pt-1">
               <button id="addAccountBtn" class="w-full text-left px-4 py-2 text-xs text-pink-400 hover:bg-pink-500/10 flex items-center gap-3 transition cursor-pointer font-bold">
                 <i class="fa-solid fa-user-plus w-4 text-center"></i> Agregar cuenta
               </button>
@@ -229,20 +245,20 @@
   </header>
 
   <!-- NAVBAR INFERIOR MÓVIL -->
-  <nav id="mobileBottomNav" class="hidden fixed bottom-0 left-0 right-0 bg-slate-900/95 backdrop-blur border-t border-purple-500/20 h-16 z-50 px-4 justify-around items-center md:hidden">
-    <button onclick="switchTab('feed')" class="flex flex-col items-center justify-center text-slate-400 hover:text-pink-400 transition cursor-pointer py-1">
+  <nav id="mobileBottomNav" class="hidden fixed bottom-0 left-0 right-0 dynamic-card backdrop-blur border-t border-purple-500/20 h-16 z-50 px-4 justify-around items-center md:hidden">
+    <button onclick="switchTab('feed')" class="flex flex-col items-center justify-center opacity-80 hover:text-pink-400 transition cursor-pointer py-1">
       <i class="fa-solid fa-house text-xl"></i>
       <span class="text-[10px] mt-1 font-bold">Feed</span>
     </button>
-    <button onclick="switchTab('publish')" class="flex flex-col items-center justify-center text-slate-400 hover:text-purple-400 transition cursor-pointer py-1">
+    <button onclick="switchTab('publish')" class="flex flex-col items-center justify-center opacity-80 hover:text-purple-400 transition cursor-pointer py-1">
       <i class="fa-solid fa-circle-plus text-xl"></i>
       <span class="text-[10px] mt-1 font-bold">Publicar</span>
     </button>
-    <button onclick="switchTab('messages')" class="flex flex-col items-center justify-center text-slate-400 hover:text-indigo-400 transition cursor-pointer py-1">
+    <button onclick="switchTab('messages')" class="flex flex-col items-center justify-center opacity-80 hover:text-indigo-400 transition cursor-pointer py-1">
       <i class="fa-solid fa-paper-plane text-xl"></i>
       <span class="text-[10px] mt-1 font-bold">Mensajes</span>
     </button>
-    <button onclick="switchTab('userProfile')" class="flex flex-col items-center justify-center text-slate-400 hover:text-pink-400 transition cursor-pointer py-1">
+    <button onclick="switchTab('userProfile')" class="flex flex-col items-center justify-center opacity-80 hover:text-pink-400 transition cursor-pointer py-1">
       <i class="fa-solid fa-user text-xl"></i>
       <span class="text-[10px] mt-1 font-bold">Perfil</span>
     </button>
@@ -253,13 +269,13 @@
 
     <!-- 1. LOGIN CON GOOGLE -->
     <section id="loginScreen" class="max-w-md w-full text-center py-12 px-4">
-      <div class="bg-slate-900/90 border border-purple-500/30 rounded-3xl p-6 md:p-8 shadow-[0_0_40px_rgba(168,85,247,0.15)] space-y-6 backdrop-blur-md">
+      <div class="dynamic-card border border-purple-500/30 rounded-3xl p-6 md:p-8 shadow-[0_0_40px_rgba(168,85,247,0.15)] space-y-6 backdrop-blur-md">
         <div class="w-16 h-16 bg-pink-500/10 text-pink-400 rounded-2xl flex items-center justify-center mx-auto text-3xl border border-pink-500/30">
           <i class="fa-solid fa-wand-magic-sparkles"></i>
         </div>
         <div>
           <h2 class="text-3xl font-black bg-gradient-to-r from-pink-400 via-purple-300 to-indigo-300 bg-clip-text text-transparent">Moonfed</h2>
-          <p class="text-slate-400 text-sm mt-2">Inicia sesión con Google para acceder a la comunidad cute.</p>
+          <p class="opacity-70 text-sm mt-2">Inicia sesión con Google para acceder a la comunidad cute.</p>
         </div>
         <button id="googleAuthBtn" class="w-full bg-white hover:bg-slate-100 text-slate-900 font-bold py-3.5 px-4 rounded-2xl flex items-center justify-center gap-3 transition shadow-lg cursor-pointer hover:scale-105">
           <svg class="w-5 h-5" viewBox="0 0 24 24">
@@ -275,23 +291,23 @@
 
     <!-- 2. ONBOARDING -->
     <section id="onboardingScreen" class="hidden max-w-xl w-full py-4 px-2">
-      <div class="bg-slate-900/90 border border-purple-500/30 rounded-3xl p-6 md:p-8 shadow-2xl backdrop-blur-md">
+      <div class="dynamic-card border border-purple-500/30 rounded-3xl p-6 md:p-8 shadow-2xl backdrop-blur-md">
         <div class="mb-6">
           <span class="text-xs font-extrabold uppercase tracking-wider text-pink-400">Paso 2 de 2</span>
           <h2 class="text-2xl font-black mt-1">Completa tu perfil</h2>
         </div>
         <form id="vendorForm" class="space-y-4">
           <div>
-            <label class="block text-xs font-bold uppercase text-slate-400 mb-1">Nombre Completo</label>
-            <input type="text" id="formName" required class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-sm text-slate-100 focus:outline-none focus:border-pink-500">
+            <label class="block text-xs font-bold uppercase opacity-70 mb-1">Nombre Completo</label>
+            <input type="text" id="formName" required class="w-full dynamic-input border rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-pink-500">
           </div>
           <div>
-            <label class="block text-xs font-bold uppercase text-slate-400 mb-1">Correo Electrónico</label>
-            <input type="email" id="formEmail" readonly class="w-full bg-slate-950/60 border border-slate-800/80 text-slate-400 rounded-xl px-4 py-3 text-sm cursor-not-allowed">
+            <label class="block text-xs font-bold uppercase opacity-70 mb-1">Correo Electrónico</label>
+            <input type="email" id="formEmail" readonly class="w-full dynamic-input border rounded-xl px-4 py-3 text-sm opacity-60 cursor-not-allowed">
           </div>
           <div>
-            <label class="block text-xs font-bold uppercase text-slate-400 mb-1">Número de Teléfono</label>
-            <input type="tel" id="formPhone" placeholder="0000000000" required class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-sm text-slate-100 focus:outline-none focus:border-pink-500">
+            <label class="block text-xs font-bold uppercase opacity-70 mb-1">Número de Teléfono</label>
+            <input type="tel" id="formPhone" placeholder="0000000000" required class="w-full dynamic-input border rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-pink-500">
           </div>
           <button type="submit" class="w-full bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-400 hover:to-purple-500 text-white font-bold py-3.5 rounded-2xl transition shadow-lg shadow-pink-500/30 mt-4 cursor-pointer">
             Guardar Perfil y Continuar
@@ -300,101 +316,100 @@
       </div>
     </section>
 
-    <!-- 3. FEED ESTILO MOONFED CON BUSCADOR TIKTOK -->
+    <!-- 3. FEED ESTILO MOONFED -->
     <section id="tabFeed" class="hidden w-full max-w-7xl mx-auto">
       <div class="grid grid-cols-1 md:grid-cols-12 gap-6 items-start w-full">
         
         <div class="md:col-span-7 lg:col-span-8 space-y-4 w-full order-2 md:order-1">
           
-          <!-- BARRA DE BÚSQUEDA INTELIGENTE Y FILTROS ESTILO TIKTOK -->
-          <div class="bg-slate-900/90 border border-purple-500/30 rounded-3xl p-4 shadow-xl backdrop-blur-md space-y-3">
+          <!-- BÚSQUEDA TIKTOK CON FONDO DINÁMICO -->
+          <div class="dynamic-card border rounded-3xl p-4 shadow-xl backdrop-blur-md space-y-3">
             <div class="relative flex items-center">
-              <i class="fa-solid fa-magnifying-glass absolute left-4 text-slate-400 text-sm"></i>
-              <input type="text" id="feedSearchInput" oninput="handleFeedSearch()" placeholder="Buscar cuentas, publicaciones, gatitos, roblox..." class="w-full bg-slate-950 border border-slate-800 rounded-2xl pl-11 pr-10 py-3 text-xs text-slate-100 focus:outline-none focus:border-pink-500 transition shadow-inner">
-              <button onclick="clearFeedSearch()" id="clearSearchBtn" class="hidden absolute right-3 text-slate-400 hover:text-white p-1 text-xs">
+              <i class="fa-solid fa-magnifying-glass absolute left-4 opacity-60 text-sm"></i>
+              <input type="text" id="feedSearchInput" oninput="handleFeedSearch()" placeholder="Buscar cuentas, publicaciones, gatitos, roblox..." class="w-full dynamic-input border rounded-2xl pl-11 pr-10 py-3 text-xs focus:outline-none focus:border-pink-500 transition shadow-inner">
+              <button onclick="clearFeedSearch()" id="clearSearchBtn" class="hidden absolute right-3 opacity-60 hover:opacity-100 p-1 text-xs">
                 <i class="fa-solid fa-circle-xmark"></i>
               </button>
             </div>
 
-            <!-- FILTROS DE CATEGORÍA BÚSQUEDA -->
             <div class="flex items-center gap-2 overflow-x-auto no-scrollbar pt-1">
               <button onclick="setSearchFilter('all')" id="filterBtnAll" class="px-3.5 py-1.5 rounded-full text-xs font-extrabold bg-pink-500 text-white transition cursor-pointer shadow-md">
                 Todos
               </button>
-              <button onclick="setSearchFilter('users')" id="filterBtnUsers" class="px-3.5 py-1.5 rounded-full text-xs font-bold bg-slate-800 text-slate-300 hover:text-white transition cursor-pointer">
+              <button onclick="setSearchFilter('users')" id="filterBtnUsers" class="px-3.5 py-1.5 rounded-full text-xs font-bold dynamic-input hover:border-pink-400 transition cursor-pointer">
                 Cuentas
               </button>
-              <button onclick="setSearchFilter('posts')" id="filterBtnPosts" class="px-3.5 py-1.5 rounded-full text-xs font-bold bg-slate-800 text-slate-300 hover:text-white transition cursor-pointer">
+              <button onclick="setSearchFilter('posts')" id="filterBtnPosts" class="px-3.5 py-1.5 rounded-full text-xs font-bold dynamic-input hover:border-pink-400 transition cursor-pointer">
                 Publicaciones
               </button>
             </div>
           </div>
 
-          <div class="relative overflow-hidden rounded-3xl bg-slate-900/80 border border-purple-500/30 p-4 sm:p-5 shadow-xl backdrop-blur-md flex items-center justify-between">
+          <div class="relative overflow-hidden rounded-3xl dynamic-card border p-4 sm:p-5 shadow-xl backdrop-blur-md flex items-center justify-between">
             <div class="flex items-center gap-3">
               <div class="w-11 h-11 rounded-2xl bg-pink-500/20 border border-pink-500/30 flex items-center justify-center text-pink-400 shadow-inner">
                 <i class="fa-solid fa-newspaper text-xl"></i>
               </div>
               <div>
-                <h1 class="text-base sm:text-xl font-black text-slate-100 tracking-wide">Feed de la Comunidad</h1>
-                <p class="text-[11px] text-pink-300 font-medium">Las mejores publicaciones de Moonfed✨</p>
+                <h1 class="text-base sm:text-xl font-black tracking-wide">Feed de la Comunidad</h1>
+                <p class="text-[11px] text-pink-400 font-medium">Las mejores publicaciones de Moonfed✨</p>
               </div>
             </div>
           </div>
           
-          <!-- CONTENEDOR DE SIMULACIÓN DE SUBIDA -->
-          <div id="uploadSimulationBox" class="hidden bg-slate-900/90 border border-pink-500/50 rounded-3xl p-4 shadow-2xl space-y-3 backdrop-blur-md">
+          <!-- SIMULACIÓN DE SUBIDA -->
+          <div id="uploadSimulationBox" class="hidden dynamic-card border border-pink-500/50 rounded-3xl p-4 shadow-2xl space-y-3 backdrop-blur-md">
             <div class="flex items-center justify-between text-xs font-bold text-pink-400">
               <span id="uploadStatusText">Procesando y publicando en el feed...</span>
               <span id="uploadPercentText">0%</span>
             </div>
-            <div class="w-full bg-slate-950 h-2.5 rounded-full overflow-hidden border border-slate-800">
+            <div class="w-full dynamic-input h-2.5 rounded-full overflow-hidden border">
               <div id="uploadProgressBar" class="bg-gradient-to-r from-pink-500 to-purple-600 h-full w-0 transition-all duration-300"></div>
             </div>
             <div class="flex items-center gap-3 pt-1">
-              <img id="uploadThumbPreview" src="" class="w-12 h-12 rounded-xl object-cover border border-slate-800">
+              <img id="uploadThumbPreview" src="" class="w-12 h-12 rounded-xl object-cover border border-purple-500/20">
               <div class="min-w-0 flex-1">
-                <p id="uploadThumbTitle" class="text-xs font-bold text-slate-100 truncate">Título</p>
-                <p class="text-[10px] text-slate-400">Esto tomará un momento...</p>
+                <p id="uploadThumbTitle" class="text-xs font-bold truncate">Título</p>
+                <p class="text-[10px] opacity-70">Esto tomará un momento...</p>
               </div>
             </div>
           </div>
 
-          <!-- CONTENEDOR PRINCIPAL DEL FEED -->
+          <!-- CONTENEDOR DEL FEED -->
           <div id="feedPostsContainer" class="space-y-4 w-full"></div>
         </div>
 
         <div class="hidden md:block md:col-span-5 lg:col-span-4 sticky top-24 order-1 md:order-2">
-          <div class="bg-slate-900/90 border border-purple-500/40 rounded-3xl p-6 shadow-2xl backdrop-blur-md space-y-5">
-            <div class="text-center pb-3 border-b border-slate-800">
-              <h2 class="text-sm font-black text-slate-100 uppercase tracking-wider flex items-center justify-center gap-2">
+          <div class="dynamic-card border rounded-3xl p-6 shadow-2xl backdrop-blur-md space-y-5">
+            <div class="text-center pb-3 border-b border-purple-500/20">
+              <h2 class="text-sm font-black uppercase tracking-wider flex items-center justify-center gap-2">
                 <i class="fa-solid fa-wand-magic-sparkles text-pink-400"></i> Crear Publicación
               </h2>
             </div>
 
             <form id="desktopPublishForm" class="space-y-4" onsubmit="handleDesktopPublish(event)">
-              <div class="flex items-center gap-3 bg-slate-950/80 p-3 rounded-2xl border border-slate-800/80">
+              <div class="flex items-center gap-3 dynamic-input p-3 rounded-2xl border">
                 <img id="deskFormUserAvatar" src="https://via.placeholder.com/40" class="w-10 h-10 rounded-full border-2 border-pink-400 object-cover">
                 <div>
-                  <p id="deskFormUserName" class="text-xs font-bold text-slate-100">Usuario</p>
+                  <p id="deskFormUserName" class="text-xs font-bold">Usuario</p>
                   <span class="text-[10px] text-pink-400 font-bold"><i class="fa-solid fa-globe"></i> Público</span>
                 </div>
               </div>
 
               <div>
-                <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1">Título <span class="text-slate-500 lowercase">(opcional en cotidianas)</span></label>
-                <input type="text" id="deskPubTitle" placeholder="Ej. Vendo ítem MM2 o Mi experiencia hoy" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-3 text-xs text-slate-100 focus:outline-none focus:border-pink-500">
+                <label class="block text-[10px] font-bold uppercase opacity-70 mb-1">Título <span class="opacity-50 lowercase">(opcional en cotidianas)</span></label>
+                <input type="text" id="deskPubTitle" placeholder="Ej. Vendo ítem MM2 o Mi experiencia hoy" class="w-full dynamic-input border rounded-xl px-3.5 py-3 text-xs focus:outline-none focus:border-pink-500">
               </div>
 
               <div>
-                <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1">Descripción <span class="text-pink-400 lowercase">(usa #hashtags)</span></label>
-                <textarea id="deskPubDescription" rows="3" placeholder="¿Qué estás pensando u ofreciendo hoy? #roblox #anime" required class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-3 text-xs text-slate-100 focus:outline-none resize-none"></textarea>
+                <label class="block text-[10px] font-bold uppercase opacity-70 mb-1">Descripción <span class="text-pink-400 lowercase">(usa #hashtags)</span></label>
+                <textarea id="deskPubDescription" rows="3" placeholder="¿Qué estás pensando u ofreciendo hoy? #roblox #anime" required class="w-full dynamic-input border rounded-xl px-3.5 py-3 text-xs focus:outline-none resize-none"></textarea>
               </div>
 
               <div class="grid grid-cols-2 gap-3">
                 <div>
-                  <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1">Categoría <span class="text-slate-500 lowercase">(opcional)</span></label>
-                  <select id="deskPubCategory" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2.5 text-xs text-slate-100 focus:outline-none focus:border-pink-500">
+                  <label class="block text-[10px] font-bold uppercase opacity-70 mb-1">Categoría</label>
+                  <select id="deskPubCategory" class="w-full dynamic-input border rounded-xl px-3 py-2.5 text-xs focus:outline-none focus:border-pink-500">
                     <option value="">Categoría...</option>
                     <option value="Arte / Dibujo">Arte / Dibujo</option>
                     <option value="Videojuegos">Videojuegos</option>
@@ -405,19 +420,19 @@
                   </select>
                 </div>
                 <div>
-                  <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1">Juego / Tema</label>
-                  <input type="text" id="deskPubGameName" placeholder="Ej. Roblox, Charla" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2.5 text-xs text-slate-100 focus:outline-none focus:border-pink-500">
+                  <label class="block text-[10px] font-bold uppercase opacity-70 mb-1">Juego / Tema</label>
+                  <input type="text" id="deskPubGameName" placeholder="Ej. Roblox, Charla" class="w-full dynamic-input border rounded-xl px-3 py-2.5 text-xs focus:outline-none focus:border-pink-500">
                 </div>
               </div>
 
               <div class="grid grid-cols-2 gap-3">
                 <div>
-                  <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1">Precio <span class="text-slate-500 lowercase">(opcional)</span></label>
-                  <input type="number" step="any" id="deskPubPrice" placeholder="Sin precio = Cotidiana" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2.5 text-xs text-slate-100 focus:outline-none focus:border-pink-500">
+                  <label class="block text-[10px] font-bold uppercase opacity-70 mb-1">Precio</label>
+                  <input type="number" step="any" id="deskPubPrice" placeholder="Sin precio = Cotidiana" class="w-full dynamic-input border rounded-xl px-3 py-2.5 text-xs focus:outline-none focus:border-pink-500">
                 </div>
                 <div>
-                  <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1">Moneda</label>
-                  <select id="deskPubCurrency" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2.5 text-xs text-slate-100 focus:outline-none focus:border-pink-500">
+                  <label class="block text-[10px] font-bold uppercase opacity-70 mb-1">Moneda</label>
+                  <select id="deskPubCurrency" class="w-full dynamic-input border rounded-xl px-3 py-2.5 text-xs focus:outline-none focus:border-pink-500">
                     <option value="USD">USD ($)</option>
                     <option value="COP">COP ($)</option>
                     <option value="MXN">MXN ($)</option>
@@ -426,21 +441,21 @@
                 </div>
               </div>
 
-              <div class="border border-slate-800 rounded-2xl p-3 bg-slate-950/80 flex items-center justify-between">
-                <span class="text-xs font-semibold text-slate-300">Multimedia adjunta</span>
+              <div class="border border-purple-500/20 rounded-2xl p-3 dynamic-input flex items-center justify-between">
+                <span class="text-xs font-semibold">Multimedia adjunta</span>
                 <div class="flex gap-2">
-                  <label class="bg-pink-500/20 hover:bg-pink-500 text-pink-300 hover:text-white px-3 py-2 rounded-xl text-xs font-bold transition cursor-pointer flex items-center gap-1.5">
+                  <label class="bg-pink-500/20 hover:bg-pink-500 text-pink-400 hover:text-white px-3 py-2 rounded-xl text-xs font-bold transition cursor-pointer flex items-center gap-1.5">
                     <i class="fa-solid fa-image"></i> Foto
                     <input type="file" id="deskPubImageFile" accept="image/*" class="hidden" onchange="previewDeskMedia(this, 'image')">
                   </label>
-                  <label class="bg-purple-500/20 hover:bg-purple-500 text-purple-300 hover:text-white px-3 py-2 rounded-xl text-xs font-bold transition cursor-pointer flex items-center gap-1.5">
+                  <label class="bg-purple-500/20 hover:bg-purple-500 text-purple-400 hover:text-white px-3 py-2 rounded-xl text-xs font-bold transition cursor-pointer flex items-center gap-1.5">
                     <i class="fa-solid fa-video"></i> Video
                     <input type="file" id="deskPubVideoFile" accept="video/*" class="hidden" onchange="previewDeskMedia(this, 'video')">
                   </label>
                 </div>
               </div>
 
-              <div id="deskMediaPreviewBox" class="hidden rounded-2xl overflow-hidden border border-slate-800 max-h-36 flex items-center justify-center bg-black">
+              <div id="deskMediaPreviewBox" class="hidden rounded-2xl overflow-hidden border border-purple-500/20 max-h-36 flex items-center justify-center bg-black">
                 <img id="deskImagePreview" class="w-full h-full object-cover hidden">
                 <video id="deskVideoPreview" class="w-full h-full object-cover hidden" controls></video>
               </div>
@@ -457,33 +472,33 @@
 
     <!-- 4. PUBLICAR MÓVIL -->
     <section id="tabPublish" class="hidden max-w-xl w-full mx-auto space-y-4 py-2 md:hidden">
-      <div class="bg-slate-900/90 border border-purple-500/30 rounded-3xl p-4 md:p-6 shadow-2xl space-y-4 backdrop-blur-md">
-        <div class="text-center pb-3 border-b border-slate-800">
-          <h2 class="text-base font-black text-slate-100">Crear publicación en Moonfed✨</h2>
+      <div class="dynamic-card border rounded-3xl p-4 md:p-6 shadow-2xl space-y-4 backdrop-blur-md">
+        <div class="text-center pb-3 border-b border-purple-500/20">
+          <h2 class="text-base font-black">Crear publicación en Moonfed✨</h2>
         </div>
 
         <form id="publishForm" class="space-y-4">
           <div class="flex items-center gap-3">
             <img id="formUserAvatar" src="https://via.placeholder.com/40" class="w-10 h-10 rounded-full border-2 border-pink-400 object-cover">
             <div>
-              <p id="formUserName" class="text-xs font-bold text-slate-100">Usuario</p>
-              <div class="flex items-center gap-1 bg-slate-950 border border-slate-800 px-2 py-0.5 rounded-md text-[10px] text-pink-400 mt-0.5 font-bold">
+              <p id="formUserName" class="text-xs font-bold">Usuario</p>
+              <div class="flex items-center gap-1 dynamic-input border px-2 py-0.5 rounded-md text-[10px] text-pink-400 mt-0.5 font-bold">
                 <i class="fa-solid fa-globe"></i>
                 <span>Público</span>
               </div>
             </div>
           </div>
 
-          <input type="text" id="pubTitle" placeholder="Título de la publicación (opcional)..." class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-xs text-slate-100 focus:outline-none focus:border-pink-500">
+          <input type="text" id="pubTitle" placeholder="Título de la publicación (opcional)..." class="w-full dynamic-input border rounded-xl px-3.5 py-2.5 text-xs focus:outline-none focus:border-pink-500">
 
           <div>
-            <textarea id="pubDescription" rows="3" placeholder="¿Qué estás pensando u ofreciendo hoy? #hashtags..." required class="w-full bg-transparent text-sm text-slate-100 focus:outline-none resize-none placeholder:text-slate-500"></textarea>
+            <textarea id="pubDescription" rows="3" placeholder="¿Qué estás pensando u ofreciendo hoy? #hashtags..." required class="w-full bg-transparent text-sm focus:outline-none resize-none placeholder:opacity-50"></textarea>
           </div>
 
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
-              <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1">Categoría <span class="text-slate-500 lowercase">(opcional)</span></label>
-              <select id="pubCategory" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-100 focus:outline-none focus:border-pink-500">
+              <label class="block text-[10px] font-bold uppercase opacity-70 mb-1">Categoría</label>
+              <select id="pubCategory" class="w-full dynamic-input border rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-pink-500">
                 <option value="">Selecciona...</option>
                 <option value="Arte / Dibujo">Arte / Dibujo</option>
                 <option value="Videojuegos">Videojuegos</option>
@@ -494,17 +509,17 @@
               </select>
             </div>
             <div>
-              <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1">Juego / Tema</label>
-              <input type="text" id="pubGameName" placeholder="Ej. Roblox, Charla..." class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-100 focus:outline-none focus:border-pink-500">
+              <label class="block text-[10px] font-bold uppercase opacity-70 mb-1">Juego / Tema</label>
+              <input type="text" id="pubGameName" placeholder="Ej. Roblox, Charla..." class="w-full dynamic-input border rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-pink-500">
             </div>
           </div>
 
           <div class="space-y-1">
-            <label class="block text-[10px] font-bold uppercase text-slate-400">Precio <span class="text-slate-500 lowercase">(opcional - sin precio es cotidiana)</span></label>
+            <label class="block text-[10px] font-bold uppercase opacity-70">Precio</label>
             <div class="flex gap-2">
-              <input type="number" step="any" id="pubPrice" placeholder="Valor del ítem..." class="flex-1 bg-slate-950 border border-slate-800 rounded-xl px-3 py-2.5 text-xs text-slate-100 focus:outline-none focus:border-pink-500">
+              <input type="number" step="any" id="pubPrice" placeholder="Valor del ítem..." class="flex-1 dynamic-input border rounded-xl px-3 py-2.5 text-xs focus:outline-none focus:border-pink-500">
               
-              <select id="pubCurrencySelect" class="bg-slate-950 border border-slate-800 rounded-xl px-3 py-2.5 text-xs text-slate-100 focus:outline-none focus:border-pink-500">
+              <select id="pubCurrencySelect" class="dynamic-input border rounded-xl px-3 py-2.5 text-xs focus:outline-none focus:border-pink-500">
                 <option value="USD">USD ($)</option>
                 <option value="COP">COP ($)</option>
                 <option value="MXN">MXN ($)</option>
@@ -513,21 +528,21 @@
             </div>
           </div>
 
-          <div class="border border-slate-800 rounded-2xl p-3 bg-slate-950/80 flex items-center justify-between">
-            <span class="text-xs font-semibold text-slate-300">Multimedia</span>
+          <div class="border border-purple-500/20 rounded-2xl p-3 dynamic-input flex items-center justify-between">
+            <span class="text-xs font-semibold">Multimedia</span>
             <div class="flex gap-2">
-              <label class="bg-pink-500/20 hover:bg-pink-500 text-pink-300 hover:text-white px-3 py-1.5 rounded-xl text-xs font-bold transition cursor-pointer flex items-center gap-1.5">
+              <label class="bg-pink-500/20 hover:bg-pink-500 text-pink-400 hover:text-white px-3 py-1.5 rounded-xl text-xs font-bold transition cursor-pointer flex items-center gap-1.5">
                 <i class="fa-solid fa-image"></i> Foto
                 <input type="file" id="pubImageFile" accept="image/*" class="hidden" onchange="previewMobileMedia(this, 'image')">
               </label>
-              <label class="bg-purple-500/20 hover:bg-purple-500 text-purple-300 hover:text-white px-3 py-1.5 rounded-xl text-xs font-bold transition cursor-pointer flex items-center gap-1.5">
+              <label class="bg-purple-500/20 hover:bg-purple-500 text-purple-400 hover:text-white px-3 py-1.5 rounded-xl text-xs font-bold transition cursor-pointer flex items-center gap-1.5">
                 <i class="fa-solid fa-video"></i> Video
                 <input type="file" id="pubVideoFile" accept="video/*" class="hidden" onchange="previewMobileMedia(this, 'video')">
               </label>
             </div>
           </div>
           
-          <div id="imagePreviewContainer" class="hidden rounded-xl overflow-hidden border border-slate-800 max-h-48 bg-black flex items-center justify-center">
+          <div id="imagePreviewContainer" class="hidden rounded-xl overflow-hidden border border-purple-500/20 max-h-48 bg-black flex items-center justify-center">
             <img id="imagePreview" class="w-full h-full object-cover hidden">
             <video id="videoPreview" class="w-full h-full object-cover hidden" controls></video>
           </div>
@@ -541,7 +556,7 @@
 
     <!-- 5. MIS PUBLICACIONES -->
     <section id="tabPosts" class="hidden w-full max-w-2xl mx-auto space-y-4">
-      <div class="bg-slate-900/90 border border-purple-500/30 rounded-3xl p-4 flex justify-between items-center shadow-xl backdrop-blur-md">
+      <div class="dynamic-card border rounded-3xl p-4 flex justify-between items-center shadow-xl backdrop-blur-md">
         <h1 class="text-xl font-black">Mis Publicaciones</h1>
         <button onclick="switchTab('publish')" class="bg-gradient-to-r from-pink-500 to-purple-600 text-white px-4 py-2 rounded-xl text-xs font-bold transition cursor-pointer shadow-md">
           <i class="fa-solid fa-plus mr-1"></i> Nueva
@@ -550,20 +565,20 @@
       <div id="myPostsContainer" class="space-y-4"></div>
     </section>
 
-    <!-- 6. SECCIÓN PERFIL CON DESCRIPCIÓN Y BANNER NORMAL -->
+    <!-- 6. PERFIL -->
     <section id="tabUserProfile" class="hidden w-full max-w-2xl mx-auto space-y-4">
-      <div id="profileCardContainer" class="bg-slate-900/90 border border-purple-500/30 rounded-3xl shadow-2xl overflow-hidden backdrop-blur-md">
+      <div id="profileCardContainer" class="dynamic-card border rounded-3xl shadow-2xl overflow-hidden backdrop-blur-md">
         
-        <div class="relative h-32 sm:h-44 w-full overflow-hidden bg-slate-950">
+        <div class="relative h-32 sm:h-44 w-full overflow-hidden bg-black/20">
           <div id="profileBannerBox" class="absolute inset-0 bg-cover bg-center transition-all duration-500"></div>
-          <div class="absolute inset-0 bg-slate-950/20"></div>
+          <div class="absolute inset-0 bg-black/10"></div>
         </div>
 
         <div class="p-6 relative pt-0">
-          <div class="flex flex-col sm:flex-row items-center sm:items-end justify-between gap-4 -mt-12 sm:-mt-16 pb-6 border-b border-slate-800">
+          <div class="flex flex-col sm:flex-row items-center sm:items-end justify-between gap-4 -mt-12 sm:-mt-16 pb-6 border-b border-purple-500/20">
             <div class="flex flex-col sm:flex-row items-center sm:items-end gap-4 text-center sm:text-left">
               <div class="relative group">
-                <img id="profilePageAvatar" src="https://via.placeholder.com/100" class="w-24 h-24 sm:w-28 sm:h-28 rounded-full border-4 border-slate-900 object-cover shadow-2xl bg-slate-950">
+                <img id="profilePageAvatar" src="https://via.placeholder.com/100" class="w-24 h-24 sm:w-28 sm:h-28 rounded-full border-4 border-purple-500/30 object-cover shadow-2xl bg-black/20">
                 <label class="absolute bottom-1 right-1 bg-pink-500 hover:bg-pink-400 text-white w-8 h-8 rounded-full flex items-center justify-center cursor-pointer shadow-md transition">
                   <i class="fa-solid fa-camera text-xs"></i>
                   <input type="file" accept="image/*" class="hidden" onchange="window.updateProfilePhoto(this)">
@@ -571,149 +586,149 @@
               </div>
 
               <div class="space-y-1">
-                <h2 id="profilePageName" class="text-xl sm:text-2xl font-black text-slate-100 flex items-center justify-center sm:justify-start gap-1.5 flex-wrap">
+                <h2 id="profilePageName" class="text-xl sm:text-2xl font-black flex items-center justify-center sm:justify-start gap-1.5 flex-wrap">
                   Cargando...
                 </h2>
-                <p id="profilePageBio" class="text-xs text-slate-300 font-medium leading-relaxed pt-0.5 max-w-md">
+                <p id="profilePageBio" class="text-xs font-medium leading-relaxed pt-0.5 max-w-md opacity-80">
                   ✨ Sin descripción aún...
                 </p>
               </div>
             </div>
 
-            <button onclick="window.toggleEditNameModal()" class="bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold px-4 py-2.5 rounded-2xl transition border border-slate-700 cursor-pointer shadow-lg shrink-0">
+            <button onclick="window.toggleEditNameModal()" class="dynamic-input hover:border-pink-400 text-xs font-bold px-4 py-2.5 rounded-2xl transition border cursor-pointer shadow-lg shrink-0">
               <i class="fa-solid fa-pen mr-1"></i> Editar Perfil
             </button>
           </div>
 
-          <div class="flex justify-center sm:justify-start gap-6 sm:gap-8 py-4 border-b border-slate-800/80 overflow-x-auto">
+          <div class="flex justify-center sm:justify-start gap-6 sm:gap-8 py-4 border-b border-purple-500/20 overflow-x-auto">
             <div class="text-center sm:text-left">
-              <span id="profilePostsCount" class="block font-black text-base text-slate-100">0</span>
-              <span class="text-[10px] text-slate-400 uppercase font-semibold">Posts</span>
+              <span id="profilePostsCount" class="block font-black text-base">0</span>
+              <span class="text-[10px] opacity-60 uppercase font-semibold">Posts</span>
             </div>
             <div class="text-center sm:text-left">
               <span id="profileFollowersCount" class="block font-black text-base text-pink-400">0</span>
-              <span class="text-[10px] text-slate-400 uppercase font-semibold">Seguidores</span>
+              <span class="text-[10px] opacity-60 uppercase font-semibold">Seguidores</span>
             </div>
             <div class="text-center sm:text-left">
-              <span id="profileFollowingCount" class="block font-black text-base text-slate-100">0</span>
-              <span class="text-[10px] text-slate-400 uppercase font-semibold">Siguiendo</span>
+              <span id="profileFollowingCount" class="block font-black text-base">0</span>
+              <span class="text-[10px] opacity-60 uppercase font-semibold">Siguiendo</span>
             </div>
             <div class="text-center sm:text-left">
               <span id="profileLikesCount" class="block font-black text-base text-purple-400">0</span>
-              <span class="text-[10px] text-slate-400 uppercase font-semibold">Likes</span>
+              <span class="text-[10px] opacity-60 uppercase font-semibold">Likes</span>
             </div>
           </div>
 
           <!-- MODAL EDITAR PERFIL -->
-          <div id="editNameModal" class="hidden my-4 bg-slate-950 p-4 rounded-2xl border border-slate-800 space-y-4">
-            <h4 class="text-xs font-bold text-slate-300 uppercase">Ajustes de Perfil</h4>
+          <div id="editNameModal" class="hidden my-4 dynamic-input p-4 rounded-2xl border space-y-4">
+            <h4 class="text-xs font-bold uppercase opacity-80">Ajustes de Perfil</h4>
             <div class="space-y-3">
               <div>
-                <label class="block text-[10px] font-bold text-slate-400 mb-1">Nombre Completo</label>
-                <input type="text" id="editNameInput" placeholder="Nuevo nombre" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-100 focus:outline-none focus:border-pink-500">
+                <label class="block text-[10px] font-bold opacity-70 mb-1">Nombre Completo</label>
+                <input type="text" id="editNameInput" placeholder="Nuevo nombre" class="w-full dynamic-input border rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-pink-500">
               </div>
               <div>
-                <label class="block text-[10px] font-bold text-slate-400 mb-1">Descripción / Bio (Emojis, símbolos y enlaces)</label>
-                <textarea id="editBioInput" rows="2" placeholder="Escribe tu bio genial aquí ✨..." class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-100 focus:outline-none focus:border-pink-500 resize-none"></textarea>
+                <label class="block text-[10px] font-bold opacity-70 mb-1">Descripción / Bio</label>
+                <textarea id="editBioInput" rows="2" placeholder="Escribe tu bio genial aquí ✨..." class="w-full dynamic-input border rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-pink-500 resize-none"></textarea>
               </div>
               <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
-                  <label class="block text-[10px] font-bold text-slate-400 mb-1">Banner Normal</label>
-                  <label class="flex items-center justify-between bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-400 cursor-pointer hover:border-pink-500 transition">
+                  <label class="block text-[10px] font-bold opacity-70 mb-1">Banner Normal</label>
+                  <label class="flex items-center justify-between dynamic-input border rounded-xl px-3 py-2 text-xs opacity-70 cursor-pointer hover:border-pink-500 transition">
                     <span id="bannerFileName" class="truncate">Elegir imagen banner...</span>
                     <i class="fa-solid fa-image text-pink-400"></i>
                     <input type="file" id="editBannerInput" accept="image/*" class="hidden" onchange="document.getElementById('bannerFileName').textContent = this.files[0]?.name || 'Imagen banner...';">
                   </label>
                 </div>
                 <div>
-                  <label class="block text-[10px] font-bold text-slate-400 mb-1">Color de Fondo Estético Global</label>
-                  <input type="color" id="editColorInput" value="#020617" class="w-full h-9 bg-slate-900 border border-slate-800 rounded-xl px-2 cursor-pointer">
+                  <label class="block text-[10px] font-bold opacity-70 mb-1">Color de Fondo Estético Global</label>
+                  <input type="color" id="editColorInput" value="#020617" class="w-full h-9 dynamic-input border rounded-xl px-2 cursor-pointer">
                 </div>
               </div>
               <div class="flex justify-end gap-2 pt-1">
-                <button onclick="window.toggleEditNameModal()" class="bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-bold px-3 py-2 rounded-xl transition">Cancelar</button>
+                <button onclick="window.toggleEditNameModal()" class="bg-black/20 text-xs font-bold px-3 py-2 rounded-xl transition">Cancelar</button>
                 <button onclick="window.saveNewProfileData()" class="bg-pink-500 hover:bg-pink-400 text-white font-bold text-xs px-4 py-2 rounded-xl transition cursor-pointer">Guardar Cambios</button>
               </div>
             </div>
           </div>
 
           <div class="pt-4">
-            <h3 class="text-sm font-bold text-slate-300 mb-3"><i class="fa-solid fa-grid-2 mr-1"></i> Publicaciones</h3>
+            <h3 class="text-sm font-bold opacity-80 mb-3"><i class="fa-solid fa-grid-2 mr-1"></i> Publicaciones</h3>
             <div id="userProfilePostsGrid" class="space-y-4"></div>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- 6.5 VISTA PÚBLICA DE PERFIL DE OTRO USUARIO -->
+    <!-- VISTA PÚBLICA DE PERFIL DE OTRO USUARIO -->
     <section id="tabPublicProfile" class="hidden w-full max-w-2xl mx-auto space-y-4">
-      <div id="pubProfileCardContainer" class="bg-slate-900/90 border border-purple-500/30 rounded-3xl shadow-2xl overflow-hidden backdrop-blur-md">
-        <div class="relative h-32 sm:h-44 w-full overflow-hidden bg-slate-950">
+      <div id="pubProfileCardContainer" class="dynamic-card border rounded-3xl shadow-2xl overflow-hidden backdrop-blur-md">
+        <div class="relative h-32 sm:h-44 w-full overflow-hidden bg-black/20">
           <div id="pubProfileBannerBox" class="absolute inset-0 bg-cover bg-center transition-all duration-500"></div>
-          <div class="absolute inset-0 bg-slate-950/20"></div>
+          <div class="absolute inset-0 bg-black/10"></div>
         </div>
         <div class="p-6 relative pt-0">
-          <div class="flex flex-col sm:flex-row items-center sm:items-end justify-between gap-4 -mt-12 sm:-mt-16 pb-6 border-b border-slate-800">
+          <div class="flex flex-col sm:flex-row items-center sm:items-end justify-between gap-4 -mt-12 sm:-mt-16 pb-6 border-b border-purple-500/20">
             <div class="flex flex-col sm:flex-row items-center sm:items-end gap-4 text-center sm:text-left">
-              <img id="pubProfileAvatar" src="https://via.placeholder.com/100" class="w-24 h-24 sm:w-28 sm:h-28 rounded-full border-4 border-slate-900 object-cover shadow-2xl bg-slate-950">
+              <img id="pubProfileAvatar" src="https://via.placeholder.com/100" class="w-24 h-24 sm:w-28 sm:h-28 rounded-full border-4 border-purple-500/30 object-cover shadow-2xl bg-black/20">
               <div class="space-y-1">
-                <h2 id="pubProfileName" class="text-xl sm:text-2xl font-black text-slate-100 flex items-center justify-center sm:justify-start gap-1.5 flex-wrap">Nombre del Usuario</h2>
-                <p id="pubProfileBio" class="text-xs text-slate-300 font-medium leading-relaxed pt-0.5 max-w-md">✨ Sin descripción aún...</p>
+                <h2 id="pubProfileName" class="text-xl sm:text-2xl font-black flex items-center justify-center sm:justify-start gap-1.5 flex-wrap">Nombre del Usuario</h2>
+                <p id="pubProfileBio" class="text-xs font-medium leading-relaxed pt-0.5 max-w-md opacity-80">✨ Sin descripción aún...</p>
               </div>
             </div>
             <div id="pubProfileActions" class="flex gap-2"></div>
           </div>
 
-          <div class="flex justify-center sm:justify-start gap-6 sm:gap-8 py-4 border-b border-slate-800/80 overflow-x-auto">
+          <div class="flex justify-center sm:justify-start gap-6 sm:gap-8 py-4 border-b border-purple-500/20 overflow-x-auto">
             <div class="text-center sm:text-left">
-              <span id="pubProfilePostsCount" class="block font-black text-base text-slate-100">0</span>
-              <span class="text-[10px] text-slate-400 uppercase font-semibold">Posts</span>
+              <span id="pubProfilePostsCount" class="block font-black text-base">0</span>
+              <span class="text-[10px] opacity-60 uppercase font-semibold">Posts</span>
             </div>
             <div class="text-center sm:text-left">
               <span id="pubProfileFollowersCount" class="block font-black text-base text-pink-400">0</span>
-              <span class="text-[10px] text-slate-400 uppercase font-semibold">Seguidores</span>
+              <span class="text-[10px] opacity-60 uppercase font-semibold">Seguidores</span>
             </div>
             <div class="text-center sm:text-left">
               <span id="pubProfileLikesCount" class="block font-black text-base text-purple-400">0</span>
-              <span class="text-[10px] text-slate-400 uppercase font-semibold">Likes</span>
+              <span class="text-[10px] opacity-60 uppercase font-semibold">Likes</span>
             </div>
           </div>
 
           <div class="pt-4">
-            <h3 class="text-sm font-bold text-slate-300 mb-3"><i class="fa-solid fa-newspaper mr-1"></i> Publicaciones</h3>
+            <h3 class="text-sm font-bold opacity-80 mb-3"><i class="fa-solid fa-newspaper mr-1"></i> Publicaciones</h3>
             <div id="pubProfilePostsGrid" class="space-y-4"></div>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- MODAL DE PUBLICACIÓN Y COMENTARIOS -->
-    <div id="commentsModal" class="hidden fixed inset-0 z-50 bg-slate-950/85 backdrop-blur-md flex items-center justify-center p-3 sm:p-5">
-      <div class="bg-slate-900 border border-purple-500/30 rounded-3xl max-w-4xl w-full max-h-[90vh] flex flex-col md:flex-row overflow-hidden shadow-2xl relative">
+    <!-- MODAL DE COMENTARIOS -->
+    <div id="commentsModal" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-3 sm:p-5">
+      <div class="dynamic-card border rounded-3xl max-w-4xl w-full max-h-[90vh] flex flex-col md:flex-row overflow-hidden shadow-2xl relative">
         
-        <button onclick="window.closeCommentsModal()" class="absolute top-3 right-3 z-30 bg-slate-950/80 hover:bg-pink-500 text-slate-300 hover:text-white w-8 h-8 rounded-full flex items-center justify-center transition cursor-pointer">
+        <button onclick="window.closeCommentsModal()" class="absolute top-3 right-3 z-30 bg-black/60 hover:bg-pink-500 text-white w-8 h-8 rounded-full flex items-center justify-center transition cursor-pointer">
           <i class="fa-solid fa-xmark text-sm"></i>
         </button>
 
-        <div class="md:w-1/2 bg-slate-950 flex items-center justify-center border-b md:border-b-0 md:border-r border-slate-800 p-2 max-h-64 md:max-h-full overflow-hidden">
+        <div class="md:w-1/2 bg-black flex items-center justify-center border-b md:border-b-0 md:border-r border-purple-500/20 p-2 max-h-64 md:max-h-full overflow-hidden">
           <img id="modalPostImage" src="" class="max-h-full max-w-full object-contain rounded-xl hidden">
           <video id="modalPostVideo" src="" class="max-h-full max-w-full object-contain rounded-xl hidden" controls></video>
         </div>
 
-        <div class="md:w-1/2 flex flex-col h-full bg-slate-900/95 overflow-hidden">
-          <div class="p-4 border-b border-slate-800 flex items-center gap-3 shrink-0">
+        <div class="md:w-1/2 flex flex-col h-full overflow-hidden">
+          <div class="p-4 border-b border-purple-500/20 flex items-center gap-3 shrink-0">
             <img id="modalAuthorAvatar" src="" class="w-10 h-10 rounded-full border-2 border-pink-400 object-cover cursor-pointer" onclick="window.openPublicProfileFromModal()">
             <div class="min-w-0 flex-1">
-              <h4 id="modalAuthorName" class="text-sm font-extrabold text-slate-100 hover:text-pink-300 cursor-pointer truncate" onclick="window.openPublicProfileFromModal()">Usuario</h4>
-              <p id="modalPostTitle" class="text-xs text-slate-400 truncate">Título del post</p>
+              <h4 id="modalAuthorName" class="text-sm font-extrabold hover:text-pink-400 cursor-pointer truncate" onclick="window.openPublicProfileFromModal()">Usuario</h4>
+              <p id="modalPostTitle" class="text-xs opacity-70 truncate">Título del post</p>
             </div>
           </div>
 
-          <div id="modalCommentsList" class="flex-1 p-4 overflow-y-auto space-y-3 divide-y divide-slate-800/40"></div>
+          <div id="modalCommentsList" class="flex-1 p-4 overflow-y-auto space-y-3 divide-y divide-purple-500/10"></div>
 
-          <div class="p-3 border-t border-slate-800 bg-slate-950 shrink-0">
+          <div class="p-3 border-t border-purple-500/20 dynamic-input shrink-0">
             <div class="flex gap-2">
-              <input type="text" id="modalCommentInput" placeholder="Escribe un comentario..." class="flex-1 bg-slate-900 border border-slate-800 rounded-xl px-3.5 py-2 text-xs text-slate-100 focus:outline-none focus:border-pink-500">
+              <input type="text" id="modalCommentInput" placeholder="Escribe un comentario..." class="flex-1 dynamic-input border rounded-xl px-3.5 py-2 text-xs focus:outline-none focus:border-pink-500">
               <button onclick="window.submitModalComment()" class="bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-400 hover:to-purple-500 text-white px-4 py-2 rounded-xl text-xs font-bold transition cursor-pointer flex items-center gap-1.5 shadow-md">
                 <i class="fa-solid fa-paper-plane"></i>
               </button>
@@ -725,63 +740,63 @@
     </div>
 
     <!-- MODAL EDITAR PUBLICACIÓN -->
-    <div id="editPostModal" class="hidden fixed inset-0 z-50 bg-slate-950/80 backdrop-blur flex items-center justify-center p-4">
-      <div class="bg-slate-900 border border-slate-800 rounded-3xl p-5 max-w-lg w-full space-y-4 shadow-2xl">
-        <div class="flex justify-between items-center pb-2 border-b border-slate-800">
-          <h3 class="font-bold text-sm text-slate-100">Editar Publicación</h3>
-          <button onclick="window.closeEditPostModal()" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
+    <div id="editPostModal" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur flex items-center justify-center p-4">
+      <div class="dynamic-card border rounded-3xl p-5 max-w-lg w-full space-y-4 shadow-2xl">
+        <div class="flex justify-between items-center pb-2 border-b border-purple-500/20">
+          <h3 class="font-bold text-sm">Editar Publicación</h3>
+          <button onclick="window.closeEditPostModal()" class="opacity-60 hover:opacity-100"><i class="fa-solid fa-xmark"></i></button>
         </div>
         <form id="editPostForm" class="space-y-3">
           <input type="hidden" id="editPostId">
           <div>
-            <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1">Título</label>
-            <input type="text" id="editPostTitle" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-100 focus:outline-none focus:border-pink-500">
+            <label class="block text-[10px] font-bold uppercase opacity-70 mb-1">Título</label>
+            <input type="text" id="editPostTitle" class="w-full dynamic-input border rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-pink-500">
           </div>
           <div>
-            <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1">Descripción</label>
-            <textarea id="editPostDesc" rows="3" required class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-100 focus:outline-none focus:border-pink-500"></textarea>
+            <label class="block text-[10px] font-bold uppercase opacity-70 mb-1">Descripción</label>
+            <textarea id="editPostDesc" rows="3" required class="w-full dynamic-input border rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-pink-500"></textarea>
           </div>
           <div class="grid grid-cols-2 gap-2">
             <div>
-              <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1">Juego / Servicio</label>
-              <input type="text" id="editPostGame" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-100 focus:outline-none focus:border-pink-500">
+              <label class="block text-[10px] font-bold uppercase opacity-70 mb-1">Juego / Servicio</label>
+              <input type="text" id="editPostGame" class="w-full dynamic-input border rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-pink-500">
             </div>
             <div>
-              <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1">Precio (Opcional)</label>
-              <input type="number" step="any" id="editPostPrice" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-100 focus:outline-none focus:border-pink-500">
+              <label class="block text-[10px] font-bold uppercase opacity-70 mb-1">Precio (Opcional)</label>
+              <input type="number" step="any" id="editPostPrice" class="w-full dynamic-input border rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-pink-500">
             </div>
           </div>
           <div class="flex justify-end gap-2 pt-2">
-            <button type="button" onclick="window.closeEditPostModal()" class="bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-bold px-4 py-2 rounded-xl transition cursor-pointer">Cancelar</button>
+            <button type="button" onclick="window.closeEditPostModal()" class="bg-black/20 text-xs font-bold px-4 py-2 rounded-xl transition cursor-pointer">Cancelar</button>
             <button type="submit" class="bg-pink-500 hover:bg-pink-400 text-white text-xs font-bold px-4 py-2 rounded-xl transition cursor-pointer">Guardar Cambios</button>
           </div>
         </form>
       </div>
     </div>
 
-    <!-- 7. CHAT FIJO CON BOTÓN DE CERRAR CHAT (X) PARA VENDEDORES -->
+    <!-- 7. CHAT FIJO CON BOTÓN CERRAR CHAT (X) -->
     <section id="tabMessages" class="hidden w-full max-w-4xl mx-auto h-[calc(100vh-8rem)] min-h-[500px] max-h-[650px] overflow-hidden">
-      <div class="bg-slate-900/90 border border-purple-500/35 rounded-3xl shadow-2xl overflow-hidden md:grid md:grid-cols-3 h-full w-full relative backdrop-blur-md">
-        <div id="chatListPanel" class="w-full md:w-auto h-full border-r border-slate-800 flex flex-col bg-slate-950/60 overflow-hidden">
-          <div class="p-4 border-b border-slate-800/80 flex items-center justify-between shrink-0">
-            <h2 class="font-black text-sm tracking-tight text-slate-100 flex items-center gap-2">
+      <div class="dynamic-card border border-purple-500/35 rounded-3xl shadow-2xl overflow-hidden md:grid md:grid-cols-3 h-full w-full relative backdrop-blur-md">
+        <div id="chatListPanel" class="w-full md:w-auto h-full border-r border-purple-500/20 flex flex-col dynamic-input overflow-hidden">
+          <div class="p-4 border-b border-purple-500/20 flex items-center justify-between shrink-0">
+            <h2 class="font-black text-sm tracking-tight flex items-center gap-2">
               <i class="fa-solid fa-paper-plane text-pink-400"></i> Mensajes Directos
             </h2>
           </div>
-          <div id="chatList" class="flex-1 overflow-y-auto overflow-x-hidden divide-y divide-slate-900/60"></div>
+          <div id="chatList" class="flex-1 overflow-y-auto overflow-x-hidden divide-y divide-purple-500/10"></div>
         </div>
 
-        <div id="chatConversationPanel" class="hidden md:flex col-span-2 flex-col bg-slate-950/80 h-full w-full absolute md:relative inset-0 z-20 overflow-hidden">
-          <div class="p-3 px-4 border-b border-slate-800/80 flex items-center justify-between bg-slate-900/90 backdrop-blur shrink-0">
+        <div id="chatConversationPanel" class="hidden md:flex col-span-2 flex-col h-full w-full absolute md:relative inset-0 z-20 overflow-hidden dynamic-card">
+          <div class="p-3 px-4 border-b border-purple-500/20 flex items-center justify-between dynamic-card backdrop-blur shrink-0">
             <div class="flex items-center gap-3">
-              <button onclick="closeMobileChat()" class="md:hidden text-slate-300 hover:text-white p-1 text-base cursor-pointer">
+              <button onclick="closeMobileChat()" class="md:hidden opacity-80 hover:opacity-100 p-1 text-base cursor-pointer">
                 <i class="fa-solid fa-arrow-left"></i>
               </button>
               <div class="w-9 h-9 rounded-full bg-gradient-to-tr from-pink-500 via-purple-500 to-indigo-500 p-[1.5px] flex items-center justify-center shrink-0">
                 <img id="activeChatAvatar" src="https://via.placeholder.com/40" class="w-full h-full rounded-full object-cover">
               </div>
               <div>
-                <p id="activeChatName" class="text-xs font-bold text-slate-100">Selecciona un chat</p>
+                <p id="activeChatName" class="text-xs font-bold">Selecciona un chat</p>
                 <p id="activeChatPhone" class="text-[10px] text-emerald-400 flex items-center gap-1">
                   <span class="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-pulse"></span> Activo(a) ahora
                 </p>
@@ -790,28 +805,26 @@
           </div>
 
           <div id="chatMessagesBox" class="flex-1 p-4 overflow-y-auto overflow-x-hidden space-y-2.5 no-scrollbar">
-            <div class="text-center text-xs text-slate-500 my-auto pt-10">Toca un usuario para iniciar la conversación.</div>
+            <div class="text-center text-xs opacity-50 my-auto pt-10">Toca un usuario para iniciar la conversación.</div>
           </div>
 
-          <!-- MENÚ DE HERRAMIENTAS Y MENSAJES CON BOTÓN X (CERRAR CHAT) -->
-          <div class="p-3 border-t border-slate-800/80 bg-slate-900/90 backdrop-blur shrink-0">
-            <form id="chatForm" onsubmit="sendTextMessage(event)" class="flex items-center gap-2 bg-slate-950 border border-slate-800 rounded-full px-3 py-1.5 focus-within:border-pink-500 transition w-full">
+          <div class="p-3 border-t border-purple-500/20 dynamic-card backdrop-blur shrink-0">
+            <form id="chatForm" onsubmit="sendTextMessage(event)" class="flex items-center gap-2 dynamic-input border rounded-full px-3 py-1.5 focus-within:border-pink-500 transition w-full">
               
-              <!-- BOTÓN CERRAR CHAT (X) PARA CERRAR VENTA O CONVERSACIÓN -->
-              <button type="button" onclick="closeActiveChatByVendor()" title="Cerrar / Eliminar este chat" class="p-1.5 text-slate-400 hover:text-red-400 cursor-pointer transition flex items-center justify-center shrink-0">
+              <button type="button" onclick="closeActiveChatByVendor()" title="Cerrar / Eliminar este chat" class="p-1.5 opacity-60 hover:text-red-400 cursor-pointer transition flex items-center justify-center shrink-0">
                 <i class="fa-solid fa-circle-xmark text-lg"></i>
               </button>
 
-              <label class="p-1.5 text-slate-400 hover:text-pink-400 cursor-pointer transition flex items-center justify-center shrink-0">
+              <label class="p-1.5 opacity-60 hover:text-pink-400 cursor-pointer transition flex items-center justify-center shrink-0">
                 <i class="fa-regular fa-image text-lg"></i>
                 <input type="file" id="chatImageInput" accept="image/*" class="hidden" onchange="sendChatImage(this)">
               </label>
 
-              <button type="button" id="micBtn" onclick="toggleAudioRecording()" class="p-1.5 text-slate-400 hover:text-red-400 cursor-pointer transition flex items-center justify-center shrink-0">
+              <button type="button" id="micBtn" onclick="toggleAudioRecording()" class="p-1.5 opacity-60 hover:text-red-400 cursor-pointer transition flex items-center justify-center shrink-0">
                 <i class="fa-solid fa-microphone text-base"></i>
               </button>
 
-              <input type="text" id="chatInput" placeholder="Envía un mensaje..." class="flex-1 min-w-0 bg-transparent border-none text-xs text-slate-100 focus:outline-none px-1" disabled>
+              <input type="text" id="chatInput" placeholder="Envía un mensaje..." class="flex-1 min-w-0 bg-transparent border-none text-xs focus:outline-none px-1" disabled>
               
               <button type="submit" id="sendMsgBtn" class="text-pink-400 hover:text-pink-300 font-bold text-xs px-2 transition cursor-pointer disabled:opacity-40 shrink-0" disabled>
                 Enviar
@@ -824,7 +837,7 @@
 
     <!-- 8. NOTIFICACIONES -->
     <section id="tabNotifications" class="hidden max-w-xl w-full mx-auto space-y-4 py-4">
-      <div class="bg-slate-900/90 border border-purple-500/30 rounded-3xl p-6 shadow-xl space-y-4 backdrop-blur-md">
+      <div class="dynamic-card border rounded-3xl p-6 shadow-xl space-y-4 backdrop-blur-md">
         <h2 class="text-xl font-black flex items-center justify-between">
           <span class="flex items-center gap-2"><i class="fa-solid fa-bell text-pink-400"></i> Notificaciones</span>
           <span id="notifCount" class="text-xs font-bold text-pink-400 bg-pink-500/10 px-2.5 py-1 rounded-full">0 nuevas</span>
@@ -1021,13 +1034,13 @@
           if (adm.status === 'pending') {
             count++;
             const div = document.createElement('div');
-            div.className = "bg-slate-900 p-2.5 rounded-xl border border-slate-800 flex items-center justify-between text-xs";
+            div.className = "dynamic-card p-2.5 rounded-xl border flex items-center justify-between text-xs";
             div.innerHTML = `
               <div class="flex items-center gap-2.5 truncate">
                 <img src="${adm.photoURL || 'https://via.placeholder.com/40'}" class="w-7 h-7 rounded-full object-cover border border-pink-400 shrink-0">
                 <div class="truncate">
-                  <p class="font-bold text-slate-100 truncate">${adm.name}</p>
-                  <p class="text-[9px] text-slate-400 truncate">${adm.email}</p>
+                  <p class="font-bold truncate">${adm.name}</p>
+                  <p class="text-[9px] opacity-70 truncate">${adm.email}</p>
                 </div>
               </div>
               <div class="flex gap-1.5 shrink-0">
@@ -1040,7 +1053,7 @@
         });
 
         if (count === 0) {
-          list.innerHTML = `<p class="text-[10px] text-slate-500 italic">No hay solicitudes pendientes.</p>`;
+          list.innerHTML = `<p class="text-[10px] opacity-50 italic">No hay solicitudes pendientes.</p>`;
         }
       });
     }
@@ -1060,7 +1073,7 @@
         tbody.innerHTML = '';
 
         if (!snapshot.exists()) {
-          tbody.innerHTML = `<tr><td colspan="4" class="p-4 text-center text-slate-500">No hay cuentas registradas.</td></tr>`;
+          tbody.innerHTML = `<tr><td colspan="4" class="p-4 text-center opacity-50">No hay cuentas registradas.</td></tr>`;
           badge.textContent = "0 Usuarios";
           return;
         }
@@ -1076,26 +1089,26 @@
           const followers = u.followersExtraCount || 0;
 
           const tr = document.createElement('tr');
-          tr.className = "hover:bg-slate-900/60 border-b border-slate-800/50 transition";
+          tr.className = "hover:bg-black/10 border-b border-purple-500/10 transition";
           tr.innerHTML = `
             <td class="p-2.5 sm:p-3 flex items-center gap-2">
               <img src="${u.photoURL || 'https://via.placeholder.com/35'}" class="w-7 h-7 sm:w-8 sm:h-8 rounded-full object-cover border border-pink-400/50 shrink-0">
               <div class="min-w-0">
-                <p class="font-bold text-slate-100 flex items-center gap-1 text-[11px] sm:text-xs truncate">
+                <p class="font-bold flex items-center gap-1 text-[11px] sm:text-xs truncate">
                   ${u.name || 'Sin nombre'}
                   ${isVerified ? '<i class="fa-solid fa-circle-check text-pink-400 text-[10px]"></i>' : ''}
                   ${isCreator ? '<span class="bg-amber-500/20 text-amber-300 border border-amber-500/40 text-[8px] font-black px-1 rounded-full">CREADOR</span>' : ''}
                 </p>
-                <p class="text-[9px] text-slate-400 truncate max-w-[110px]">${u.email || ''}</p>
+                <p class="text-[9px] opacity-60 truncate max-w-[110px]">${u.email || ''}</p>
               </div>
             </td>
             <td class="p-2.5 sm:p-3 text-[10px] sm:text-[11px]">${u.phone || 'N/A'}</td>
             <td class="p-2.5 sm:p-3">
-              ${isVerified ? '<span class="bg-pink-500/10 text-pink-400 font-bold px-1.5 py-0.5 rounded-full text-[9px]">Verificado</span>' : '<span class="bg-slate-800 text-slate-400 font-bold px-1.5 py-0.5 rounded-full text-[9px]">Normal</span>'}
+              ${isVerified ? '<span class="bg-pink-500/10 text-pink-400 font-bold px-1.5 py-0.5 rounded-full text-[9px]">Verificado</span>' : '<span class="dynamic-input opacity-60 font-bold px-1.5 py-0.5 rounded-full text-[9px]">Normal</span>'}
             </td>
             <td class="p-2.5 sm:p-3 text-right">
               <div class="flex items-center justify-end gap-1.5 flex-wrap">
-                <button onclick="toggleUserVerification('${u.uid}', ${isVerified})" class="${isVerified ? 'bg-slate-800 text-slate-300' : 'bg-pink-500/20 text-pink-300 border border-pink-500/30'} text-[10px] font-bold px-2 py-1 rounded-lg transition cursor-pointer">
+                <button onclick="toggleUserVerification('${u.uid}', ${isVerified})" class="${isVerified ? 'dynamic-input' : 'bg-pink-500/20 text-pink-400 border border-pink-500/30'} text-[10px] font-bold px-2 py-1 rounded-lg transition cursor-pointer">
                   ${isVerified ? 'Quitar' : '✔ Verif'}
                 </button>
                 <button onclick="sendCreatorRequestToUser('${u.uid}', '${u.name || 'Usuario'}')" class="${isCreator ? 'bg-amber-600/20 text-amber-400 border border-amber-500/40' : 'bg-amber-500/20 text-amber-300 border border-amber-500/30'} text-[10px] font-bold px-2 py-1 rounded-lg transition cursor-pointer">
@@ -1140,7 +1153,7 @@
         tbody.innerHTML = '';
 
         if (!snapshot.exists()) {
-          tbody.innerHTML = `<tr><td colspan="3" class="p-4 text-center text-slate-500">No hay publicaciones.</td></tr>`;
+          tbody.innerHTML = `<tr><td colspan="3" class="p-4 text-center opacity-50">No hay publicaciones.</td></tr>`;
           return;
         }
 
@@ -1153,13 +1166,13 @@
           const postTitle = p.title || 'Publicación';
 
           const tr = document.createElement('tr');
-          tr.className = "hover:bg-slate-900/60 border-b border-slate-800/50 transition";
+          tr.className = "hover:bg-black/10 border-b border-purple-500/10 transition";
           tr.innerHTML = `
             <td class="p-2.5 sm:p-3">
-              <p class="font-bold text-slate-100 truncate max-w-[140px] text-[11px] sm:text-xs">${postTitle}</p>
-              <p class="text-[9px] text-slate-400">Por: ${authorName}</p>
+              <p class="font-bold truncate max-w-[140px] text-[11px] sm:text-xs">${postTitle}</p>
+              <p class="text-[9px] opacity-60">Por: ${authorName}</p>
             </td>
-            <td class="p-2.5 sm:p-3 font-black text-pink-300 text-[11px]">${formatFollowerCount(likesCount)} Likes</td>
+            <td class="p-2.5 sm:p-3 font-black text-pink-400 text-[11px]">${formatFollowerCount(likesCount)} Likes</td>
             <td class="p-2.5 sm:p-3 text-right">
               <button onclick="setPostLikesByAdmin('${pId}', ${likesCount})" class="bg-gradient-to-r from-pink-500 to-purple-600 text-white text-[10px] font-bold px-2.5 py-1 rounded-lg transition cursor-pointer shadow-md">
                 ✏️ Editar
@@ -1246,7 +1259,7 @@
       accounts.forEach(acc => {
         const isCurrent = currentUser && acc.uid === currentUser.uid;
         const div = document.createElement('button');
-        div.className = `w-full text-left px-3 py-2 rounded-xl text-xs flex items-center justify-between transition cursor-pointer ${isCurrent ? 'bg-pink-600/20 text-pink-400 font-bold border border-pink-500/30' : 'text-slate-300 hover:bg-slate-800'}`;
+        div.className = `w-full text-left px-3 py-2 rounded-xl text-xs flex items-center justify-between transition cursor-pointer ${isCurrent ? 'bg-pink-600/20 text-pink-400 font-bold border border-pink-500/30' : 'hover:bg-black/10'}`;
         div.innerHTML = `
           <div class="flex items-center gap-2 truncate">
             <img src="${acc.photoURL || 'https://via.placeholder.com/30'}" class="w-6 h-6 rounded-full object-cover">
@@ -1368,24 +1381,35 @@
       });
     }
 
+    // ADAPTACIÓN DINÁMICA DE COLOR DE CONTENEDORES SEGÚN EL FONDO ELEGIDO
     function applyGlobalTheme(vData) {
-      const body = document.getElementById('globalBody');
+      const root = document.documentElement;
       const hexColor = vData.bgColor || '#020617';
 
-      body.style.backgroundColor = hexColor;
+      root.style.setProperty('--bg-color', hexColor);
 
       const hex = hexColor.replace('#', '');
       const r = parseInt(hex.substring(0, 2) || '02', 16);
       const g = parseInt(hex.substring(2, 4) || '06', 16);
       const b = parseInt(hex.substring(4, 6) || '17', 16);
+      
+      // Fórmula de luminosidad relativa
       const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
 
       if (luminance > 0.6) {
-        body.classList.remove('text-slate-100');
-        body.classList.add('text-slate-900');
+        // Fondo Claro (Ej. Blanco o Rosado pálido) -> Tarjetas un poco más oscuras / grisáceas
+        root.style.setProperty('--card-bg', 'rgba(0, 0, 0, 0.06)');
+        root.style.setProperty('--card-border', 'rgba(0, 0, 0, 0.12)');
+        root.style.setProperty('--input-bg', 'rgba(0, 0, 0, 0.08)');
+        root.style.setProperty('--text-main', '#0f172a');
+        root.style.setProperty('--text-sub', '#475569');
       } else {
-        body.classList.remove('text-slate-900');
-        body.classList.add('text-slate-100');
+        // Fondo Oscuro (Ej. Negro, Morado oscuro) -> Tarjetas un poquito más claritas (gris/negro suave)
+        root.style.setProperty('--card-bg', 'rgba(255, 255, 255, 0.07)');
+        root.style.setProperty('--card-border', 'rgba(255, 255, 255, 0.15)');
+        root.style.setProperty('--input-bg', 'rgba(255, 255, 255, 0.09)');
+        root.style.setProperty('--text-main', '#f8fafc');
+        root.style.setProperty('--text-sub', '#94a3b8');
       }
     }
 
@@ -1796,7 +1820,7 @@
         btnClass = "bg-emerald-600 text-white";
         btnText = "Amigos";
       } else if (isFollowing) {
-        btnClass = "bg-slate-800 text-slate-300";
+        btnClass = "dynamic-input text-xs font-bold";
         btnText = "Siguiendo";
       }
 
@@ -1839,7 +1863,6 @@
       switchTab('publicProfile');
     };
 
-    // COTIZACIÓN DE VENTA (DIRECTO SIN RESTRICCIÓN DE MUTUO SEGUIMIENTO)
     window.quoteSalePost = async (targetUid, targetName, targetPhoto, postTitle, postPrice, currency) => {
       if (!currentUser || targetUid === currentUser.uid) {
         alert("Este es tu propio artículo.");
@@ -1896,13 +1919,13 @@
       let mediaContentHTML = '';
       if (mediaType === 'video') {
         mediaContentHTML = `
-          <div class="rounded-2xl overflow-hidden border border-slate-800 bg-black max-h-96 flex items-center justify-center">
+          <div class="rounded-2xl overflow-hidden border border-purple-500/20 bg-black max-h-96 flex items-center justify-center">
             <video src="${mediaSrc}" class="w-full max-h-96 object-contain" controls preload="metadata"></video>
           </div>
         `;
       } else {
         mediaContentHTML = `
-          <div class="rounded-2xl overflow-hidden border border-slate-800 bg-slate-950 max-h-96 flex items-center justify-center cursor-pointer" onclick="window.openCommentsModal('${postId}')">
+          <div class="rounded-2xl overflow-hidden border border-purple-500/20 bg-black/20 max-h-96 flex items-center justify-center cursor-pointer" onclick="window.openCommentsModal('${postId}')">
             <img src="${mediaSrc}" class="w-full object-cover hover:scale-102 transition duration-300">
           </div>
         `;
@@ -1910,14 +1933,14 @@
 
       let followBtnHTML = '';
       if (!isMine) {
-        let btnStyle = "bg-pink-500/20 hover:bg-pink-500 text-pink-300 hover:text-white";
+        let btnStyle = "bg-pink-500/20 hover:bg-pink-500 text-pink-400 hover:text-white";
         let btnText = "Seguir";
 
         if (isFollowing && followsMe) {
           btnStyle = "bg-emerald-600/20 text-emerald-400 border border-emerald-500/30";
           btnText = "Amigos";
         } else if (isFollowing) {
-          btnStyle = "bg-slate-800 text-slate-300";
+          btnStyle = "dynamic-input";
           btnText = "Siguiendo";
         }
 
@@ -1930,14 +1953,14 @@
 
       const dotsMenuHTML = isMine ? `
         <div class="relative">
-          <button onclick="window.togglePostOptions('${postId}', event)" class="text-slate-400 hover:text-white p-1 text-xs cursor-pointer">
+          <button onclick="window.togglePostOptions('${postId}', event)" class="opacity-60 hover:opacity-100 p-1 text-xs cursor-pointer">
             <i class="fa-solid fa-ellipsis-vertical"></i>
           </button>
-          <div id="post-options-${postId}" class="post-options-dropdown hidden absolute right-0 mt-1 w-36 bg-slate-950 border border-slate-800 rounded-xl shadow-2xl py-1 z-30">
-            <button onclick="window.openEditPostModal('${postId}')" class="w-full text-left px-3 py-1.5 text-xs text-slate-200 hover:bg-slate-800 flex items-center gap-2 cursor-pointer">
+          <div id="post-options-${postId}" class="post-options-dropdown hidden absolute right-0 mt-1 w-36 dynamic-card border rounded-xl shadow-2xl py-1 z-30">
+            <button onclick="window.openEditPostModal('${postId}')" class="w-full text-left px-3 py-1.5 text-xs font-bold hover:bg-black/10 flex items-center gap-2 cursor-pointer">
               <i class="fa-solid fa-pen text-pink-400"></i> Editar
             </button>
-            <button onclick="window.deletePost('${postId}')" class="w-full text-left px-3 py-1.5 text-xs text-red-400 hover:bg-red-500/10 flex items-center gap-2 cursor-pointer">
+            <button onclick="window.deletePost('${postId}')" class="w-full text-left px-3 py-1.5 text-xs text-red-400 hover:bg-red-500/10 flex items-center gap-2 cursor-pointer font-bold">
               <i class="fa-solid fa-trash"></i> Eliminar
             </button>
           </div>
@@ -1960,43 +1983,43 @@
 
       const postCard = document.createElement('div');
       postCard.id = `post-card-${postId}`;
-      postCard.className = "bg-slate-900/90 border border-purple-500/20 rounded-3xl p-4 sm:p-5 shadow-xl space-y-3.5 relative backdrop-blur-md";
+      postCard.className = "dynamic-card border border-purple-500/20 rounded-3xl p-4 sm:p-5 shadow-xl space-y-3.5 relative backdrop-blur-md";
 
       const creatorBadgeInPost = isCreator ? `<span class="bg-gradient-to-r from-amber-400 to-yellow-500 text-slate-950 font-black text-[9px] px-2 py-0.5 rounded-full shadow-[0_0_10px_rgba(245,158,11,0.4)] border border-yellow-200 uppercase tracking-wider inline-flex items-center gap-1"><i class="fa-solid fa-crown text-[8px]"></i> CREADOR</span>` : '';
 
       postCard.innerHTML = `
-        <div class="flex items-center justify-between pb-2 border-b border-slate-800/80">
+        <div class="flex items-center justify-between pb-2 border-b border-purple-500/20">
           <div class="flex items-center gap-3 cursor-pointer" onclick="window.openPublicProfile('${post.uid}')">
             <img src="${authorAvatar}" class="w-10 h-10 sm:w-12 sm:h-12 rounded-full border-2 border-pink-400 object-cover shadow-md">
             <div>
               <div class="flex items-center gap-1.5 flex-wrap">
-                <h4 class="text-xs sm:text-sm font-black text-slate-100 hover:text-pink-300 transition">${authorName}</h4>
+                <h4 class="text-xs sm:text-sm font-black hover:text-pink-400 transition">${authorName}</h4>
                 ${isVerified ? '<i class="fa-solid fa-circle-check text-pink-400 text-xs" title="Verificado"></i>' : ''}
                 ${creatorBadgeInPost}
                 ${badgeHTML}
               </div>
-              <span class="text-[10px] sm:text-xs text-pink-300/80 font-semibold">${post.category || 'General'} • ${post.gameName || 'General'}</span>
+              <span class="text-[10px] sm:text-xs text-pink-400 font-semibold">${post.category || 'General'} • ${post.gameName || 'General'}</span>
             </div>
           </div>
           ${dotsMenuHTML}
         </div>
 
         <div>
-          <h3 class="font-bold text-sm sm:text-base text-slate-100">${post.title || 'Publicación cotidiana'}</h3>
-          <p class="text-slate-300 text-xs sm:text-sm mt-1 leading-relaxed">${formattedDescription}</p>
+          <h3 class="font-bold text-sm sm:text-base">${post.title || 'Publicación cotidiana'}</h3>
+          <p class="text-xs sm:text-sm mt-1 leading-relaxed opacity-90">${formattedDescription}</p>
         </div>
 
         ${mediaContentHTML}
 
         ${cardFooterActionHTML}
 
-        <div class="flex items-center justify-between pt-2 border-t border-slate-800 text-xs sm:text-sm text-slate-300">
-          <button id="like-btn-${postId}" onclick="window.toggleLikeFB('${postId}', ${hasLiked}, '${post.uid}')" class="flex items-center gap-2 px-3 py-1.5 rounded-xl hover:bg-slate-800 hover:text-pink-400 transition cursor-pointer font-bold ${hasLiked ? 'text-pink-400' : ''}">
+        <div class="flex items-center justify-between pt-2 border-t border-purple-500/20 text-xs sm:text-sm">
+          <button id="like-btn-${postId}" onclick="window.toggleLikeFB('${postId}', ${hasLiked}, '${post.uid}')" class="flex items-center gap-2 px-3 py-1.5 rounded-xl hover:bg-black/10 transition cursor-pointer font-bold ${hasLiked ? 'text-pink-400' : ''}">
             <i class="fa-solid fa-thumbs-up text-base sm:text-lg"></i> 
             <span id="like-count-${postId}">Me gusta (${formatFollowerCount(likesCount)})</span>
           </button>
           
-          <button onclick="window.openCommentsModal('${postId}')" class="flex items-center gap-2 px-3 py-1.5 rounded-xl hover:bg-slate-800 hover:text-pink-400 transition cursor-pointer font-bold">
+          <button onclick="window.openCommentsModal('${postId}')" class="flex items-center gap-2 px-3 py-1.5 rounded-xl hover:bg-black/10 transition cursor-pointer font-bold">
             <i class="fa-solid fa-comment text-base sm:text-lg text-pink-400"></i> 
             <span>Comentarios (${commentsCount})</span>
           </button>
@@ -2005,16 +2028,15 @@
       return postCard;
     }
 
-    // BUSCADOR INTELIGENTE ESTILO TIKTOK
     window.setSearchFilter = (filterType) => {
       activeSearchFilter = filterType;
       const btnAll = document.getElementById('filterBtnAll');
       const btnUsers = document.getElementById('filterBtnUsers');
       const btnPosts = document.getElementById('filterBtnPosts');
 
-      btnAll.className = filterType === 'all' ? "px-3.5 py-1.5 rounded-full text-xs font-extrabold bg-pink-500 text-white transition cursor-pointer shadow-md" : "px-3.5 py-1.5 rounded-full text-xs font-bold bg-slate-800 text-slate-300 hover:text-white transition cursor-pointer";
-      btnUsers.className = filterType === 'users' ? "px-3.5 py-1.5 rounded-full text-xs font-extrabold bg-pink-500 text-white transition cursor-pointer shadow-md" : "px-3.5 py-1.5 rounded-full text-xs font-bold bg-slate-800 text-slate-300 hover:text-white transition cursor-pointer";
-      btnPosts.className = filterType === 'posts' ? "px-3.5 py-1.5 rounded-full text-xs font-extrabold bg-pink-500 text-white transition cursor-pointer shadow-md" : "px-3.5 py-1.5 rounded-full text-xs font-bold bg-slate-800 text-slate-300 hover:text-white transition cursor-pointer";
+      btnAll.className = filterType === 'all' ? "px-3.5 py-1.5 rounded-full text-xs font-extrabold bg-pink-500 text-white transition cursor-pointer shadow-md" : "px-3.5 py-1.5 rounded-full text-xs font-bold dynamic-input hover:border-pink-400 transition cursor-pointer";
+      btnUsers.className = filterType === 'users' ? "px-3.5 py-1.5 rounded-full text-xs font-extrabold bg-pink-500 text-white transition cursor-pointer shadow-md" : "px-3.5 py-1.5 rounded-full text-xs font-bold dynamic-input hover:border-pink-400 transition cursor-pointer";
+      btnPosts.className = filterType === 'posts' ? "px-3.5 py-1.5 rounded-full text-xs font-extrabold bg-pink-500 text-white transition cursor-pointer shadow-md" : "px-3.5 py-1.5 rounded-full text-xs font-bold dynamic-input hover:border-pink-400 transition cursor-pointer";
 
       handleFeedSearch();
     };
@@ -2043,7 +2065,7 @@
       feedContainer.innerHTML = '';
 
       if (!allPostsData) {
-        feedContainer.innerHTML = `<div class="text-center text-xs text-slate-500 py-8">No hay publicaciones aún.</div>`;
+        feedContainer.innerHTML = `<div class="text-center text-xs opacity-50 py-8">No hay publicaciones aún.</div>`;
         return;
       }
 
@@ -2077,7 +2099,7 @@
       });
 
       if (searchQuery && matchingUsers.length === 0 && matchingPosts.length === 0) {
-        feedContainer.innerHTML = `<div class="bg-slate-900/90 border border-slate-800 rounded-3xl p-8 text-center text-xs text-slate-400 space-y-2"><i class="fa-solid fa-magnifying-glass text-2xl text-pink-400"></i><p>No se encontraron resultados para "${searchQuery}".</p></div>`;
+        feedContainer.innerHTML = `<div class="dynamic-card border rounded-3xl p-8 text-center text-xs opacity-70 space-y-2"><i class="fa-solid fa-magnifying-glass text-2xl text-pink-400"></i><p>No se encontraron resultados para "${searchQuery}".</p></div>`;
         return;
       }
 
@@ -2108,7 +2130,7 @@
 
     function buildUserCardForSearch(u) {
       const card = document.createElement('div');
-      card.className = "bg-slate-900/90 border border-purple-500/20 rounded-3xl p-4 flex items-center justify-between gap-3 shadow-lg hover:border-pink-500/40 transition cursor-pointer backdrop-blur-md";
+      card.className = "dynamic-card border rounded-3xl p-4 flex items-center justify-between gap-3 shadow-lg hover:border-pink-500/40 transition cursor-pointer backdrop-blur-md";
       card.onclick = () => window.openPublicProfile(u.uid);
 
       const isVerified = u.isVerified || false;
@@ -2118,15 +2140,15 @@
         <div class="flex items-center gap-3 truncate">
           <img src="${u.photoURL || 'https://via.placeholder.com/50'}" class="w-12 h-12 rounded-full border-2 border-pink-400 object-cover shrink-0">
           <div class="truncate">
-            <h4 class="font-extrabold text-sm text-slate-100 flex items-center gap-1.5 truncate">
+            <h4 class="font-extrabold text-sm flex items-center gap-1.5 truncate">
               ${u.name || 'Usuario'}
               ${isVerified ? '<i class="fa-solid fa-circle-check text-pink-400 text-xs"></i>' : ''}
               ${isCreator ? '<span class="bg-amber-500/20 text-amber-300 border border-amber-500/40 text-[9px] font-black px-1.5 py-0.5 rounded-full">CREADOR</span>' : ''}
             </h4>
-            <p class="text-xs text-slate-400 truncate mt-0.5">${u.bio || '✨ Sin descripción aún...'}</p>
+            <p class="text-xs opacity-70 truncate mt-0.5">${u.bio || '✨ Sin descripción aún...'}</p>
           </div>
         </div>
-        <button class="bg-slate-800 hover:bg-pink-500 hover:text-white text-slate-300 font-bold text-xs px-3.5 py-2 rounded-2xl transition shrink-0">
+        <button class="dynamic-input hover:bg-pink-500 hover:text-white font-bold text-xs px-3.5 py-2 rounded-2xl transition shrink-0">
           Ver perfil
         </button>
       `;
@@ -2191,7 +2213,7 @@
       list.innerHTML = '';
 
       if (!commentsObj || Object.keys(commentsObj).length === 0) {
-        list.innerHTML = `<div class="text-center text-xs text-slate-500 py-8">Aún no hay comentarios. ¡Sé el primero en comentar!</div>`;
+        list.innerHTML = `<div class="text-center text-xs opacity-50 py-8">Aún no hay comentarios. ¡Sé el primero en comentar!</div>`;
         return;
       }
 
@@ -2205,9 +2227,9 @@
         div.className = "flex items-start gap-3 pt-3";
         div.innerHTML = `
           <img src="${commenterAvatar}" class="w-8 h-8 rounded-full border border-pink-400 object-cover cursor-pointer shrink-0" onclick="window.closeCommentsModal(); window.openPublicProfile('${c.uid}')">
-          <div class="bg-slate-950 p-3 rounded-2xl border border-slate-800 text-xs flex-1">
+          <div class="dynamic-input p-3 rounded-2xl border text-xs flex-1">
             <p class="font-bold text-pink-400 hover:underline cursor-pointer" onclick="window.closeCommentsModal(); window.openPublicProfile('${c.uid}')">${commenterName}</p>
-            <p class="text-slate-200 mt-1 leading-relaxed">${c.text}</p>
+            <p class="mt-1 leading-relaxed opacity-90">${c.text}</p>
           </div>
         `;
         list.appendChild(div);
@@ -2241,7 +2263,7 @@
       const postsRef = ref(db, 'posts');
       onValue(postsRef, (snapshot) => {
         if (!snapshot.exists()) {
-          document.getElementById('feedPostsContainer').innerHTML = `<div class="text-center text-xs text-slate-500 py-8">No hay publicaciones aún.</div>`;
+          document.getElementById('feedPostsContainer').innerHTML = `<div class="text-center text-xs opacity-50 py-8">No hay publicaciones aún.</div>`;
           return;
         }
 
@@ -2381,7 +2403,7 @@
         container.innerHTML = '';
 
         if (!snapshot.exists()) {
-          container.innerHTML = `<div class="p-4 text-xs text-slate-500 text-center">No tienes notificaciones recientes.</div>`;
+          container.innerHTML = `<div class="p-4 text-xs opacity-50 text-center">No tienes notificaciones recientes.</div>`;
           countSpan.textContent = "0 nuevas";
           if (deskBadge) deskBadge.classList.add('hidden');
           if (mobileBadge) mobileBadge.classList.add('hidden');
@@ -2397,7 +2419,7 @@
         keys.forEach(k => {
           const n = notifs[k];
           const div = document.createElement('div');
-          div.className = "bg-slate-950 border border-slate-800 p-4 rounded-2xl text-xs space-y-2";
+          div.className = "dynamic-input border p-4 rounded-2xl text-xs space-y-2";
           
           if (n.type === 'creator_request') {
             div.innerHTML = `
@@ -2405,12 +2427,12 @@
                 <i class="fa-solid fa-crown text-base"></i>
                 <span>${n.title}</span>
               </div>
-              <p class="text-slate-300">${n.message}</p>
+              <p class="opacity-90">${n.message}</p>
               <div class="flex gap-2 pt-1">
                 <button onclick="acceptCreatorRole('${k}')" class="bg-gradient-to-r from-amber-500 to-yellow-600 hover:opacity-90 text-slate-950 font-black px-4 py-2 rounded-xl transition cursor-pointer shadow-md">
                   ✓ Aceptar ser creador
                 </button>
-                <button onclick="deleteNotification('${k}')" class="bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold px-3 py-2 rounded-xl transition cursor-pointer">
+                <button onclick="deleteNotification('${k}')" class="bg-black/20 text-xs font-bold px-3 py-2 rounded-xl transition cursor-pointer">
                   Rechazar
                 </button>
               </div>
@@ -2418,7 +2440,7 @@
           } else {
             div.innerHTML = `
               <p class="font-bold text-pink-400">${n.title}</p>
-              <p class="text-slate-200">${n.message}</p>
+              <p class="opacity-90">${n.message}</p>
             `;
           }
           container.appendChild(div);
@@ -2473,7 +2495,6 @@
     let targetChatName = "";
     let targetChatPhoto = "";
 
-    // ABRIR CHAT (CON VALIDACIÓN DE SEGUIMIENTO MUTUO PARA AMISTAD Y LIBRE PARA VENTAS)
     window.openChatWithUser = (targetUid, targetName, targetPhoto, isSaleQuote = false) => {
       if (!currentUser) return;
       if (targetUid === currentUser.uid) {
@@ -2481,7 +2502,6 @@
         return;
       }
 
-      // Verificación de Seguimiento Mutuo para Chat de Amistad
       const isFollowing = myFollowsMap[targetUid];
       const followsMe = globalFollowsData[targetUid] && globalFollowsData[targetUid][currentUser.uid];
 
@@ -2506,7 +2526,6 @@
       listenToChatMessages();
     };
 
-    // FUNCIÓN PARA EL BOTÓN DE CERRAR CHAT (X) DEL VENDEDOR / USUARIO
     window.closeActiveChatByVendor = async () => {
       if (!currentUser || !targetChatUid) return;
 
@@ -2518,7 +2537,7 @@
         document.getElementById('chatConversationPanel').classList.remove('flex');
         document.getElementById('chatInput').disabled = true;
         document.getElementById('sendMsgBtn').disabled = true;
-        document.getElementById('chatMessagesBox').innerHTML = `<div class="text-center text-xs text-slate-500 my-auto pt-10">Toca un usuario para iniciar la conversación.</div>`;
+        document.getElementById('chatMessagesBox').innerHTML = `<div class="text-center text-xs opacity-50 my-auto pt-10">Toca un usuario para iniciar la conversación.</div>`;
       }
     };
 
@@ -2541,7 +2560,7 @@
         box.innerHTML = '';
 
         if (!snapshot.exists()) {
-          box.innerHTML = `<div class="text-center text-xs text-slate-500 my-auto pt-10">Inicia la conversación con ${targetChatName}.</div>`;
+          box.innerHTML = `<div class="text-center text-xs opacity-50 my-auto pt-10">Inicia la conversación con ${targetChatName}.</div>`;
           return;
         }
 
@@ -2551,7 +2570,7 @@
           const isMe = m.senderUid === currentUser.uid;
 
           const msgDiv = document.createElement('div');
-          msgDiv.className = `max-w-[80%] p-3 rounded-2xl text-xs space-y-1 ${isMe ? 'bg-gradient-to-r from-pink-500 to-purple-600 text-white ml-auto rounded-br-xs' : 'bg-slate-800/90 text-slate-100 mr-auto rounded-bl-xs'}`;
+          msgDiv.className = `max-w-[80%] p-3 rounded-2xl text-xs space-y-1 ${isMe ? 'bg-gradient-to-r from-pink-500 to-purple-600 text-white ml-auto rounded-br-xs' : 'dynamic-input text-slate-100 mr-auto rounded-bl-xs'}`;
 
           if (m.type === 'text') {
             msgDiv.textContent = m.content;
@@ -2685,7 +2704,7 @@
         chatList.innerHTML = '';
 
         if (!snapshot.exists()) {
-          chatList.innerHTML = `<div class="p-6 text-xs text-slate-500 text-center">No tienes conversaciones aún.</div>`;
+          chatList.innerHTML = `<div class="p-6 text-xs opacity-50 text-center">No tienes conversaciones aún.</div>`;
           return;
         }
 
@@ -2697,12 +2716,12 @@
           const livePhoto = userObj.photoURL || c.photo || 'https://via.placeholder.com/40';
 
           const item = document.createElement('div');
-          item.className = "p-3.5 hover:bg-slate-900/80 cursor-pointer flex items-center gap-3 transition border-b border-slate-900/40";
+          item.className = "p-3.5 hover:bg-black/10 cursor-pointer flex items-center gap-3 transition border-b border-purple-500/10";
           item.innerHTML = `
             <img src="${livePhoto}" class="w-10 h-10 rounded-full border border-pink-400 object-cover flex-shrink-0">
             <div class="flex-1 min-w-0">
-              <p class="text-xs font-bold text-slate-100 truncate">${liveName}</p>
-              <p class="text-[10px] text-slate-400 truncate mt-0.5">Toca para abrir mensaje</p>
+              <p class="text-xs font-bold truncate">${liveName}</p>
+              <p class="text-[10px] opacity-60 truncate mt-0.5">Toca para abrir mensaje</p>
             </div>
           `;
           item.onclick = () => window.openChatWithUser(c.uid, liveName, livePhoto);
