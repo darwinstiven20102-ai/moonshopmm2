@@ -31,6 +31,85 @@
 </head>
 <body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col pb-20 md:pb-0 overflow-x-hidden">
 
+  <!-- MODAL SECRETO DE CONTRASEÑA ADMIN (6 TOQUES) -->
+  <div id="adminPasswordModal" class="hidden fixed inset-0 z-[200] bg-slate-950/90 backdrop-blur-md flex items-center justify-center p-4">
+    <div class="bg-slate-900 border border-purple-500/40 rounded-3xl p-6 max-w-sm w-full space-y-4 shadow-2xl text-center">
+      <div class="w-14 h-14 bg-purple-500/10 text-purple-400 rounded-2xl flex items-center justify-center mx-auto text-2xl border border-purple-500/30">
+        <i class="fa-solid fa-lock"></i>
+      </div>
+      <div>
+        <h3 class="font-black text-base text-slate-100">Acceso Secreto Admin</h3>
+        <p class="text-xs text-slate-400 mt-1">Introduce la contraseña de seguridad.</p>
+      </div>
+      <input type="password" id="secretPasswordInput" placeholder="Contraseña..." class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-xs text-slate-100 focus:outline-none focus:border-pink-500 text-center tracking-widest">
+      <div class="flex gap-2 pt-1">
+        <button onclick="closeSecretPasswordModal()" class="flex-1 bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-bold py-2.5 rounded-xl transition">Cancelar</button>
+        <button onclick="verifySecretPassword()" class="flex-1 bg-gradient-to-r from-pink-500 to-purple-600 hover:opacity-90 text-white text-xs font-bold py-2.5 rounded-xl transition shadow-md">Ingresar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL INTEGRADO PANEL DE ADMINISTRACIÓN -->
+  <div id="integratedAdminModal" class="hidden fixed inset-0 z-[150] bg-slate-950/95 backdrop-blur-xl flex flex-col overflow-y-auto p-4 sm:p-6">
+    <div class="max-w-4xl w-full mx-auto bg-slate-900 border border-purple-500/40 rounded-3xl shadow-2xl overflow-hidden flex flex-col my-auto">
+      
+      <!-- Header Admin -->
+      <div class="p-4 sm:p-6 border-b border-slate-800 flex items-center justify-between bg-slate-950/80">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl bg-purple-500/20 border border-purple-500/30 flex items-center justify-center text-purple-400">
+            <i class="fa-solid fa-shield-halved text-lg"></i>
+          </div>
+          <div>
+            <h2 class="font-black text-base sm:text-lg text-slate-100">Panel de Administración Moonfed 🛡️</h2>
+            <p class="text-[10px] text-pink-400 font-bold" id="adminRoleStatusBadge">Verificando permisos...</p>
+          </div>
+        </div>
+        <button onclick="closeAdminPanel()" class="bg-slate-800 hover:bg-pink-500 text-slate-300 hover:text-white w-9 h-9 rounded-full flex items-center justify-center transition cursor-pointer">
+          <i class="fa-solid fa-xmark text-sm"></i>
+        </button>
+      </div>
+
+      <!-- Contenido Admin -->
+      <div class="p-4 sm:p-6 space-y-6 flex-1 overflow-y-auto">
+
+        <!-- Solicitudes de Acceso (Solo Super Admin) -->
+        <div id="adminRequestsSection" class="hidden bg-slate-950 border border-yellow-500/30 rounded-2xl p-4 space-y-3">
+          <h3 class="text-xs font-black text-yellow-400 uppercase tracking-wider flex items-center gap-2">
+            <i class="fa-solid fa-bell animate-bounce"></i> Solicitudes de Ingreso al Panel
+          </h3>
+          <div id="adminRequestsList" class="space-y-2"></div>
+        </div>
+
+        <!-- Cuentas Ingresadas / Gestión de Usuarios -->
+        <div class="space-y-3">
+          <div class="flex items-center justify-between">
+            <h3 class="text-xs font-black text-slate-300 uppercase tracking-wider flex items-center gap-2">
+              <i class="fa-solid fa-users text-pink-400"></i> Cuentas Ingresadas en la Plataforma
+            </h3>
+            <span id="adminTotalUsersBadge" class="bg-purple-500/10 text-purple-300 text-[10px] font-bold px-2.5 py-1 rounded-full border border-purple-500/20">0 Usuarios</span>
+          </div>
+
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs text-slate-300">
+              <thead class="bg-slate-950 text-slate-400 uppercase font-extrabold text-[9px] tracking-wider border-b border-slate-800">
+                <tr>
+                  <th class="p-3">Usuario</th>
+                  <th class="p-3">Contacto</th>
+                  <th class="p-3">País</th>
+                  <th class="p-3">Estado</th>
+                  <th class="p-3">Acciones</th>
+                </tr>
+              </thead>
+              <tbody id="adminUsersTableBody" class="divide-y divide-slate-800/60 font-medium"></tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+
   <!-- BURBUJA NOTIFICACIÓN FLOTANTE -->
   <div id="msgFloatingBubble" class="hidden fixed bottom-20 right-4 md:bottom-8 md:right-8 z-[100] cursor-pointer animate-float-cute transition-all duration-300">
     <div onclick="openBubbleChat()" class="relative bg-slate-900/95 backdrop-blur-xl border-2 border-pink-500/60 hover:border-pink-400 p-3.5 pr-6 md:p-4 md:pr-7 rounded-3xl shadow-[0_0_35px_rgba(244,114,182,0.45)] flex items-center gap-4">
@@ -54,8 +133,8 @@
   <header id="mainNavbar" class="hidden border-b border-purple-500/20 bg-slate-900/90 backdrop-blur-md sticky top-0 z-50">
     <div class="max-w-7xl mx-auto px-4 h-20 flex items-center justify-between">
       
-      <!-- LOGO MOONFED -->
-      <div class="flex items-center cursor-pointer select-none group" onclick="switchTab('feed')">
+      <!-- LOGO MOONFED (CON 6 TOQUES PARA ABRIR ADMIN) -->
+      <div class="flex items-center cursor-pointer select-none group" onclick="handleLogoTap()">
         <span class="font-black text-3xl sm:text-4xl tracking-tight bg-gradient-to-r from-pink-400 via-purple-300 to-indigo-300 bg-clip-text text-transparent drop-shadow-[0_0_18px_rgba(244,114,182,0.6)] group-hover:scale-105 transition-transform duration-300">
           Moonfed✨
         </span>
@@ -96,7 +175,6 @@
               <p id="dropdownEmail" class="text-[10px] text-slate-400 truncate">correo@ejemplo.com</p>
             </div>
             
-            <!-- OPCIONES ADICIONALES PARA MÓVIL EN EL MENÚ DESPLEGABLE -->
             <div class="md:hidden border-b border-slate-800 pb-1 mb-1">
               <button onclick="switchTab('userProfile')" class="w-full text-left px-4 py-2 text-xs text-slate-200 hover:bg-slate-800 flex items-center gap-3 transition cursor-pointer font-bold">
                 <i class="fa-solid fa-user w-4 text-center text-pink-400"></i> Mi Perfil
@@ -224,7 +302,6 @@
     <section id="tabFeed" class="hidden w-full max-w-7xl mx-auto">
       <div class="grid grid-cols-1 md:grid-cols-12 gap-6 items-start w-full">
         
-        <!-- COLUMNA IZQUIERDA: FEED PRINCIPAL -->
         <div class="md:col-span-7 lg:col-span-8 space-y-4 w-full order-2 md:order-1">
           <div class="relative overflow-hidden rounded-3xl bg-gradient-to-r from-slate-900 via-purple-950/40 to-slate-900 border border-purple-500/30 p-4 sm:p-5 shadow-xl backdrop-blur-md flex items-center justify-between">
             <div class="flex items-center gap-3">
@@ -241,7 +318,6 @@
           <div id="feedPostsContainer" class="space-y-4 w-full"></div>
         </div>
 
-        <!-- COLUMNA DERECHA: FORMULARIO CREAR POST STICKY -->
         <div class="hidden md:block md:col-span-5 lg:col-span-4 sticky top-24 order-1 md:order-2">
           <div class="bg-slate-900/95 border border-purple-500/40 rounded-3xl p-6 shadow-2xl backdrop-blur-md space-y-5">
             <div class="text-center pb-3 border-b border-slate-800">
@@ -288,7 +364,6 @@
                 </div>
               </div>
 
-              <!-- PRECIO (SI SE INGRESA SE VUELVE VENTA) -->
               <div class="grid grid-cols-2 gap-3">
                 <div>
                   <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1">Precio <span class="text-slate-500 lowercase">(opcional)</span></label>
@@ -458,7 +533,6 @@
             </div>
           </div>
 
-          <!-- Modal de Edición -->
           <div id="editNameModal" class="hidden my-4 bg-slate-950 p-4 rounded-2xl border border-slate-800 space-y-4">
             <h4 class="text-xs font-bold text-slate-300 uppercase">Ajustes de Perfil</h4>
             <div class="space-y-3">
@@ -667,7 +741,7 @@
 
   </main>
 
-  <!-- LÓGICA DE FIREBASE Y CONDICIONALES DE VALIDACIÓN -->
+  <!-- SCRIPT PRINCIPAL DE FIREBASE Y LÓGICA DE 6 TOQUES / ADMIN -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
@@ -710,6 +784,234 @@
     let pendingBubbleTarget = null;
     let deskTempImageBase64 = null;
     let activeModalPostId = null;
+
+    // LÓGICA DE 6 TOQUES PARA EL PANEL ADMIN
+    let logoTapCount = 0;
+    let logoTapTimer = null;
+    const ADMIN_SECRET_PASS = "moonfed2026"; // Contraseña secreta (puedes cambiarla aquí)
+
+    window.handleLogoTap = () => {
+      logoTapCount++;
+      if (logoTapTimer) clearTimeout(logoTapTimer);
+
+      if (logoTapCount >= 6) {
+        logoTapCount = 0;
+        const unlocked = localStorage.getItem('moonfed_admin_unlocked');
+        if (unlocked === 'true') {
+          verifyAndOpenAdminPanel();
+        } else {
+          document.getElementById('adminPasswordModal').classList.remove('hidden');
+        }
+      } else {
+        logoTapTimer = setTimeout(() => { logoTapCount = 0; }, 1500);
+      }
+    };
+
+    window.closeSecretPasswordModal = () => {
+      document.getElementById('adminPasswordModal').classList.add('hidden');
+      document.getElementById('secretPasswordInput').value = '';
+    };
+
+    window.verifySecretPassword = () => {
+      const pass = document.getElementById('secretPasswordInput').value.trim();
+      if (pass === ADMIN_SECRET_PASS) {
+        localStorage.setItem('moonfed_admin_unlocked', 'true');
+        closeSecretPasswordModal();
+        verifyAndOpenAdminPanel();
+      } else {
+        alert("Contraseña incorrecta.");
+      }
+    };
+
+    async function verifyAndOpenAdminPanel() {
+      if (!currentUser) {
+        alert("Debes haber iniciado sesión en la plataforma primero.");
+        return;
+      }
+
+      const superAdminRef = ref(db, 'adminSettings/superAdminUid');
+      const snap = await get(superAdminRef);
+
+      let isSuper = false;
+      if (!snap.exists()) {
+        await set(superAdminRef, currentUser.uid);
+        await set(ref(db, `adminUsers/${currentUser.uid}`), {
+          uid: currentUser.uid,
+          name: currentUserData.name || currentUser.displayName,
+          email: currentUser.email,
+          photoURL: currentUserData.photoURL || currentUser.photoURL,
+          status: 'approved',
+          role: 'superadmin'
+        });
+        isSuper = true;
+      } else {
+        const superUid = snap.val();
+        isSuper = (superUid === currentUser.uid);
+      }
+
+      const myAdminRef = ref(db, `adminUsers/${currentUser.uid}`);
+      const adminSnap = await get(myAdminRef);
+
+      if (!adminSnap.exists()) {
+        await set(myAdminRef, {
+          uid: currentUser.uid,
+          name: currentUserData.name || currentUser.displayName,
+          email: currentUser.email,
+          photoURL: currentUserData.photoURL || currentUser.photoURL,
+          status: 'pending',
+          role: 'admin'
+        });
+        alert("Se ha enviado una solicitud al Administrador Principal para permitir tu acceso al panel.");
+        return;
+      }
+
+      const adminData = adminSnap.val();
+      if (adminData.status !== 'approved') {
+        alert("Tu acceso al panel admin aún está pendiente de aprobación por el Administrador Principal.");
+        return;
+      }
+
+      openAdminPanel(isSuper);
+    }
+
+    function openAdminPanel(isSuper) {
+      document.getElementById('integratedAdminModal').classList.remove('hidden');
+      const badge = document.getElementById('adminRoleStatusBadge');
+      const reqSec = document.getElementById('adminRequestsSection');
+
+      if (isSuper) {
+        badge.textContent = "Modo: Super Administrador Principal ⭐";
+        reqSec.classList.remove('hidden');
+        listenToAdminRequests();
+      } else {
+        badge.textContent = "Modo: Administrador Autorizado 🛡️";
+        reqSec.classList.add('hidden');
+      }
+
+      listenToAdminUsersTable();
+    }
+
+    window.closeAdminPanel = () => {
+      document.getElementById('integratedAdminModal').classList.add('hidden');
+    };
+
+    function listenToAdminRequests() {
+      onValue(ref(db, 'adminUsers'), (snapshot) => {
+        const list = document.getElementById('adminRequestsList');
+        list.innerHTML = '';
+        if (!snapshot.exists()) return;
+
+        const admins = snapshot.val();
+        let count = 0;
+
+        Object.keys(admins).forEach(uid => {
+          const adm = admins[uid];
+          if (adm.status === 'pending') {
+            count++;
+            const div = document.createElement('div');
+            div.className = "bg-slate-900 p-3 rounded-xl border border-slate-800 flex items-center justify-between text-xs";
+            div.innerHTML = `
+              <div class="flex items-center gap-3">
+                <img src="${adm.photoURL || 'https://via.placeholder.com/40'}" class="w-8 h-8 rounded-full object-cover border border-pink-400">
+                <div>
+                  <p class="font-bold text-slate-100">${adm.name}</p>
+                  <p class="text-[10px] text-slate-400">${adm.email}</p>
+                </div>
+              </div>
+              <div class="flex gap-2">
+                <button onclick="approveAdminUser('${adm.uid}')" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-3 py-1.5 rounded-xl transition cursor-pointer">Permitir</button>
+                <button onclick="rejectAdminUser('${adm.uid}')" class="bg-red-600 hover:bg-red-500 text-white font-bold px-3 py-1.5 rounded-xl transition cursor-pointer">Prohibir</button>
+              </div>
+            `;
+            list.appendChild(div);
+          }
+        });
+
+        if (count === 0) {
+          list.innerHTML = `<p class="text-[11px] text-slate-500 italic">No hay solicitudes pendientes.</p>`;
+        }
+      });
+    }
+
+    window.approveAdminUser = async (uid) => {
+      await update(ref(db, `adminUsers/${uid}`), { status: 'approved' });
+    };
+
+    window.rejectAdminUser = async (uid) => {
+      await update(ref(db, `adminUsers/${uid}`), { status: 'rejected' });
+    };
+
+    function listenToAdminUsersTable() {
+      onValue(ref(db, 'vendors'), (snapshot) => {
+        const tbody = document.getElementById('adminUsersTableBody');
+        const badge = document.getElementById('adminTotalUsersBadge');
+        tbody.innerHTML = '';
+
+        if (!snapshot.exists()) {
+          tbody.innerHTML = `<tr><td colspan="5" class="p-4 text-center text-slate-500">No hay cuentas registradas.</td></tr>`;
+          badge.textContent = "0 Usuarios";
+          return;
+        }
+
+        const vendors = snapshot.val();
+        const keys = Object.keys(vendors);
+        badge.textContent = `${keys.length} Usuarios`;
+
+        keys.forEach(uid => {
+          const u = vendors[uid];
+          const isVerified = u.isVerified || false;
+          const followers = u.followersExtraCount || 0;
+
+          const tr = document.createElement('tr');
+          tr.className = "hover:bg-slate-900/60 border-b border-slate-800/50 transition";
+          tr.innerHTML = `
+            <td class="p-3 flex items-center gap-2.5">
+              <img src="${u.photoURL || 'https://via.placeholder.com/35'}" class="w-8 h-8 rounded-full object-cover border border-pink-400/50">
+              <div>
+                <p class="font-bold text-slate-100 flex items-center gap-1">
+                  ${u.name || 'Sin nombre'}
+                  ${isVerified ? '<i class="fa-solid fa-circle-check text-pink-400 text-xs"></i>' : ''}
+                </p>
+                <p class="text-[10px] text-slate-400 truncate max-w-[130px]">${u.email || ''}</p>
+              </div>
+            </td>
+            <td class="p-3 text-[11px]">${u.phone || 'N/A'}</td>
+            <td class="p-3 text-[11px]">${u.country || 'N/A'}</td>
+            <td class="p-3">
+              ${isVerified ? '<span class="bg-pink-500/10 text-pink-400 font-bold px-2 py-0.5 rounded-full text-[10px]">Verificado</span>' : '<span class="bg-slate-800 text-slate-400 font-bold px-2 py-0.5 rounded-full text-[10px]">Normal</span>'}
+            </td>
+            <td class="p-3">
+              <div class="flex items-center gap-2">
+                <button onclick="toggleUserVerification('${u.uid}', ${isVerified})" class="${isVerified ? 'bg-slate-800 text-slate-300' : 'bg-pink-500/20 text-pink-300 border border-pink-500/30'} text-[11px] font-bold px-2.5 py-1 rounded-xl transition cursor-pointer">
+                  ${isVerified ? 'Quitar Verificación' : '✔ Verificar'}
+                </button>
+                <button onclick="addFollowersToUser('${u.uid}', ${followers})" class="bg-gradient-to-r from-pink-500 to-purple-600 text-white text-[11px] font-bold px-2.5 py-1 rounded-xl transition cursor-pointer shadow-md">
+                  ➕ Seguidores
+                </button>
+              </div>
+            </td>
+          `;
+          tbody.appendChild(tr);
+        });
+      });
+    }
+
+    window.toggleUserVerification = async (targetUid, currentVerified) => {
+      await update(ref(db, `vendors/${targetUid}`), { isVerified: !currentVerified });
+    };
+
+    window.addFollowersToUser = async (targetUid, currentExtra) => {
+      const amountStr = prompt("¿Cuántos seguidores deseas añadir a este usuario?", "100");
+      if (!amountStr) return;
+      const amount = parseInt(amountStr);
+      if (isNaN(amount) || amount <= 0) {
+        alert("Ingresa una cantidad válida.");
+        return;
+      }
+      const newTotal = currentExtra + amount;
+      await update(ref(db, `vendors/${targetUid}`), { followersExtraCount: newTotal });
+      alert(`¡Se añadieron ${amount} seguidores exitosamente!`);
+    };
 
     async function handleGoogleLogin(isAddingAccount = false) {
       try {
@@ -755,7 +1057,7 @@
 
       section.classList.remove('hidden');
       accounts.forEach(acc => {
-        const isCurrent = currentUser && acc.uid === acc.uid;
+        const isCurrent = currentUser && acc.uid === currentUser.uid;
         const div = document.createElement('button');
         div.className = `w-full text-left px-3 py-2 rounded-xl text-xs flex items-center justify-between transition cursor-pointer ${isCurrent ? 'bg-pink-600/20 text-pink-400 font-bold border border-pink-500/30' : 'text-slate-300 hover:bg-slate-800'}`;
         div.innerHTML = `
@@ -991,7 +1293,6 @@
       }
     };
 
-    // Publicar desde PC (Título y Categoría opcionales al NO ser Venta)
     window.previewDeskImage = (input) => {
       if (input.files && input.files[0]) {
         const reader = new FileReader();
@@ -1058,7 +1359,6 @@
       }
     };
 
-    // Publicar Móvil (Título y Categoría opcionales al NO ser Venta)
     publishForm.addEventListener('submit', (e) => {
       e.preventDefault();
       if (!currentUser) return;
