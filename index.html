@@ -566,7 +566,7 @@
               </div>
 
               <div class="space-y-1">
-                <h2 id="profilePageName" class="text-xl sm:text-2xl font-black text-slate-100 flex items-center justify-center sm:justify-start gap-1.5">
+                <h2 id="profilePageName" class="text-xl sm:text-2xl font-black text-slate-100 flex items-center justify-center sm:justify-start gap-1.5 flex-wrap">
                   Cargando...
                 </h2>
                 <p id="profilePageEmail" class="text-xs text-slate-400">correo@ejemplo.com</p>
@@ -648,7 +648,7 @@
             <div class="flex flex-col sm:flex-row items-center sm:items-end gap-4 text-center sm:text-left">
               <img id="pubProfileAvatar" src="https://via.placeholder.com/100" class="w-24 h-24 sm:w-28 sm:h-28 rounded-full border-4 border-slate-900 object-cover shadow-2xl bg-slate-950">
               <div class="space-y-1">
-                <h2 id="pubProfileName" class="text-xl sm:text-2xl font-black text-slate-100 flex items-center justify-center sm:justify-start gap-1.5">Nombre del Usuario</h2>
+                <h2 id="pubProfileName" class="text-xl sm:text-2xl font-black text-slate-100 flex items-center justify-center sm:justify-start gap-1.5 flex-wrap">Nombre del Usuario</h2>
                 <p id="pubProfileCountry" class="text-xs text-pink-400 font-bold"><i class="fa-solid fa-location-dot mr-1"></i> Colombia</p>
               </div>
             </div>
@@ -813,18 +813,13 @@
           <span class="flex items-center gap-2"><i class="fa-solid fa-bell text-pink-400"></i> Notificaciones</span>
           <span id="notifCount" class="text-xs font-bold text-pink-400 bg-pink-500/10 px-2.5 py-1 rounded-full">0 nuevas</span>
         </h2>
-        <div id="notificationsContainer" class="space-y-2">
-          <div class="bg-slate-950 border border-slate-800 p-3.5 rounded-2xl text-xs text-slate-300">
-            <p class="font-bold text-pink-400">¡Bienvenido a Moonfed✨!</p>
-            <p class="text-[11px] text-slate-400 mt-1">Conectado a la red de usuarios.</p>
-          </div>
-        </div>
+        <div id="notificationsContainer" class="space-y-3"></div>
       </div>
     </section>
 
   </main>
 
-  <!-- SCRIPT PRINCIPAL DE FIREBASE Y LÓGICA DE SIMULACIÓN DE SUBIDA Y COTIZACIÓN AUTOMÁTICA -->
+  <!-- SCRIPT PRINCIPAL DE FIREBASE -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
@@ -872,7 +867,6 @@
     let activeModalPostId = null;
 
     let newlyPublishedId = null;
-    let newlyPublishedTimer = null;
 
     function formatFollowerCount(num) {
       if (num >= 1000000) {
@@ -1064,6 +1058,7 @@
         keys.forEach(uid => {
           const u = vendors[uid];
           const isVerified = u.isVerified || false;
+          const isCreator = u.isCreator || false;
           const followers = u.followersExtraCount || 0;
 
           const tr = document.createElement('tr');
@@ -1075,6 +1070,7 @@
                 <p class="font-bold text-slate-100 flex items-center gap-1">
                   ${u.name || 'Sin nombre'}
                   ${isVerified ? '<i class="fa-solid fa-circle-check text-pink-400 text-xs"></i>' : ''}
+                  ${isCreator ? '<span class="bg-amber-500/20 text-amber-300 border border-amber-500/40 text-[9px] font-black px-1.5 py-0.5 rounded-full">CREADOR</span>' : ''}
                 </p>
                 <p class="text-[10px] text-slate-400 truncate max-w-[130px]">${u.email || ''}</p>
               </div>
@@ -1085,12 +1081,15 @@
               ${isVerified ? '<span class="bg-pink-500/10 text-pink-400 font-bold px-2 py-0.5 rounded-full text-[10px]">Verificado</span>' : '<span class="bg-slate-800 text-slate-400 font-bold px-2 py-0.5 rounded-full text-[10px]">Normal</span>'}
             </td>
             <td class="p-3">
-              <div class="flex items-center gap-2">
+              <div class="flex items-center gap-2 flex-wrap">
                 <button onclick="toggleUserVerification('${u.uid}', ${isVerified})" class="${isVerified ? 'bg-slate-800 text-slate-300' : 'bg-pink-500/20 text-pink-300 border border-pink-500/30'} text-[11px] font-bold px-2.5 py-1 rounded-xl transition cursor-pointer">
-                  ${isVerified ? 'Quitar Verificación' : '✔ Verificar'}
+                  ${isVerified ? 'Quitar Verif' : '✔ Verificar'}
+                </button>
+                <button onclick="sendCreatorRequestToUser('${u.uid}', '${u.name || 'Usuario'}')" class="${isCreator ? 'bg-amber-600/20 text-amber-400 border border-amber-500/40' : 'bg-amber-500/20 text-amber-300 border border-amber-500/30'} text-[11px] font-bold px-2.5 py-1 rounded-xl transition cursor-pointer">
+                  ${isCreator ? '👑 Creador (Activo)' : '👑 Definir Creador'}
                 </button>
                 <button onclick="addFollowersToUser('${u.uid}', ${followers})" class="bg-gradient-to-r from-pink-500 to-purple-600 text-white text-[11px] font-bold px-2.5 py-1 rounded-xl transition cursor-pointer shadow-md">
-                  ➕ Seguidores
+                  ➕ Segs
                 </button>
               </div>
             </td>
@@ -1099,6 +1098,30 @@
         });
       });
     }
+
+    // ENVIAR SOLICITUD DE CREADOR A LAS NOTIFICACIONES DEL USUARIO
+    window.sendCreatorRequestToUser = async (targetUid, targetName) => {
+      const notifRef = ref(db, `notifications/${targetUid}`);
+      const newNotifRef = push(notifRef);
+      await set(newNotifRef, {
+        title: "👑 Solicitud de Creador de la Página",
+        message: "Has sido seleccionado para ser el Creador de la Página Moonfed. Acepta para mostrar la insignia dorada.",
+        type: "creator_request",
+        createdAt: new Date().toISOString()
+      });
+      alert(`¡Solicitud de creador enviada a ${targetName}! Le aparecerá en su sección de notificaciones.`);
+    };
+
+    window.acceptCreatorRole = async (notifKey) => {
+      if (!currentUser) return;
+      await update(ref(db, `vendors/${currentUser.uid}`), { isCreator: true });
+      currentUserData.isCreator = true;
+      updateNavUser(currentUser, currentUserData);
+
+      // Eliminar o actualizar la notificación de solicitud
+      await remove(ref(db, `notifications/${currentUser.uid}/${notifKey}`));
+      alert("¡Felicidades! Ahora eres oficialmente el Creador de la Página.");
+    };
 
     function listenToAdminPostsTable() {
       onValue(ref(db, 'posts'), (snapshot) => {
@@ -1396,6 +1419,7 @@
         photoURL: currentUser.photoURL || 'https://via.placeholder.com/100',
         bannerURL: '',
         bgColor: '',
+        isCreator: false,
         followersExtraCount: 0,
         registeredAt: new Date().toISOString()
       };
@@ -1515,7 +1539,6 @@
       }
     };
 
-    // SIMULACIÓN DE SUBIDA (1 MINUTO) Y DESTACADO DE PRIMER LUGAR (1-2 SEGUNDOS)
     async function simulateUploadAndPublish(postData, mediaPreview) {
       switchTab('feed');
       const simBox = document.getElementById('uploadSimulationBox');
@@ -1558,7 +1581,7 @@
                 newlyPublishedId = null;
                 listenToPostsFB();
                 resolve();
-              }, 2000); // 2 segundos destacado de primero
+              }, 2000); 
             } catch (err) {
               simBox.classList.add('hidden');
               alert("Error al publicar.");
@@ -1707,11 +1730,13 @@
       const targetBanner = userObj.bannerURL || '';
       const targetBgColor = userObj.bgColor || '';
       const isVerifiedUser = userObj.isVerified || false;
+      const isCreatorUser = userObj.isCreator || false;
 
       document.getElementById('pubProfileAvatar').src = targetPhoto;
       document.getElementById('pubProfileName').innerHTML = `
         ${targetName}
         ${isVerifiedUser ? '<i class="fa-solid fa-circle-check text-pink-400 text-base" title="Verificado"></i>' : ''}
+        ${isCreatorUser ? '<span class="bg-gradient-to-r from-amber-400 to-yellow-500 text-slate-950 font-black text-xs px-2.5 py-0.5 rounded-full shadow-[0_0_15px_rgba(245,158,11,0.5)] border border-yellow-200 uppercase tracking-wide inline-flex items-center gap-1"><i class="fa-solid fa-crown text-[10px]"></i> CREADOR</span>' : ''}
       `;
       document.getElementById('pubProfileCountry').innerHTML = `<i class="fa-solid fa-location-dot mr-1"></i> ${targetCountry}`;
 
@@ -1784,7 +1809,6 @@
       switchTab('publicProfile');
     };
 
-    // FUNCIÓN PARA ENVIAR AUTOMÁTICAMENTE MENSAJE DE COTIZACIÓN EN POSTS DE VENTA
     window.quoteSalePost = async (targetUid, targetName, targetPhoto, postTitle, postPrice, currency) => {
       if (!currentUser || targetUid === currentUser.uid) {
         alert("Este es tu propio artículo.");
@@ -1824,14 +1848,13 @@
       const authorName = authorUser.name || post.author || 'Usuario';
       const authorAvatar = authorUser.photoURL || post.authorPhoto || 'https://via.placeholder.com/40';
       const isVerified = authorUser.isVerified || false;
+      const isCreator = authorUser.isCreator || false;
 
       const isFollowing = myFollowsMap[post.uid];
       const followsMe = globalFollowsData[post.uid] && globalFollowsData[post.uid][currentUser?.uid];
 
       const isSalePost = post.price && post.price !== "" && parseFloat(post.price) > 0;
       
-      // COTIDIANA: Eliminamos burbuja "Cotidiana" y botón de mensaje en la tarjeta.
-      // VENTA: Mantiene insignia y botón con cotización automática.
       const badgeHTML = isSalePost 
         ? `<span class="bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 text-[10px] font-black px-2.5 py-0.5 rounded-full uppercase tracking-wider"><i class="fa-solid fa-bag-shopping mr-1"></i> Venta</span>`
         : '';
@@ -1892,7 +1915,6 @@
 
       const formattedDescription = parseHashtagsInText(post.description || '');
 
-      // Footer inferior de la tarjeta: solo si es venta muestra precio y botón de cotización automática
       let cardFooterActionHTML = '';
       if (isSalePost) {
         cardFooterActionHTML = `
@@ -1908,14 +1930,17 @@
       const postCard = document.createElement('div');
       postCard.className = "bg-slate-900/90 border border-purple-500/20 rounded-3xl p-4 sm:p-5 shadow-xl space-y-3.5 relative backdrop-blur-sm";
 
+      const creatorBadgeInPost = isCreator ? `<span class="bg-gradient-to-r from-amber-400 to-yellow-500 text-slate-950 font-black text-[9px] px-2 py-0.5 rounded-full shadow-[0_0_10px_rgba(245,158,11,0.4)] border border-yellow-200 uppercase tracking-wider inline-flex items-center gap-1"><i class="fa-solid fa-crown text-[8px]"></i> CREADOR</span>` : '';
+
       postCard.innerHTML = `
         <div class="flex items-center justify-between pb-2 border-b border-slate-800/80">
           <div class="flex items-center gap-3 cursor-pointer" onclick="window.openPublicProfile('${post.uid}')">
             <img src="${authorAvatar}" class="w-10 h-10 sm:w-12 sm:h-12 rounded-full border-2 border-pink-400 object-cover shadow-md">
             <div>
-              <div class="flex items-center gap-1.5">
+              <div class="flex items-center gap-1.5 flex-wrap">
                 <h4 class="text-xs sm:text-sm font-black text-slate-100 hover:text-pink-300 transition">${authorName}</h4>
                 ${isVerified ? '<i class="fa-solid fa-circle-check text-pink-400 text-xs" title="Verificado"></i>' : ''}
+                ${creatorBadgeInPost}
                 ${badgeHTML}
               </div>
               <span class="text-[10px] sm:text-xs text-pink-300/80 font-semibold">${post.category || 'General'} • ${post.gameName || 'General'}</span>
@@ -2074,7 +2099,6 @@
 
         let postKeys = Object.keys(allPostsData);
 
-        // Si hay una recién publicada, la colocamos estrictamente de primera durante los 1-2 segundos
         if (newlyPublishedId && allPostsData[newlyPublishedId]) {
           postKeys = postKeys.filter(id => id !== newlyPublishedId);
           postKeys.unshift(newlyPublishedId);
@@ -2082,7 +2106,6 @@
           feedContainer.appendChild(topCard);
         }
 
-        // El resto se mezcla al azar para el feed
         let remainingKeys = newlyPublishedId ? postKeys.slice(1) : postKeys;
         remainingKeys.sort(() => Math.random() - 0.5);
 
@@ -2191,7 +2214,6 @@
       onValue(notifRef, (snapshot) => {
         const container = document.getElementById('notificationsContainer');
         const countSpan = document.getElementById('notifCount');
-        const badge = document.getElementById('notifBadge');
         const deskBadge = document.getElementById('deskNotifBadge');
         const mobileBadge = document.getElementById('mobileMenuNotifBadge');
         container.innerHTML = '';
@@ -2199,7 +2221,6 @@
         if (!snapshot.exists()) {
           container.innerHTML = `<div class="p-4 text-xs text-slate-500 text-center">No tienes notificaciones recientes.</div>`;
           countSpan.textContent = "0 nuevas";
-          if (badge) badge.classList.add('hidden');
           if (deskBadge) deskBadge.classList.add('hidden');
           if (mobileBadge) mobileBadge.classList.add('hidden');
           return;
@@ -2208,22 +2229,45 @@
         const notifs = snapshot.val();
         const keys = Object.keys(notifs).reverse();
         countSpan.textContent = `${keys.length} nuevas`;
-        if (badge) badge.classList.remove('hidden');
         if (deskBadge) deskBadge.classList.remove('hidden');
         if (mobileBadge) mobileBadge.classList.remove('hidden');
 
         keys.forEach(k => {
           const n = notifs[k];
           const div = document.createElement('div');
-          div.className = "bg-slate-950 border border-slate-800 p-3.5 rounded-2xl text-xs space-y-1";
-          div.innerHTML = `
-            <p class="font-bold text-pink-400">${n.title}</p>
-            <p class="text-slate-200">${n.message}</p>
-          `;
+          div.className = "bg-slate-950 border border-slate-800 p-4 rounded-2xl text-xs space-y-2";
+          
+          if (n.type === 'creator_request') {
+            div.innerHTML = `
+              <div class="flex items-center gap-2 text-amber-400 font-black">
+                <i class="fa-solid fa-crown text-base"></i>
+                <span>${n.title}</span>
+              </div>
+              <p class="text-slate-300">${n.message}</p>
+              <div class="flex gap-2 pt-1">
+                <button onclick="acceptCreatorRole('${k}')" class="bg-gradient-to-r from-amber-500 to-yellow-600 hover:opacity-90 text-slate-950 font-black px-4 py-2 rounded-xl transition cursor-pointer shadow-md">
+                  ✓ Aceptar ser creador
+                </button>
+                <button onclick="deleteNotification('${k}')" class="bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold px-3 py-2 rounded-xl transition cursor-pointer">
+                  Rechazar
+                </button>
+              </div>
+            `;
+          } else {
+            div.innerHTML = `
+              <p class="font-bold text-pink-400">${n.title}</p>
+              <p class="text-slate-200">${n.message}</p>
+            `;
+          }
           container.appendChild(div);
         });
       });
     }
+
+    window.deleteNotification = async (notifKey) => {
+      if (!currentUser) return;
+      await remove(ref(db, `notifications/${currentUser.uid}/${notifKey}`));
+    };
 
     window.toggleLikeFB = async (postId, currentlyLiked, ownerUid) => {
       if (!currentUser) return;
@@ -2488,6 +2532,7 @@
       const banner = vData.bannerURL || '';
       const bgColor = vData.bgColor || '';
       const isVerified = vData.isVerified || false;
+      const isCreator = vData.isCreator || false;
 
       document.getElementById('navUserAvatar').src = avatar;
       document.getElementById('navUserName').textContent = name;
@@ -2504,6 +2549,7 @@
       document.getElementById('profilePageName').innerHTML = `
         ${name}
         ${isVerified ? '<i class="fa-solid fa-circle-check text-pink-400 text-base" title="Verificado"></i>' : ''}
+        ${isCreator ? '<span class="bg-gradient-to-r from-amber-400 to-yellow-500 text-slate-950 font-black text-xs px-2.5 py-0.5 rounded-full shadow-[0_0_15px_rgba(245,158,11,0.5)] border border-yellow-200 uppercase tracking-wide inline-flex items-center gap-1"><i class="fa-solid fa-crown text-[10px]"></i> CREADOR</span>' : ''}
       `;
       document.getElementById('profilePageEmail').textContent = user.email;
       document.getElementById('profilePageCountry').innerHTML = `<i class="fa-solid fa-location-dot mr-1"></i> ${vData.country || 'Colombia'}`;
