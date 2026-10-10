@@ -603,7 +603,7 @@
             </div>
           </div>
 
-          <!-- MODAL EDITAR PERFIL (BANNER NORMAL / COLOR ESTÉTICO / FONDO BORROSO) -->
+          <!-- MODAL EDITAR PERFIL -->
           <div id="editNameModal" class="hidden my-4 bg-slate-950 p-4 rounded-2xl border border-slate-800 space-y-4">
             <h4 class="text-xs font-bold text-slate-300 uppercase">Ajustes de Perfil y Fondo Global</h4>
             <div class="space-y-3">
@@ -831,7 +831,7 @@
 
   </main>
 
-  <!-- SCRIPT PRINCIPAL DE FIREBASE Y ADAPTACIÓN GLOBAL DE ESTILOS -->
+  <!-- SCRIPT PRINCIPAL DE FIREBASE -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
@@ -879,6 +879,7 @@
     let activeModalPostId = null;
 
     let newlyPublishedId = null;
+    let feedRenderedInitially = false;
 
     function formatFollowerCount(num) {
       if (num >= 1000000) {
@@ -1130,7 +1131,7 @@
       updateNavUser(currentUser, currentUserData);
 
       await remove(ref(db, `notifications/${currentUser.uid}/${notifKey}`));
-      alert("¡Felicidades! Ahora eres oficialmente el Creador de la Página.");
+      alert("¡Felicidades! Ahora eres officially el Creador de la Página.");
     };
 
     function listenToAdminPostsTable() {
@@ -1368,7 +1369,6 @@
       });
     }
 
-    // APLICAR TEMA GLOBAL (COLOR ESTÉTICO O FONDO BORROSO) A TODA LA PÁGINA
     function applyGlobalTheme(vData) {
       const body = document.getElementById('globalBody');
       const blurBg = document.getElementById('globalBlurBackground');
@@ -1397,7 +1397,6 @@
 
         document.getElementById('profileFollowingCount').textContent = formatFollowerCount(Object.keys(myFollowsMap).length);
         updateMyProfileFollowersUI();
-        listenToPostsFB();
       });
     }
 
@@ -1513,7 +1512,7 @@
             const reader = new FileReader();
             reader.onload = (e) => {
               updates.blurBgURL = e.target.result;
-              updates.bgColor = ''; // Prioriza la imagen borrosa global si se sube
+              updates.bgColor = '';
               resolve();
             };
             reader.readAsDataURL(blurBgFile);
@@ -1605,7 +1604,7 @@
       statusText.textContent = 'Procesando y publicando en el feed...';
 
       let progress = 0;
-      const totalTimeMs = 60000; // 1 minuto
+      const totalTimeMs = 60000; 
       const intervalMs = 600; 
       const increment = 100 / (totalTimeMs / intervalMs);
 
@@ -1628,6 +1627,7 @@
               setTimeout(() => {
                 simBox.classList.add('hidden');
                 newlyPublishedId = null;
+                feedRenderedInitially = false;
                 listenToPostsFB();
                 resolve();
               }, 2000); 
@@ -1970,6 +1970,7 @@
       }
 
       const postCard = document.createElement('div');
+      postCard.id = `post-card-${postId}`;
       postCard.className = "bg-slate-900/90 border border-purple-500/20 rounded-3xl p-4 sm:p-5 shadow-xl space-y-3.5 relative backdrop-blur-md";
 
       const creatorBadgeInPost = isCreator ? `<span class="bg-gradient-to-r from-amber-400 to-yellow-500 text-slate-950 font-black text-[9px] px-2 py-0.5 rounded-full shadow-[0_0_10px_rgba(245,158,11,0.4)] border border-yellow-200 uppercase tracking-wider inline-flex items-center gap-1"><i class="fa-solid fa-crown text-[8px]"></i> CREADOR</span>` : '';
@@ -2001,9 +2002,9 @@
         ${cardFooterActionHTML}
 
         <div class="flex items-center justify-between pt-2 border-t border-slate-800 text-xs sm:text-sm text-slate-300">
-          <button onclick="window.toggleLikeFB('${postId}', ${hasLiked}, '${post.uid}')" class="flex items-center gap-2 px-3 py-1.5 rounded-xl hover:bg-slate-800 hover:text-pink-400 transition cursor-pointer font-bold ${hasLiked ? 'text-pink-400' : ''}">
+          <button id="like-btn-${postId}" onclick="window.toggleLikeFB('${postId}', ${hasLiked}, '${post.uid}')" class="flex items-center gap-2 px-3 py-1.5 rounded-xl hover:bg-slate-800 hover:text-pink-400 transition cursor-pointer font-bold ${hasLiked ? 'text-pink-400' : ''}">
             <i class="fa-solid fa-thumbs-up text-base sm:text-lg"></i> 
-            <span>Me gusta (${formatFollowerCount(likesCount)})</span>
+            <span id="like-count-${postId}">Me gusta (${formatFollowerCount(likesCount)})</span>
           </button>
           
           <button onclick="window.openCommentsModal('${postId}')" class="flex items-center gap-2 px-3 py-1.5 rounded-xl hover:bg-slate-800 hover:text-pink-400 transition cursor-pointer font-bold">
@@ -2122,16 +2123,8 @@
     function listenToPostsFB() {
       const postsRef = ref(db, 'posts');
       onValue(postsRef, (snapshot) => {
-        const feedContainer = document.getElementById('feedPostsContainer');
-        const myPostsContainer = document.getElementById('myPostsContainer');
-        const userProfileGrid = document.getElementById('userProfilePostsGrid');
-        
-        feedContainer.innerHTML = '';
-        myPostsContainer.innerHTML = '';
-        userProfileGrid.innerHTML = '';
-
         if (!snapshot.exists()) {
-          feedContainer.innerHTML = `<div class="text-center text-xs text-slate-500 py-8">No hay publicaciones aún.</div>`;
+          document.getElementById('feedPostsContainer').innerHTML = `<div class="text-center text-xs text-slate-500 py-8">No hay publicaciones aún.</div>`;
           return;
         }
 
@@ -2139,24 +2132,58 @@
         let myPostsCount = 0;
         let myTotalLikes = 0;
 
-        let postKeys = Object.keys(allPostsData);
+        // Si es la primera carga o se ha publicado un nuevo post, renderizamos la estructura del feed
+        if (!feedRenderedInitially) {
+          const feedContainer = document.getElementById('feedPostsContainer');
+          feedContainer.innerHTML = '';
 
-        if (newlyPublishedId && allPostsData[newlyPublishedId]) {
-          postKeys = postKeys.filter(id => id !== newlyPublishedId);
-          postKeys.unshift(newlyPublishedId);
-          let topCard = buildPostCard(newlyPublishedId, allPostsData[newlyPublishedId], allUsersData[allPostsData[newlyPublishedId].uid] || {});
-          feedContainer.appendChild(topCard);
+          let postKeys = Object.keys(allPostsData);
+
+          if (newlyPublishedId && allPostsData[newlyPublishedId]) {
+            postKeys = postKeys.filter(id => id !== newlyPublishedId);
+            postKeys.unshift(newlyPublishedId);
+            let topCard = buildPostCard(newlyPublishedId, allPostsData[newlyPublishedId], allUsersData[allPostsData[newlyPublishedId].uid] || {});
+            feedContainer.appendChild(topCard);
+          }
+
+          let remainingKeys = newlyPublishedId ? postKeys.slice(1) : postKeys;
+          remainingKeys.sort(() => Math.random() - 0.5);
+
+          remainingKeys.forEach((postId) => {
+            const post = allPostsData[postId];
+            const authorUser = allUsersData[post.uid] || {};
+            const card = buildPostCard(postId, post, authorUser);
+            feedContainer.appendChild(card);
+          });
+
+          feedRenderedInitially = true;
+        } else {
+          // Si ya estaba renderizado, actualizamos suavemente los likes individuales sin reordenar ni reiniciar el scroll
+          Object.keys(allPostsData).forEach(postId => {
+            const post = allPostsData[postId];
+            const hasLiked = currentUser && post.likes && post.likes[currentUser.uid];
+            const likesCount = post.likesCount || 0;
+
+            const likeBtn = document.getElementById(`like-btn-${postId}`);
+            const likeCountSpan = document.getElementById(`like-count-${postId}`);
+
+            if (likeBtn && likeCountSpan) {
+              if (hasLiked) {
+                likeBtn.classList.add('text-pink-400');
+              } else {
+                likeBtn.classList.remove('text-pink-400');
+              }
+              likeBtn.setAttribute('onclick', `window.toggleLikeFB('${postId}', ${!!hasLiked}, '${post.uid}')`);
+              likeCountSpan.textContent = `Me gusta (${formatFollowerCount(likesCount)})`;
+            }
+          });
         }
 
-        let remainingKeys = newlyPublishedId ? postKeys.slice(1) : postKeys;
-        remainingKeys.sort(() => Math.random() - 0.5);
-
-        remainingKeys.forEach((postId) => {
-          const post = allPostsData[postId];
-          const authorUser = allUsersData[post.uid] || {};
-          const card = buildPostCard(postId, post, authorUser);
-          feedContainer.appendChild(card);
-        });
+        // Actualizar estadísticas de mis posts y perfil
+        const myPostsContainer = document.getElementById('myPostsContainer');
+        const userProfileGrid = document.getElementById('userProfilePostsGrid');
+        myPostsContainer.innerHTML = '';
+        userProfileGrid.innerHTML = '';
 
         Object.keys(allPostsData).reverse().forEach((postId) => {
           const post = allPostsData[postId];
@@ -2231,7 +2258,7 @@
 
       await update(ref(db, `posts/${pId}`), updated);
       window.closeEditPostModal();
-    });
+    };
 
     window.deletePost = async (postId) => {
       if (confirm("¿Estás seguro de eliminar esta publicación?")) {
@@ -2313,6 +2340,24 @@
 
     window.toggleLikeFB = async (postId, currentlyLiked, ownerUid) => {
       if (!currentUser) return;
+
+      // Actualización visual inmediata para respuesta instantánea en pantalla
+      const likeBtn = document.getElementById(`like-btn-${postId}`);
+      const likeCountSpan = document.getElementById(`like-count-${postId}`);
+      let currentCount = parseInt(likeCountSpan ? likeCountSpan.textContent.replace(/[^0-9]/g, '') : 0) || 0;
+
+      if (currentlyLiked) {
+        currentCount = Math.max(0, currentCount - 1);
+        if (likeBtn) likeBtn.classList.remove('text-pink-400');
+      } else {
+        currentCount += 1;
+        if (likeBtn) likeBtn.classList.add('text-pink-400');
+      }
+
+      if (likeCountSpan) likeCountSpan.textContent = `Me gusta (${formatFollowerCount(currentCount)})`;
+      if (likeBtn) likeBtn.setAttribute('onclick', `window.toggleLikeFB('${postId}', ${!currentlyLiked}, '${ownerUid}')`);
+
+      // Persistencia en Firebase en segundo plano
       const postRef = ref(db, `posts/${postId}`);
       const snapshot = await get(postRef);
       if (!snapshot.exists()) return;
