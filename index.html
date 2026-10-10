@@ -364,8 +364,8 @@
               </div>
 
               <div>
-                <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1">Descripción</label>
-                <textarea id="deskPubDescription" rows="3" placeholder="¿Qué estás pensando u ofreciendo hoy?..." required class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-3 text-xs text-slate-100 focus:outline-none resize-none"></textarea>
+                <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1">Descripción <span class="text-pink-400 lowercase">(usa #hashtags)</span></label>
+                <textarea id="deskPubDescription" rows="3" placeholder="¿Qué estás pensando u ofreciendo hoy? #roblox #anime" required class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-3 text-xs text-slate-100 focus:outline-none resize-none"></textarea>
               </div>
 
               <div class="grid grid-cols-2 gap-3">
@@ -454,7 +454,7 @@
           <input type="text" id="pubTitle" placeholder="Título de la publicación (opcional)..." class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-xs text-slate-100 focus:outline-none focus:border-pink-500">
 
           <div>
-            <textarea id="pubDescription" rows="3" placeholder="¿Qué estás pensando u ofreciendo hoy?..." required class="w-full bg-transparent text-sm text-slate-100 focus:outline-none resize-none placeholder:text-slate-500"></textarea>
+            <textarea id="pubDescription" rows="3" placeholder="¿Qué estás pensando u ofreciendo hoy? #hashtags..." required class="w-full bg-transparent text-sm text-slate-100 focus:outline-none resize-none placeholder:text-slate-500"></textarea>
           </div>
 
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -781,7 +781,7 @@
 
   </main>
 
-  <!-- SCRIPT PRINCIPAL DE FIREBASE Y LÓGICA DE SEGUIDORES/ADMIN/MEDIA -->
+  <!-- SCRIPT PRINCIPAL DE FIREBASE Y LÓGICA DE SEGUIDORES/ADMIN/MEDIA/ALGORITMO HASHTAGS -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
@@ -828,7 +828,6 @@
     let mobileTempMediaType = 'image';
     let activeModalPostId = null;
 
-    // FUNCIÓN PARA FORMATEAR NÚMEROS GRANDES (1k, 10k, 100k, 100.1k, 1M, 100M, 100.1M, etc.)
     function formatFollowerCount(num) {
       if (num >= 1000000) {
         return (num / 1000000).toFixed(1).replace(/\.0$/, '') + 'M';
@@ -837,6 +836,13 @@
         return (num / 1000).toFixed(1).replace(/\.0$/, '') + 'k';
       }
       return num.toString();
+    }
+
+    // EXTRAER Y FORMATEAR HASHTAGS (ALGORITMO)
+    function parseHashtagsInText(text) {
+      if (!text) return '';
+      // Resalta cualquier palabra que empiece con # con color rosado/morado cute
+      return text.replace(/(#[a-zA-Z0-9_áéíóúÁÉÍÓÚñÑ]+)/g, '<span class="text-pink-400 font-bold hover:underline cursor-pointer">$1</span>');
     }
 
     // LÓGICA DE 6 TOQUES PARA EL PANEL ADMIN
@@ -1062,7 +1068,7 @@
         }
 
         const posts = snapshot.val();
-        Object.keys(posts).reverse().forEach(pId => {
+        Object.keys(posts).forEach(pId => {
           const p = posts[pId];
           const author = allUsersData[p.uid] || {};
           const authorName = author.name || 'Usuario';
@@ -1483,6 +1489,9 @@
         }
       }
 
+      const descText = document.getElementById('deskPubDescription').value.trim();
+      const hashtagsMatch = descText.match(/#[a-zA-Z0-9_áéíóúÁÉÍÓÚñÑ]+/g) || [];
+
       const postData = {
         uid: currentUser.uid,
         category: categoryVal || "General",
@@ -1491,7 +1500,8 @@
         price: isSale ? priceVal : "",
         currency: document.getElementById('deskPubCurrency').value,
         postType: isSale ? "sale" : "daily",
-        description: document.getElementById('deskPubDescription').value.trim(),
+        description: descText,
+        hashtags: hashtagsMatch,
         media: deskTempMediaBase64,
         mediaType: deskTempMediaType,
         likesCount: 0,
@@ -1543,6 +1553,8 @@
         }
       }
 
+      const hashtagsMatch = descVal.match(/#[a-zA-Z0-9_áéíóúÁÉÍÓÚñÑ]+/g) || [];
+
       const postData = {
         uid: currentUser.uid,
         category: categoryVal || "General",
@@ -1552,6 +1564,7 @@
         currency: currencyStr,
         postType: isSale ? "sale" : "daily",
         description: descVal,
+        hashtags: hashtagsMatch,
         media: mobileTempMediaBase64,
         mediaType: mobileTempMediaType,
         likesCount: 0,
@@ -1638,7 +1651,7 @@
       let postCount = 0;
 
       if (allPostsData) {
-        Object.keys(allPostsData).reverse().forEach(pId => {
+        Object.keys(allPostsData).forEach(pId => {
           const post = allPostsData[pId];
           if (post.uid === targetUid) {
             postCount++;
@@ -1734,6 +1747,8 @@
         </div>
       ` : followBtnHTML;
 
+      const formattedDescription = parseHashtagsInText(post.description || '');
+
       const postCard = document.createElement('div');
       postCard.className = "bg-slate-900/90 border border-purple-500/20 rounded-3xl p-4 sm:p-5 shadow-xl space-y-3.5 relative backdrop-blur-sm";
 
@@ -1755,7 +1770,7 @@
 
         <div>
           <h3 class="font-bold text-sm sm:text-base text-slate-100">${post.title || 'Publicación cotidiana'}</h3>
-          <p class="text-slate-300 text-xs sm:text-sm mt-1 leading-relaxed">${post.description}</p>
+          <p class="text-slate-300 text-xs sm:text-sm mt-1 leading-relaxed">${formattedDescription}</p>
         </div>
 
         ${mediaContentHTML}
@@ -1907,13 +1922,24 @@
         allPostsData = snapshot.val();
         let myPostsCount = 0;
 
-        Object.keys(allPostsData).reverse().forEach((postId) => {
+        // CONVERTIR A ARRAY Y MEZCLAR AL AZAR PARA EL FEED PRINCIPAL
+        let postKeys = Object.keys(allPostsData);
+        postKeys.sort(() => Math.random() - 0.5);
+
+        postKeys.forEach((postId) => {
           const post = allPostsData[postId];
           const isMine = currentUser && post.uid === currentUser.uid;
           const authorUser = allUsersData[post.uid] || {};
 
           const card = buildPostCard(postId, post, authorUser);
           feedContainer.appendChild(card);
+        });
+
+        // PARA MIS POSTS (MANTENEMOS ORDEN CRONOLÓGICO INVERSO PARA COMODIDAD DEL USUARIO)
+        Object.keys(allPostsData).reverse().forEach((postId) => {
+          const post = allPostsData[postId];
+          const isMine = currentUser && post.uid === currentUser.uid;
+          const authorUser = allUsersData[post.uid] || {};
 
           if (isMine) {
             myPostsCount++;
@@ -1967,10 +1993,13 @@
 
       const priceVal = document.getElementById('editPostPrice').value.trim();
       const isSale = priceVal !== "" && !isNaN(priceVal) && parseFloat(priceVal) > 0;
+      const descVal = document.getElementById('editPostDesc').value.trim();
+      const hashtagsMatch = descVal.match(/#[a-zA-Z0-9_áéíóúÁÉÍÓÚñÑ]+/g) || [];
 
       const updated = {
         title: document.getElementById('editPostTitle').value.trim() || (isSale ? "Venta" : "Publicación cotidiana"),
-        description: document.getElementById('editPostDesc').value.trim(),
+        description: descVal,
+        hashtags: hashtagsMatch,
         gameName: document.getElementById('editPostGame').value.trim() || "General",
         price: isSale ? priceVal : "",
         postType: isSale ? "sale" : "daily"
