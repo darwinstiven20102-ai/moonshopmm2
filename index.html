@@ -1,0 +1,1874 @@
+<!DOCTYPE html>
+<html lang="es" class="overflow-x-hidden">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Moonfed - Comunidad & Ventas</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    html, body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      overflow-x: hidden;
+      overscroll-behavior-x: none;
+      touch-action: pan-y;
+    }
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    
+    @keyframes floatBounce {
+      0%, 100% { transform: translateY(0px) scale(1); }
+      50% { transform: translateY(-6px) scale(1.03); }
+    }
+    .animate-float-cute {
+      animation: floatBounce 3s ease-in-out infinite;
+    }
+  </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col pb-20 md:pb-0 overflow-x-hidden">
+
+  <!-- BURBUJA NOTIFICACIÓN FLOTANTE -->
+  <div id="msgFloatingBubble" class="hidden fixed bottom-20 right-4 md:bottom-8 md:right-8 z-[100] cursor-pointer animate-float-cute transition-all duration-300">
+    <div onclick="openBubbleChat()" class="relative bg-slate-900/95 backdrop-blur-xl border-2 border-pink-500/60 hover:border-pink-400 p-3.5 pr-6 md:p-4 md:pr-7 rounded-3xl shadow-[0_0_35px_rgba(244,114,182,0.45)] flex items-center gap-4">
+      <div class="relative">
+        <img id="bubbleAvatar" src="https://via.placeholder.com/50" class="w-12 h-12 md:w-14 md:h-14 rounded-full object-cover border-2 border-pink-400 shadow-md">
+        <span class="absolute -bottom-1 -right-1 w-4 h-4 bg-emerald-400 border-2 border-slate-900 rounded-full animate-ping"></span>
+        <span class="absolute -bottom-1 -right-1 w-4 h-4 bg-emerald-400 border-2 border-slate-900 rounded-full"></span>
+      </div>
+      <div class="max-w-[180px] md:max-w-[240px]">
+        <p class="text-[10px] md:text-xs font-black uppercase text-pink-400 tracking-wider">Nuevo mensaje recibido</p>
+        <p id="bubbleName" class="text-xs md:text-sm font-black text-slate-100 truncate mt-0.5">Usuario</p>
+        <p id="bubbleText" class="text-[11px] md:text-xs text-slate-300 truncate font-medium">Toca para abrir el chat...</p>
+      </div>
+      <button onclick="event.stopPropagation(); closeMessageBubble();" class="text-slate-400 hover:text-pink-400 p-1.5 text-sm ml-1">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+    </div>
+  </div>
+
+  <!-- NAVBAR SUPERIOR -->
+  <header id="mainNavbar" class="hidden border-b border-purple-500/20 bg-slate-900/90 backdrop-blur-md sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 h-20 flex items-center justify-between">
+      
+      <!-- LOGO MOONFED -->
+      <div class="flex items-center cursor-pointer select-none group" onclick="switchTab('feed')">
+        <span class="font-black text-3xl sm:text-4xl tracking-tight bg-gradient-to-r from-pink-400 via-purple-300 to-indigo-300 bg-clip-text text-transparent drop-shadow-[0_0_18px_rgba(244,114,182,0.6)] group-hover:scale-105 transition-transform duration-300">
+          Moonfed✨
+        </span>
+      </div>
+
+      <!-- NAVEGACIÓN PC Y TABLET -->
+      <div class="hidden md:flex items-center gap-2 lg:gap-3">
+        <button onclick="switchTab('feed')" class="text-xs lg:text-sm font-extrabold text-slate-200 hover:text-pink-300 bg-slate-800/60 hover:bg-slate-800 border border-slate-700/60 hover:border-pink-500/40 px-3.5 py-2.5 rounded-2xl transition-all duration-200 cursor-pointer flex items-center gap-2 hover:scale-105 shadow-md">
+          <i class="fa-solid fa-house text-base text-pink-400"></i> Feed
+        </button>
+        <button onclick="switchTab('messages')" class="text-xs lg:text-sm font-extrabold text-slate-200 hover:text-indigo-300 bg-slate-800/60 hover:bg-slate-800 border border-slate-700/60 hover:border-indigo-500/40 px-3.5 py-2.5 rounded-2xl transition-all duration-200 cursor-pointer flex items-center gap-2 hover:scale-105 shadow-md relative">
+          <i class="fa-solid fa-paper-plane text-base text-indigo-400"></i> Mensajes
+        </button>
+        <button onclick="switchTab('userProfile')" class="text-xs lg:text-sm font-extrabold text-slate-200 hover:text-pink-300 bg-slate-800/60 hover:bg-slate-800 border border-slate-700/60 hover:border-pink-500/40 px-3.5 py-2.5 rounded-2xl transition-all duration-200 cursor-pointer flex items-center gap-2 hover:scale-105 shadow-md">
+          <i class="fa-solid fa-user text-base text-pink-400"></i> Mi Perfil
+        </button>
+        <button onclick="switchTab('posts')" class="text-xs lg:text-sm font-extrabold text-slate-200 hover:text-purple-300 bg-slate-800/60 hover:bg-slate-800 border border-slate-700/60 hover:border-purple-500/40 px-3.5 py-2.5 rounded-2xl transition-all duration-200 cursor-pointer flex items-center gap-2 hover:scale-105 shadow-md">
+          <i class="fa-solid fa-store text-base text-purple-400"></i> Mis Posts
+        </button>
+        <button onclick="switchTab('notifications')" class="text-xs lg:text-sm font-extrabold text-slate-200 hover:text-indigo-300 bg-slate-800/60 hover:bg-slate-800 border border-slate-700/60 hover:border-indigo-500/40 px-3.5 py-2.5 rounded-2xl transition-all duration-200 cursor-pointer flex items-center gap-2 hover:scale-105 shadow-md relative">
+          <i class="fa-solid fa-bell text-base text-indigo-400"></i> Notificaciones
+          <span id="deskNotifBadge" class="hidden absolute top-2 right-2 w-2 h-2 rounded-full bg-pink-500"></span>
+        </button>
+      </div>
+
+      <!-- Menú de Usuario / Cuenta (Móvil, Tablet y PC) -->
+      <div class="flex items-center gap-3 relative">
+        <div class="relative">
+          <button id="profileMenuBtn" class="flex items-center gap-2.5 bg-slate-900 hover:bg-slate-800 border border-purple-500/30 p-1.5 pr-3.5 rounded-full transition-all cursor-pointer shadow-lg">
+            <img id="navUserAvatar" src="https://via.placeholder.com/40" alt="Avatar" class="w-9 h-9 sm:w-10 sm:h-10 rounded-full border-2 border-pink-400 object-cover">
+            <span id="navUserName" class="text-xs sm:text-sm font-bold text-slate-200 hidden sm:inline">Usuario</span>
+            <i class="fa-solid fa-chevron-down text-xs text-pink-400"></i>
+          </button>
+
+          <div id="profileDropdown" class="hidden absolute right-0 mt-2 w-56 bg-slate-900 border border-purple-500/30 rounded-2xl shadow-2xl py-2 z-50">
+            <div class="px-4 py-2 border-b border-slate-800 mb-1">
+              <p id="dropdownName" class="text-xs font-bold text-slate-200">Nombre</p>
+              <p id="dropdownEmail" class="text-[10px] text-slate-400 truncate">correo@ejemplo.com</p>
+            </div>
+            
+            <!-- OPCIONES ADICIONALES PARA MÓVIL EN EL MENÚ DESPLEGABLE -->
+            <div class="md:hidden border-b border-slate-800 pb-1 mb-1">
+              <button onclick="switchTab('userProfile')" class="w-full text-left px-4 py-2 text-xs text-slate-200 hover:bg-slate-800 flex items-center gap-3 transition cursor-pointer font-bold">
+                <i class="fa-solid fa-user w-4 text-center text-pink-400"></i> Mi Perfil
+              </button>
+              <button onclick="switchTab('posts')" class="w-full text-left px-4 py-2 text-xs text-slate-200 hover:bg-slate-800 flex items-center gap-3 transition cursor-pointer font-bold">
+                <i class="fa-solid fa-store w-4 text-center text-purple-400"></i> Mis Posts
+              </button>
+              <button onclick="switchTab('notifications')" class="w-full text-left px-4 py-2 text-xs text-slate-200 hover:bg-slate-800 flex items-center gap-3 transition cursor-pointer font-bold relative">
+                <i class="fa-solid fa-bell w-4 text-center text-indigo-400"></i> Notificaciones
+                <span id="mobileMenuNotifBadge" class="hidden ml-auto w-2 h-2 rounded-full bg-pink-500"></span>
+              </button>
+            </div>
+
+            <div id="linkedAccountsSection" class="border-t border-slate-800 mt-1 pt-1 hidden">
+              <div class="px-4 py-1 text-[10px] font-bold text-slate-500 uppercase">Cambiar cuenta</div>
+              <div id="linkedAccountsList" class="space-y-0.5 px-2"></div>
+            </div>
+
+            <div class="border-t border-slate-800 mt-1 pt-1">
+              <button id="addAccountBtn" class="w-full text-left px-4 py-2 text-xs text-pink-400 hover:bg-pink-500/10 flex items-center gap-3 transition cursor-pointer font-bold">
+                <i class="fa-solid fa-user-plus w-4 text-center"></i> Agregar cuenta
+              </button>
+              <button id="logoutBtn" class="w-full text-left px-4 py-2.5 text-sm text-red-400 hover:bg-red-500/10 flex items-center gap-3 transition cursor-pointer font-bold">
+                <i class="fa-solid fa-right-from-bracket w-4 text-center"></i> Cerrar sesión
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- NAVBAR INFERIOR MÓVIL -->
+  <nav id="mobileBottomNav" class="hidden fixed bottom-0 left-0 right-0 bg-slate-900/95 backdrop-blur border-t border-purple-500/20 h-16 z-50 px-4 justify-around items-center md:hidden">
+    <button onclick="switchTab('feed')" class="flex flex-col items-center justify-center text-slate-400 hover:text-pink-400 transition cursor-pointer py-1">
+      <i class="fa-solid fa-house text-xl"></i>
+      <span class="text-[10px] mt-1 font-bold">Feed</span>
+    </button>
+    <button onclick="switchTab('publish')" class="flex flex-col items-center justify-center text-slate-400 hover:text-purple-400 transition cursor-pointer py-1">
+      <i class="fa-solid fa-circle-plus text-xl"></i>
+      <span class="text-[10px] mt-1 font-bold">Publicar</span>
+    </button>
+    <button onclick="switchTab('messages')" class="flex flex-col items-center justify-center text-slate-400 hover:text-indigo-400 transition cursor-pointer py-1">
+      <i class="fa-solid fa-paper-plane text-xl"></i>
+      <span class="text-[10px] mt-1 font-bold">Mensajes</span>
+    </button>
+    <button onclick="switchTab('userProfile')" class="flex flex-col items-center justify-center text-slate-400 hover:text-pink-400 transition cursor-pointer py-1">
+      <i class="fa-solid fa-user text-xl"></i>
+      <span class="text-[10px] mt-1 font-bold">Perfil</span>
+    </button>
+  </nav>
+
+  <!-- CONTENEDOR PRINCIPAL -->
+  <main class="flex-1 max-w-7xl w-full mx-auto p-3 md:p-6 flex flex-col justify-center items-center overflow-x-hidden">
+
+    <!-- 1. LOGIN CON GOOGLE -->
+    <section id="loginScreen" class="max-w-md w-full text-center py-12 px-4">
+      <div class="bg-slate-900 border border-purple-500/30 rounded-3xl p-6 md:p-8 shadow-[0_0_40px_rgba(168,85,247,0.15)] space-y-6">
+        <div class="w-16 h-16 bg-pink-500/10 text-pink-400 rounded-2xl flex items-center justify-center mx-auto text-3xl border border-pink-500/30">
+          <i class="fa-solid fa-wand-magic-sparkles"></i>
+        </div>
+        <div>
+          <h2 class="text-3xl font-black bg-gradient-to-r from-pink-400 via-purple-300 to-indigo-300 bg-clip-text text-transparent">Moonfed</h2>
+          <p class="text-slate-400 text-sm mt-2">Inicia sesión con Google para acceder a la comunidad cute.</p>
+        </div>
+        <button id="googleAuthBtn" class="w-full bg-white hover:bg-slate-100 text-slate-900 font-bold py-3.5 px-4 rounded-2xl flex items-center justify-center gap-3 transition shadow-lg cursor-pointer hover:scale-105">
+          <svg class="w-5 h-5" viewBox="0 0 24 24">
+            <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+            <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+            <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
+            <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
+          </svg>
+          Continuar con Google
+        </button>
+      </div>
+    </section>
+
+    <!-- 2. ONBOARDING -->
+    <section id="onboardingScreen" class="hidden max-w-xl w-full py-4 px-2">
+      <div class="bg-slate-900 border border-purple-500/30 rounded-3xl p-6 md:p-8 shadow-2xl">
+        <div class="mb-6">
+          <span class="text-xs font-extrabold uppercase tracking-wider text-pink-400">Paso 2 de 2</span>
+          <h2 class="text-2xl font-black mt-1">Completa tu perfil</h2>
+        </div>
+        <form id="vendorForm" class="space-y-4">
+          <div>
+            <label class="block text-xs font-bold uppercase text-slate-400 mb-1">Nombre Completo</label>
+            <input type="text" id="formName" required class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-sm text-slate-100 focus:outline-none focus:border-pink-500">
+          </div>
+          <div>
+            <label class="block text-xs font-bold uppercase text-slate-400 mb-1">Correo Electrónico</label>
+            <input type="email" id="formEmail" readonly class="w-full bg-slate-950/60 border border-slate-800/80 text-slate-400 rounded-xl px-4 py-3 text-sm cursor-not-allowed">
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-xs font-bold uppercase text-slate-400 mb-1">Número de Teléfono</label>
+              <input type="tel" id="formPhone" placeholder="0000000000" required class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-sm text-slate-100 focus:outline-none focus:border-pink-500">
+            </div>
+            <div>
+              <label class="block text-xs font-bold uppercase text-slate-400 mb-1">País</label>
+              <select id="formCountry" required class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-sm text-slate-100 focus:outline-none focus:border-pink-500">
+                <option value="">Selecciona tu país...</option>
+                <option value="Colombia">Colombia</option>
+                <option value="México">México</option>
+                <option value="Argentina">Argentina</option>
+                <option value="Chile">Chile</option>
+                <option value="Perú">Perú</option>
+                <option value="España">España</option>
+                <option value="Otro">Otro</option>
+              </select>
+            </div>
+          </div>
+          <div id="otherCountryContainer" class="hidden">
+            <label class="block text-xs font-bold uppercase text-slate-400 mb-1">Especifica tu país</label>
+            <input type="text" id="formOtherCountry" placeholder="Escribe tu país" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-sm text-slate-100 focus:outline-none focus:border-pink-500">
+          </div>
+          <button type="submit" class="w-full bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-400 hover:to-purple-500 text-white font-bold py-3.5 rounded-2xl transition shadow-lg shadow-pink-500/30 mt-4 cursor-pointer">
+            Guardar Perfil y Continuar
+          </button>
+        </form>
+      </div>
+    </section>
+
+    <!-- 3. FEED ESTILO MOONFED -->
+    <section id="tabFeed" class="hidden w-full max-w-7xl mx-auto">
+      <div class="grid grid-cols-1 md:grid-cols-12 gap-6 items-start w-full">
+        
+        <!-- COLUMNA IZQUIERDA: FEED PRINCIPAL -->
+        <div class="md:col-span-7 lg:col-span-8 space-y-4 w-full order-2 md:order-1">
+          <div class="relative overflow-hidden rounded-3xl bg-gradient-to-r from-slate-900 via-purple-950/40 to-slate-900 border border-purple-500/30 p-4 sm:p-5 shadow-xl backdrop-blur-md flex items-center justify-between">
+            <div class="flex items-center gap-3">
+              <div class="w-11 h-11 rounded-2xl bg-pink-500/20 border border-pink-500/30 flex items-center justify-center text-pink-400 shadow-inner">
+                <i class="fa-solid fa-newspaper text-xl"></i>
+              </div>
+              <div>
+                <h1 class="text-base sm:text-xl font-black text-slate-100 tracking-wide">Feed de la Comunidad</h1>
+                <p class="text-[11px] text-pink-300 font-medium">Las mejores publicaciones de Moonfed✨</p>
+              </div>
+            </div>
+          </div>
+          
+          <div id="feedPostsContainer" class="space-y-4 w-full"></div>
+        </div>
+
+        <!-- COLUMNA DERECHA: FORMULARIO CREAR POST STICKY -->
+        <div class="hidden md:block md:col-span-5 lg:col-span-4 sticky top-24 order-1 md:order-2">
+          <div class="bg-slate-900/95 border border-purple-500/40 rounded-3xl p-6 shadow-2xl backdrop-blur-md space-y-5">
+            <div class="text-center pb-3 border-b border-slate-800">
+              <h2 class="text-sm font-black text-slate-100 uppercase tracking-wider flex items-center justify-center gap-2">
+                <i class="fa-solid fa-wand-magic-sparkles text-pink-400"></i> Crear Publicación
+              </h2>
+            </div>
+
+            <form id="desktopPublishForm" class="space-y-4" onsubmit="handleDesktopPublish(event)">
+              <div class="flex items-center gap-3 bg-slate-950/80 p-3 rounded-2xl border border-slate-800/80">
+                <img id="deskFormUserAvatar" src="https://via.placeholder.com/40" class="w-10 h-10 rounded-full border-2 border-pink-400 object-cover">
+                <div>
+                  <p id="deskFormUserName" class="text-xs font-bold text-slate-100">Usuario</p>
+                  <span class="text-[10px] text-pink-400 font-bold"><i class="fa-solid fa-globe"></i> Público</span>
+                </div>
+              </div>
+
+              <div>
+                <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1">Título <span class="text-slate-500 lowercase">(opcional en cotidianas)</span></label>
+                <input type="text" id="deskPubTitle" placeholder="Ej. Vendo ítem MM2 o Mi experiencia hoy" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-3 text-xs text-slate-100 focus:outline-none focus:border-pink-500">
+              </div>
+
+              <div>
+                <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1">Descripción</label>
+                <textarea id="deskPubDescription" rows="3" placeholder="¿Qué estás pensando u ofreciendo hoy?..." required class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-3 text-xs text-slate-100 focus:outline-none resize-none"></textarea>
+              </div>
+
+              <div class="grid grid-cols-2 gap-3">
+                <div>
+                  <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1">Categoría <span class="text-slate-500 lowercase">(opcional)</span></label>
+                  <select id="deskPubCategory" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2.5 text-xs text-slate-100 focus:outline-none focus:border-pink-500">
+                    <option value="">Categoría...</option>
+                    <option value="Arte / Dibujo">Arte / Dibujo</option>
+                    <option value="Videojuegos">Videojuegos</option>
+                    <option value="Ropa Virtual">Ropa Virtual</option>
+                    <option value="Programación">Programación</option>
+                    <option value="Cotidiano / Blog">Cotidiano / Blog</option>
+                    <option value="Otro">Otro</option>
+                  </select>
+                </div>
+                <div>
+                  <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1">Juego / Tema</label>
+                  <input type="text" id="deskPubGameName" placeholder="Ej. Roblox, Charla" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2.5 text-xs text-slate-100 focus:outline-none focus:border-pink-500">
+                </div>
+              </div>
+
+              <!-- PRECIO (SI SE INGRESA SE VUELVE VENTA) -->
+              <div class="grid grid-cols-2 gap-3">
+                <div>
+                  <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1">Precio <span class="text-slate-500 lowercase">(opcional)</span></label>
+                  <input type="number" step="any" id="deskPubPrice" placeholder="Sin precio = Cotidiana" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2.5 text-xs text-slate-100 focus:outline-none focus:border-pink-500">
+                </div>
+                <div>
+                  <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1">Moneda</label>
+                  <select id="deskPubCurrency" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2.5 text-xs text-slate-100 focus:outline-none focus:border-pink-500">
+                    <option value="USD">USD ($)</option>
+                    <option value="COP">COP ($)</option>
+                    <option value="MXN">MXN ($)</option>
+                    <option value="Robux">Robux</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="border border-slate-800 rounded-2xl p-3 bg-slate-950/80 flex items-center justify-between">
+                <span class="text-xs font-semibold text-slate-300">Imagen adjunta</span>
+                <label class="bg-pink-500/20 hover:bg-pink-500 text-pink-300 hover:text-white px-3.5 py-2 rounded-xl text-xs font-bold transition cursor-pointer flex items-center gap-1.5">
+                  <i class="fa-solid fa-image"></i> Subir foto
+                  <input type="file" id="deskPubImageFile" accept="image/*" required class="hidden" onchange="previewDeskImage(this)">
+                </label>
+              </div>
+
+              <div id="deskImagePreviewBox" class="hidden rounded-2xl overflow-hidden border border-slate-800 max-h-36">
+                <img id="deskImagePreview" class="w-full h-full object-cover">
+              </div>
+
+              <button type="submit" class="w-full bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-400 hover:to-purple-500 text-white font-bold py-3 rounded-2xl transition shadow-lg shadow-pink-500/30 cursor-pointer text-xs">
+                Publicar en Moonfed✨
+              </button>
+            </form>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- 4. PUBLICAR MÓVIL -->
+    <section id="tabPublish" class="hidden max-w-xl w-full mx-auto space-y-4 py-2 md:hidden">
+      <div class="bg-slate-900 border border-purple-500/30 rounded-3xl p-4 md:p-6 shadow-2xl space-y-4">
+        <div class="text-center pb-3 border-b border-slate-800">
+          <h2 class="text-base font-black text-slate-100">Crear publicación en Moonfed✨</h2>
+        </div>
+
+        <form id="publishForm" class="space-y-4">
+          <div class="flex items-center gap-3">
+            <img id="formUserAvatar" src="https://via.placeholder.com/40" class="w-10 h-10 rounded-full border-2 border-pink-400 object-cover">
+            <div>
+              <p id="formUserName" class="text-xs font-bold text-slate-100">Usuario</p>
+              <div class="flex items-center gap-1 bg-slate-950 border border-slate-800 px-2 py-0.5 rounded-md text-[10px] text-pink-400 mt-0.5 font-bold">
+                <i class="fa-solid fa-globe"></i>
+                <span>Público</span>
+              </div>
+            </div>
+          </div>
+
+          <input type="text" id="pubTitle" placeholder="Título de la publicación (opcional)..." class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-xs text-slate-100 focus:outline-none focus:border-pink-500">
+
+          <div>
+            <textarea id="pubDescription" rows="3" placeholder="¿Qué estás pensando u ofreciendo hoy?..." required class="w-full bg-transparent text-sm text-slate-100 focus:outline-none resize-none placeholder:text-slate-500"></textarea>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+              <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1">Categoría <span class="text-slate-500 lowercase">(opcional)</span></label>
+              <select id="pubCategory" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-100 focus:outline-none focus:border-pink-500">
+                <option value="">Selecciona...</option>
+                <option value="Arte / Dibujo">Arte / Dibujo</option>
+                <option value="Videojuegos">Videojuegos</option>
+                <option value="Ropa Virtual">Ropa Virtual</option>
+                <option value="Programación">Programación</option>
+                <option value="Cotidiano / Blog">Cotidiano / Blog</option>
+                <option value="Otro">Otro</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1">Juego / Tema</label>
+              <input type="text" id="pubGameName" placeholder="Ej. Roblox, Charla..." class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-100 focus:outline-none focus:border-pink-500">
+            </div>
+          </div>
+
+          <div class="space-y-1">
+            <label class="block text-[10px] font-bold uppercase text-slate-400">Precio <span class="text-slate-500 lowercase">(opcional - sin precio es cotidiana)</span></label>
+            <div class="flex gap-2">
+              <input type="number" step="any" id="pubPrice" placeholder="Valor del ítem..." class="flex-1 bg-slate-950 border border-slate-800 rounded-xl px-3 py-2.5 text-xs text-slate-100 focus:outline-none focus:border-pink-500">
+              
+              <select id="pubCurrencySelect" class="bg-slate-950 border border-slate-800 rounded-xl px-3 py-2.5 text-xs text-slate-100 focus:outline-none focus:border-pink-500">
+                <option value="USD">USD ($)</option>
+                <option value="COP">COP ($)</option>
+                <option value="MXN">MXN ($)</option>
+                <option value="Robux">Robux</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="border border-slate-800 rounded-2xl p-3 bg-slate-950/80 flex items-center justify-between">
+            <span class="text-xs font-semibold text-slate-300">Agregar foto</span>
+            <label class="bg-pink-500/20 hover:bg-pink-500 text-pink-300 hover:text-white px-3 py-1.5 rounded-xl text-xs font-bold transition cursor-pointer flex items-center gap-1.5">
+              <i class="fa-solid fa-image"></i> Foto
+              <input type="file" id="pubImageFile" accept="image/*" required class="hidden" onchange="previewMobileImage(this)">
+            </label>
+          </div>
+          
+          <div id="imagePreviewContainer" class="hidden rounded-xl overflow-hidden border border-slate-800 max-h-48">
+            <img id="imagePreview" class="w-full h-full object-cover">
+          </div>
+
+          <button type="submit" class="w-full bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-400 hover:to-purple-500 text-white font-bold py-3 rounded-2xl transition shadow-lg shadow-pink-500/30 cursor-pointer">
+            Publicar
+          </button>
+        </form>
+      </div>
+    </section>
+
+    <!-- 5. MIS PUBLICACIONES -->
+    <section id="tabPosts" class="hidden w-full max-w-2xl mx-auto space-y-4">
+      <div class="bg-slate-900 border border-purple-500/30 rounded-3xl p-4 flex justify-between items-center shadow-xl">
+        <h1 class="text-xl font-black">Mis Publicaciones</h1>
+        <button onclick="switchTab('publish')" class="bg-gradient-to-r from-pink-500 to-purple-600 text-white px-4 py-2 rounded-xl text-xs font-bold transition cursor-pointer shadow-md">
+          <i class="fa-solid fa-plus mr-1"></i> Nueva
+        </button>
+      </div>
+      <div id="myPostsContainer" class="space-y-4"></div>
+    </section>
+
+    <!-- 6. SECCIÓN PERFIL -->
+    <section id="tabUserProfile" class="hidden w-full max-w-2xl mx-auto space-y-4">
+      <div class="bg-slate-900 border border-purple-500/30 rounded-3xl shadow-2xl overflow-hidden">
+        <div id="profileBannerBox" class="h-32 sm:h-44 w-full bg-gradient-to-r from-purple-900 via-pink-950 to-slate-900 relative bg-cover bg-center"></div>
+
+        <div class="p-6 relative pt-0">
+          <div class="flex flex-col sm:flex-row items-center sm:items-end justify-between gap-4 -mt-12 sm:-mt-16 pb-6 border-b border-slate-800">
+            <div class="flex flex-col sm:flex-row items-center sm:items-end gap-4 text-center sm:text-left">
+              <div class="relative group">
+                <img id="profilePageAvatar" src="https://via.placeholder.com/100" class="w-24 h-24 sm:w-28 sm:h-28 rounded-full border-4 border-slate-900 object-cover shadow-2xl bg-slate-950">
+                <label class="absolute bottom-1 right-1 bg-pink-500 hover:bg-pink-400 text-white w-8 h-8 rounded-full flex items-center justify-center cursor-pointer shadow-md transition">
+                  <i class="fa-solid fa-camera text-xs"></i>
+                  <input type="file" accept="image/*" class="hidden" onchange="window.updateProfilePhoto(this)">
+                </label>
+              </div>
+
+              <div class="space-y-1">
+                <h2 id="profilePageName" class="text-xl sm:text-2xl font-black text-slate-100">Cargando...</h2>
+                <p id="profilePageEmail" class="text-xs text-slate-400">correo@ejemplo.com</p>
+                <p id="profilePageCountry" class="text-xs text-pink-400 font-bold"><i class="fa-solid fa-location-dot mr-1"></i> Colombia</p>
+              </div>
+            </div>
+
+            <button onclick="window.toggleEditNameModal()" class="bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold px-4 py-2.5 rounded-2xl transition border border-slate-700 cursor-pointer shadow-lg">
+              <i class="fa-solid fa-pen mr-1"></i> Editar Perfil
+            </button>
+          </div>
+
+          <div class="flex justify-center sm:justify-start gap-6 py-4 border-b border-slate-800/80">
+            <div class="text-center sm:text-left">
+              <span id="profilePostsCount" class="block font-black text-base text-slate-100">0</span>
+              <span class="text-[10px] text-slate-400 uppercase font-semibold">Posts</span>
+            </div>
+            <div class="text-center sm:text-left">
+              <span id="profileFollowersCount" class="block font-black text-base text-pink-400">0</span>
+              <span class="text-[10px] text-slate-400 uppercase font-semibold">Seguidores</span>
+            </div>
+            <div class="text-center sm:text-left">
+              <span id="profileFollowingCount" class="block font-black text-base text-slate-100">0</span>
+              <span class="text-[10px] text-slate-400 uppercase font-semibold">Siguiendo</span>
+            </div>
+          </div>
+
+          <!-- Modal de Edición -->
+          <div id="editNameModal" class="hidden my-4 bg-slate-950 p-4 rounded-2xl border border-slate-800 space-y-4">
+            <h4 class="text-xs font-bold text-slate-300 uppercase">Ajustes de Perfil</h4>
+            <div class="space-y-3">
+              <div>
+                <label class="block text-[10px] font-bold text-slate-400 mb-1">Nombre Completo</label>
+                <input type="text" id="editNameInput" placeholder="Nuevo nombre" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-100 focus:outline-none focus:border-pink-500">
+              </div>
+              <div>
+                <label class="block text-[10px] font-bold text-slate-400 mb-1">Imagen de Banner</label>
+                <label class="flex items-center justify-between bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-400 cursor-pointer hover:border-pink-500 transition">
+                  <span id="bannerFileName">Subir imagen de fondo...</span>
+                  <i class="fa-solid fa-image text-pink-400"></i>
+                  <input type="file" id="editBannerInput" accept="image/*" class="hidden" onchange="document.getElementById('bannerFileName').textContent = this.files[0]?.name || 'Subir imagen de fondo...'">
+                </label>
+              </div>
+              <div class="flex justify-end gap-2 pt-1">
+                <button onclick="window.toggleEditNameModal()" class="bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-bold px-3 py-2 rounded-xl transition">Cancelar</button>
+                <button onclick="window.saveNewProfileData()" class="bg-pink-500 hover:bg-pink-400 text-white font-bold text-xs px-4 py-2 rounded-xl transition cursor-pointer">Guardar Cambios</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="pt-4">
+            <h3 class="text-sm font-bold text-slate-300 mb-3"><i class="fa-solid fa-grid-2 mr-1"></i> Publicaciones</h3>
+            <div id="userProfilePostsGrid" class="space-y-4"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 6.5 VISTA PÚBLICA DE PERFIL DE OTRO USUARIO -->
+    <section id="tabPublicProfile" class="hidden w-full max-w-2xl mx-auto space-y-4">
+      <div class="bg-slate-900 border border-purple-500/30 rounded-3xl shadow-2xl overflow-hidden">
+        <div id="pubProfileBannerBox" class="h-32 sm:h-44 w-full bg-gradient-to-r from-purple-900 via-pink-950 to-slate-900 relative bg-cover bg-center"></div>
+        <div class="p-6 relative pt-0">
+          <div class="flex flex-col sm:flex-row items-center sm:items-end justify-between gap-4 -mt-12 sm:-mt-16 pb-6 border-b border-slate-800">
+            <div class="flex flex-col sm:flex-row items-center sm:items-end gap-4 text-center sm:text-left">
+              <img id="pubProfileAvatar" src="https://via.placeholder.com/100" class="w-24 h-24 sm:w-28 sm:h-28 rounded-full border-4 border-slate-900 object-cover shadow-2xl bg-slate-950">
+              <div class="space-y-1">
+                <h2 id="pubProfileName" class="text-xl sm:text-2xl font-black text-slate-100">Nombre del Usuario</h2>
+                <p id="pubProfileCountry" class="text-xs text-pink-400 font-bold"><i class="fa-solid fa-location-dot mr-1"></i> Colombia</p>
+              </div>
+            </div>
+            <div id="pubProfileActions" class="flex gap-2"></div>
+          </div>
+          <div class="flex justify-center sm:justify-start gap-6 py-4 border-b border-slate-800/80">
+            <div class="text-center sm:text-left">
+              <span id="pubProfilePostsCount" class="block font-black text-base text-slate-100">0</span>
+              <span class="text-[10px] text-slate-400 uppercase font-semibold">Posts</span>
+            </div>
+            <div class="text-center sm:text-left">
+              <span id="pubProfileFollowersCount" class="block font-black text-base text-pink-400">0</span>
+              <span class="text-[10px] text-slate-400 uppercase font-semibold">Seguidores</span>
+            </div>
+          </div>
+          <div class="pt-4">
+            <h3 class="text-sm font-bold text-slate-300 mb-3"><i class="fa-solid fa-newspaper mr-1"></i> Publicaciones</h3>
+            <div id="pubProfilePostsGrid" class="space-y-4"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- MODAL DE PUBLICACIÓN Y COMENTARIOS -->
+    <div id="commentsModal" class="hidden fixed inset-0 z-50 bg-slate-950/85 backdrop-blur-md flex items-center justify-center p-3 sm:p-5">
+      <div class="bg-slate-900 border border-purple-500/30 rounded-3xl max-w-4xl w-full max-h-[90vh] flex flex-col md:flex-row overflow-hidden shadow-2xl relative">
+        
+        <button onclick="window.closeCommentsModal()" class="absolute top-3 right-3 z-30 bg-slate-950/80 hover:bg-pink-500 text-slate-300 hover:text-white w-8 h-8 rounded-full flex items-center justify-center transition cursor-pointer">
+          <i class="fa-solid fa-xmark text-sm"></i>
+        </button>
+
+        <div class="md:w-1/2 bg-slate-950 flex items-center justify-center border-b md:border-b-0 md:border-r border-slate-800 p-2 max-h-64 md:max-h-full overflow-hidden">
+          <img id="modalPostImage" src="" class="max-h-full max-w-full object-contain rounded-xl">
+        </div>
+
+        <div class="md:w-1/2 flex flex-col h-full bg-slate-900/95 overflow-hidden">
+          <div class="p-4 border-b border-slate-800 flex items-center gap-3 shrink-0">
+            <img id="modalAuthorAvatar" src="" class="w-10 h-10 rounded-full border-2 border-pink-400 object-cover cursor-pointer" onclick="window.openPublicProfileFromModal()">
+            <div class="min-w-0 flex-1">
+              <h4 id="modalAuthorName" class="text-sm font-extrabold text-slate-100 hover:text-pink-300 cursor-pointer truncate" onclick="window.openPublicProfileFromModal()">Usuario</h4>
+              <p id="modalPostTitle" class="text-xs text-slate-400 truncate">Título del post</p>
+            </div>
+          </div>
+
+          <div id="modalCommentsList" class="flex-1 p-4 overflow-y-auto space-y-3 divide-y divide-slate-800/40"></div>
+
+          <div class="p-3 border-t border-slate-800 bg-slate-950 shrink-0">
+            <div class="flex gap-2">
+              <input type="text" id="modalCommentInput" placeholder="Escribe un comentario..." class="flex-1 bg-slate-900 border border-slate-800 rounded-xl px-3.5 py-2 text-xs text-slate-100 focus:outline-none focus:border-pink-500">
+              <button onclick="window.submitModalComment()" class="bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-400 hover:to-purple-500 text-white px-4 py-2 rounded-xl text-xs font-bold transition cursor-pointer flex items-center gap-1.5 shadow-md">
+                <i class="fa-solid fa-paper-plane"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- MODAL EDITAR PUBLICACIÓN -->
+    <div id="editPostModal" class="hidden fixed inset-0 z-50 bg-slate-950/80 backdrop-blur flex items-center justify-center p-4">
+      <div class="bg-slate-900 border border-slate-800 rounded-3xl p-5 max-w-lg w-full space-y-4 shadow-2xl">
+        <div class="flex justify-between items-center pb-2 border-b border-slate-800">
+          <h3 class="font-bold text-sm text-slate-100">Editar Publicación</h3>
+          <button onclick="window.closeEditPostModal()" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <form id="editPostForm" class="space-y-3">
+          <input type="hidden" id="editPostId">
+          <div>
+            <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1">Título</label>
+            <input type="text" id="editPostTitle" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-100 focus:outline-none focus:border-pink-500">
+          </div>
+          <div>
+            <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1">Descripción</label>
+            <textarea id="editPostDesc" rows="3" required class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-100 focus:outline-none focus:border-pink-500"></textarea>
+          </div>
+          <div class="grid grid-cols-2 gap-2">
+            <div>
+              <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1">Juego / Servicio</label>
+              <input type="text" id="editPostGame" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-100 focus:outline-none focus:border-pink-500">
+            </div>
+            <div>
+              <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1">Precio (Opcional)</label>
+              <input type="number" step="any" id="editPostPrice" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-100 focus:outline-none focus:border-pink-500">
+            </div>
+          </div>
+          <div class="flex justify-end gap-2 pt-2">
+            <button type="button" onclick="window.closeEditPostModal()" class="bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-bold px-4 py-2 rounded-xl transition cursor-pointer">Cancelar</button>
+            <button type="submit" class="bg-pink-500 hover:bg-pink-400 text-white text-xs font-bold px-4 py-2 rounded-xl transition cursor-pointer">Guardar Cambios</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- 7. CHAT FIJO -->
+    <section id="tabMessages" class="hidden w-full max-w-4xl mx-auto h-[calc(100vh-8rem)] min-h-[500px] max-h-[650px] overflow-hidden">
+      <div class="bg-slate-900 border border-purple-500/30 rounded-3xl shadow-2xl overflow-hidden md:grid md:grid-cols-3 h-full w-full relative">
+        <div id="chatListPanel" class="w-full md:w-auto h-full border-r border-slate-800 flex flex-col bg-slate-950/60 overflow-hidden">
+          <div class="p-4 border-b border-slate-800/80 flex items-center justify-between shrink-0">
+            <h2 class="font-black text-sm tracking-tight text-slate-100 flex items-center gap-2">
+              <i class="fa-solid fa-paper-plane text-pink-400"></i> Mensajes Directos
+            </h2>
+          </div>
+          <div id="chatList" class="flex-1 overflow-y-auto overflow-x-hidden divide-y divide-slate-900/60"></div>
+        </div>
+
+        <div id="chatConversationPanel" class="hidden md:flex col-span-2 flex-col bg-slate-950/90 h-full w-full absolute md:relative inset-0 z-20 overflow-hidden">
+          <div class="p-3 px-4 border-b border-slate-800/80 flex items-center justify-between bg-slate-900/90 backdrop-blur shrink-0">
+            <div class="flex items-center gap-3">
+              <button onclick="closeMobileChat()" class="md:hidden text-slate-300 hover:text-white p-1 text-base cursor-pointer">
+                <i class="fa-solid fa-arrow-left"></i>
+              </button>
+              <div class="w-9 h-9 rounded-full bg-gradient-to-tr from-pink-500 via-purple-500 to-indigo-500 p-[1.5px] flex items-center justify-center shrink-0">
+                <img id="activeChatAvatar" src="https://via.placeholder.com/40" class="w-full h-full rounded-full object-cover">
+              </div>
+              <div>
+                <p id="activeChatName" class="text-xs font-bold text-slate-100">Selecciona un chat</p>
+                <p id="activeChatPhone" class="text-[10px] text-emerald-400 flex items-center gap-1">
+                  <span class="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-pulse"></span> Activo(a) ahora
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div id="chatMessagesBox" class="flex-1 p-4 overflow-y-auto overflow-x-hidden space-y-2.5 no-scrollbar">
+            <div class="text-center text-xs text-slate-500 my-auto pt-10">Toca un usuario para iniciar la conversación.</div>
+          </div>
+
+          <div class="p-3 border-t border-slate-800/80 bg-slate-900/90 backdrop-blur shrink-0">
+            <form id="chatForm" onsubmit="sendTextMessage(event)" class="flex items-center gap-2 bg-slate-950 border border-slate-800 rounded-full px-3 py-1.5 focus-within:border-pink-500 transition w-full">
+              <label class="p-1.5 text-slate-400 hover:text-pink-400 cursor-pointer transition flex items-center justify-center shrink-0">
+                <i class="fa-regular fa-image text-lg"></i>
+                <input type="file" id="chatImageInput" accept="image/*" class="hidden" onchange="sendChatImage(this)">
+              </label>
+
+              <button type="button" id="micBtn" onclick="toggleAudioRecording()" class="p-1.5 text-slate-400 hover:text-red-400 cursor-pointer transition flex items-center justify-center shrink-0">
+                <i class="fa-solid fa-microphone text-base"></i>
+              </button>
+
+              <input type="text" id="chatInput" placeholder="Envía un mensaje..." class="flex-1 min-w-0 bg-transparent border-none text-xs text-slate-100 focus:outline-none px-1" disabled>
+              
+              <button type="submit" id="sendMsgBtn" class="text-pink-400 hover:text-pink-300 font-bold text-xs px-2 transition cursor-pointer disabled:opacity-40 shrink-0" disabled>
+                Enviar
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 8. NOTIFICACIONES -->
+    <section id="tabNotifications" class="hidden max-w-xl w-full mx-auto space-y-4 py-4">
+      <div class="bg-slate-900 border border-purple-500/30 rounded-3xl p-6 shadow-xl space-y-4">
+        <h2 class="text-xl font-black flex items-center justify-between">
+          <span class="flex items-center gap-2"><i class="fa-solid fa-bell text-pink-400"></i> Notificaciones</span>
+          <span id="notifCount" class="text-xs font-bold text-pink-400 bg-pink-500/10 px-2.5 py-1 rounded-full">0 nuevas</span>
+        </h2>
+        <div id="notificationsContainer" class="space-y-2">
+          <div class="bg-slate-950 border border-slate-800 p-3.5 rounded-2xl text-xs text-slate-300">
+            <p class="font-bold text-pink-400">¡Bienvenido a Moonfed✨!</p>
+            <p class="text-[11px] text-slate-400 mt-1">Conectado a la red de usuarios.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- LÓGICA DE FIREBASE Y CONDICIONALES DE VALIDACIÓN -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+    import { getDatabase, ref, set, push, get, child, onValue, update, remove } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyByGaZHa8KJjFsfVgF6G1eLFmW70dielc4",
+      authDomain: "tienda-33972.firebaseapp.com",
+      databaseURL: "https://tienda-33972-default-rtdb.firebaseio.com",
+      projectId: "tienda-33972",
+      storageBucket: "tienda-33972.firebasestorage.app",
+      messagingSenderId: "348867313665",
+      appId: "1:348867313665:web:f05c56d1a1fad029484000"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    auth.useDeviceLanguage();
+    const db = getDatabase(app);
+    const provider = new GoogleAuthProvider();
+
+    const loginScreen = document.getElementById('loginScreen');
+    const onboardingScreen = document.getElementById('onboardingScreen');
+    const mainNavbar = document.getElementById('mainNavbar');
+    const mobileBottomNav = document.getElementById('mobileBottomNav');
+    const googleAuthBtn = document.getElementById('googleAuthBtn');
+    const logoutBtn = document.getElementById('logoutBtn');
+    const addAccountBtn = document.getElementById('addAccountBtn');
+    const vendorForm = document.getElementById('vendorForm');
+    const publishForm = document.getElementById('publishForm');
+
+    let currentUser = null;
+    let currentUserData = {};
+    let allPostsData = {};
+    let allUsersData = {};
+    let myFollowsMap = {};
+    let globalFollowsData = {};
+
+    let currentActiveTab = 'feed';
+    let pendingBubbleTarget = null;
+    let deskTempImageBase64 = null;
+    let activeModalPostId = null;
+
+    async function handleGoogleLogin(isAddingAccount = false) {
+      try {
+        const result = await signInWithPopup(auth, provider);
+        const user = result.user;
+        
+        saveAccountLocally({
+          uid: user.uid,
+          name: user.displayName,
+          email: user.email,
+          photoURL: user.photoURL
+        });
+
+        await checkVendorRegistration(user);
+      } catch (error) {
+        alert("Error de autenticación: " + error.message);
+      }
+    }
+
+    googleAuthBtn.addEventListener('click', () => handleGoogleLogin(false));
+    addAccountBtn.addEventListener('click', () => handleGoogleLogin(true));
+
+    function saveAccountLocally(account) {
+      let accounts = JSON.parse(localStorage.getItem('moonfed_accounts') || '[]');
+      if (!accounts.some(acc => acc.uid === account.uid)) {
+        accounts.push(account);
+        localStorage.setItem('moonfed_accounts', JSON.stringify(accounts));
+      }
+      localStorage.setItem('moonfed_active_uid', account.uid);
+      renderLinkedAccounts();
+    }
+
+    function renderLinkedAccounts() {
+      const container = document.getElementById('linkedAccountsList');
+      const section = document.getElementById('linkedAccountsSection');
+      const accounts = JSON.parse(localStorage.getItem('moonfed_accounts') || '[]');
+
+      container.innerHTML = '';
+      if (accounts.length <= 1) {
+        section.classList.add('hidden');
+        return;
+      }
+
+      section.classList.remove('hidden');
+      accounts.forEach(acc => {
+        const isCurrent = currentUser && acc.uid === acc.uid;
+        const div = document.createElement('button');
+        div.className = `w-full text-left px-3 py-2 rounded-xl text-xs flex items-center justify-between transition cursor-pointer ${isCurrent ? 'bg-pink-600/20 text-pink-400 font-bold border border-pink-500/30' : 'text-slate-300 hover:bg-slate-800'}`;
+        div.innerHTML = `
+          <div class="flex items-center gap-2 truncate">
+            <img src="${acc.photoURL || 'https://via.placeholder.com/30'}" class="w-6 h-6 rounded-full object-cover">
+            <span class="truncate">${acc.name}</span>
+          </div>
+          ${isCurrent ? '<i class="fa-solid fa-check text-[10px]"></i>' : ''}
+        `;
+        div.onclick = () => switchAccount(acc.uid);
+        container.appendChild(div);
+      });
+    }
+
+    window.switchAccount = async (targetUid) => {
+      localStorage.setItem('moonfed_active_uid', targetUid);
+      const dbRef = ref(db);
+      const snapshot = await get(child(dbRef, `vendors/${targetUid}`));
+      if (snapshot.exists()) {
+        currentUserData = snapshot.val();
+        location.reload();
+      }
+    };
+
+    logoutBtn.addEventListener('click', () => {
+      if (currentUser) {
+        let accounts = JSON.parse(localStorage.getItem('moonfed_accounts') || '[]');
+        accounts = accounts.filter(acc => acc.uid !== currentUser.uid);
+        localStorage.setItem('moonfed_accounts', JSON.stringify(accounts));
+        if (accounts.length > 0) {
+          localStorage.setItem('moonfed_active_uid', accounts[0].uid);
+        } else {
+          localStorage.removeItem('moonfed_active_uid');
+        }
+      }
+      signOut(auth);
+    });
+
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        currentUser = user;
+        saveAccountLocally({
+          uid: user.uid,
+          name: user.displayName,
+          email: user.email,
+          photoURL: user.photoURL
+        });
+        await checkVendorRegistration(user);
+        listenToVendors();
+        listenToFollows();
+        listenToPostsFB();
+        listenToNotifications();
+        listenToGlobalMessagesForBubble();
+        renderLinkedAccounts();
+      } else {
+        currentUser = null;
+        showScreen('login');
+      }
+    });
+
+    function listenToGlobalMessagesForBubble() {
+      if (!currentUser) return;
+      const userChatsRef = ref(db, `userChats/${currentUser.uid}`);
+
+      onValue(userChatsRef, (snapshot) => {
+        if (!snapshot.exists()) return;
+        const chats = snapshot.val();
+
+        Object.keys(chats).forEach(otherUid => {
+          const chatKey = getChatKey(currentUser.uid, otherUid);
+          const messagesRef = ref(db, `chats/${chatKey}/messages`);
+
+          onValue(messagesRef, (msgSnap) => {
+            if (!msgSnap.exists()) return;
+            const msgs = msgSnap.val();
+            const lastMsgKey = Object.keys(msgs).pop();
+            const lastMsg = msgs[lastMsgKey];
+
+            if (lastMsg.senderUid !== currentUser.uid && currentActiveTab !== 'messages') {
+              const senderObj = allUsersData[otherUid] || {};
+              const senderName = senderObj.name || lastMsg.senderName || 'Usuario';
+              const senderPhoto = senderObj.photoURL || 'https://via.placeholder.com/50';
+
+              let textPreview = lastMsg.type === 'text' ? lastMsg.content : (lastMsg.type === 'image' ? '📷 Foto' : '🎙️ Nota de voz');
+
+              document.getElementById('bubbleAvatar').src = senderPhoto;
+              document.getElementById('bubbleName').textContent = senderName;
+              document.getElementById('bubbleText').textContent = textPreview;
+
+              pendingBubbleTarget = { uid: otherUid, name: senderName, photo: senderPhoto };
+              document.getElementById('msgFloatingBubble').classList.remove('hidden');
+            }
+          });
+        });
+      });
+    }
+
+    window.openBubbleChat = () => {
+      if (pendingBubbleTarget) {
+        window.openChatWithUser(pendingBubbleTarget.uid, pendingBubbleTarget.name, pendingBubbleTarget.photo);
+        closeMessageBubble();
+      }
+    };
+
+    window.closeMessageBubble = () => {
+      document.getElementById('msgFloatingBubble').classList.add('hidden');
+      pendingBubbleTarget = null;
+    };
+
+    function listenToVendors() {
+      onValue(ref(db, 'vendors'), (snapshot) => {
+        if (snapshot.exists()) {
+          allUsersData = snapshot.val();
+          if (currentUser && allUsersData[currentUser.uid]) {
+            currentUserData = allUsersData[currentUser.uid];
+            updateNavUser(currentUser, currentUserData);
+          }
+        }
+      });
+    }
+
+    function listenToFollows() {
+      if (!currentUser) return;
+
+      onValue(ref(db, 'follows'), (snapshot) => {
+        globalFollowsData = snapshot.exists() ? snapshot.val() : {};
+        myFollowsMap = globalFollowsData[currentUser.uid] || {};
+
+        let myFollowersCount = 0;
+        Object.keys(globalFollowsData).forEach(fromUid => {
+          if (globalFollowsData[fromUid][currentUser.uid]) {
+            myFollowersCount++;
+          }
+        });
+
+        document.getElementById('profileFollowersCount').textContent = myFollowersCount;
+        document.getElementById('profileFollowingCount').textContent = Object.keys(myFollowsMap).length;
+
+        listenToPostsFB();
+      });
+    }
+
+    async function checkVendorRegistration(user) {
+      const dbRef = ref(db);
+      try {
+        const snapshot = await get(child(dbRef, `vendors/${user.uid}`));
+        if (snapshot.exists()) {
+          currentUserData = snapshot.val();
+          updateNavUser(user, currentUserData);
+          showScreen('app');
+          switchTab('feed');
+          listenToChatsList();
+        } else {
+          document.getElementById('formName').value = user.displayName || '';
+          document.getElementById('formEmail').value = user.email || '';
+          showScreen('onboarding');
+        }
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
+    vendorForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      if (!currentUser) return;
+
+      let country = document.getElementById('formCountry').value;
+      if (country === 'Otro') country = document.getElementById('formOtherCountry').value;
+
+      currentUserData = {
+        uid: currentUser.uid,
+        name: document.getElementById('formName').value,
+        email: currentUser.email,
+        phone: document.getElementById('formPhone').value,
+        country: country,
+        photoURL: currentUser.photoURL || 'https://via.placeholder.com/100',
+        bannerURL: '',
+        registeredAt: new Date().toISOString()
+      };
+
+      try {
+        await set(ref(db, 'vendors/' + currentUser.uid), currentUserData);
+        updateNavUser(currentUser, currentUserData);
+        showScreen('app');
+        switchTab('feed');
+      } catch (error) {
+        alert("Error al guardar en Firebase.");
+      }
+    });
+
+    window.updateProfilePhoto = (input) => {
+      if (input.files && input.files[0] && currentUser) {
+        const reader = new FileReader();
+        reader.onload = async (e) => {
+          const newPhoto = e.target.result;
+          await update(ref(db, `vendors/${currentUser.uid}`), { photoURL: newPhoto });
+          currentUserData.photoURL = newPhoto;
+          updateNavUser(currentUser, currentUserData);
+        };
+        reader.readAsDataURL(input.files[0]);
+      }
+    };
+
+    window.toggleEditNameModal = () => {
+      document.getElementById('editNameModal').classList.toggle('hidden');
+    };
+
+    window.saveNewProfileData = async () => {
+      if (!currentUser) return;
+      const newName = document.getElementById('editNameInput').value.trim();
+      const bannerFile = document.getElementById('editBannerInput').files[0];
+
+      let updates = {};
+      if (newName) updates.name = newName;
+
+      if (bannerFile) {
+        const reader = new FileReader();
+        reader.onload = async (e) => {
+          updates.bannerURL = e.target.result;
+          await update(ref(db, `vendors/${currentUser.uid}`), updates);
+          currentUserData = { ...currentUserData, ...updates };
+          updateNavUser(currentUser, currentUserData);
+          document.getElementById('editNameModal').classList.add('hidden');
+        };
+        reader.readAsDataURL(bannerFile);
+      } else {
+        if (Object.keys(updates).length > 0) {
+          await update(ref(db, `vendors/${currentUser.uid}`), updates);
+          currentUserData = { ...currentUserData, ...updates };
+          updateNavUser(currentUser, currentUserData);
+        }
+        document.getElementById('editNameModal').classList.add('hidden');
+      }
+    };
+
+    // Publicar desde PC (Título y Categoría opcionales al NO ser Venta)
+    window.previewDeskImage = (input) => {
+      if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          deskTempImageBase64 = e.target.result;
+          document.getElementById('deskImagePreview').src = deskTempImageBase64;
+          document.getElementById('deskImagePreviewBox').classList.remove('hidden');
+        };
+        reader.readAsDataURL(input.files[0]);
+      }
+    };
+
+    window.handleDesktopPublish = async (e) => {
+      e.preventDefault();
+      if (!currentUser || !deskTempImageBase64) {
+        alert("Por favor selecciona una imagen para la publicación.");
+        return;
+      }
+
+      const priceVal = document.getElementById('deskPubPrice').value.trim();
+      const isSale = priceVal !== "" && !isNaN(priceVal) && parseFloat(priceVal) > 0;
+
+      const titleVal = document.getElementById('deskPubTitle').value.trim();
+      const categoryVal = document.getElementById('deskPubCategory').value;
+
+      if (isSale) {
+        if (!titleVal) {
+          alert("Por favor ingresa un título para tu venta.");
+          return;
+        }
+        if (!categoryVal) {
+          alert("Por favor selecciona una categoría para tu venta.");
+          return;
+        }
+      }
+
+      const postData = {
+        uid: currentUser.uid,
+        category: categoryVal || "General",
+        gameName: document.getElementById('deskPubGameName').value.trim() || "General",
+        title: titleVal || "Publicación cotidiana",
+        price: isSale ? priceVal : "",
+        currency: document.getElementById('deskPubCurrency').value,
+        postType: isSale ? "sale" : "daily",
+        description: document.getElementById('deskPubDescription').value.trim(),
+        image: deskTempImageBase64,
+        likesCount: 0,
+        likes: {},
+        comments: {},
+        createdAt: new Date().toISOString()
+      };
+
+      try {
+        const postsRef = ref(db, 'posts');
+        const newPostRef = push(postsRef);
+        await set(newPostRef, postData);
+
+        document.getElementById('desktopPublishForm').reset();
+        document.getElementById('deskImagePreviewBox').classList.add('hidden');
+        deskTempImageBase64 = null;
+        switchTab('feed');
+      } catch (err) {
+        alert("Error al publicar.");
+      }
+    };
+
+    // Publicar Móvil (Título y Categoría opcionales al NO ser Venta)
+    publishForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      if (!currentUser) return;
+
+      const priceVal = document.getElementById('pubPrice').value.trim();
+      const isSale = priceVal !== "" && !isNaN(priceVal) && parseFloat(priceVal) > 0;
+
+      const titleVal = document.getElementById('pubTitle').value.trim();
+      const categoryVal = document.getElementById('pubCategory').value;
+      const gameVal = document.getElementById('pubGameName').value.trim();
+      const descVal = document.getElementById('pubDescription').value.trim();
+      const fileInput = document.getElementById('pubImageFile');
+      const currencyStr = document.getElementById('pubCurrencySelect').value;
+
+      if (isSale) {
+        if (!titleVal) {
+          alert("Por favor ingresa un título para tu venta.");
+          return;
+        }
+        if (!categoryVal) {
+          alert("Por favor selecciona una categoría para tu venta.");
+          return;
+        }
+      }
+
+      const reader = new FileReader();
+      reader.onload = async function(event) {
+        const postData = {
+          uid: currentUser.uid,
+          category: categoryVal || "General",
+          gameName: gameVal || "General",
+          title: titleVal || "Publicación cotidiana",
+          price: isSale ? priceVal : "",
+          currency: currencyStr,
+          postType: isSale ? "sale" : "daily",
+          description: descVal,
+          image: event.target.result,
+          likesCount: 0,
+          likes: {},
+          comments: {},
+          createdAt: new Date().toISOString()
+        };
+
+        try {
+          const postsRef = ref(db, 'posts');
+          await set(push(postsRef), postData);
+          publishForm.reset();
+          document.getElementById('imagePreviewContainer').classList.add('hidden');
+          switchTab('feed');
+        } catch (error) {
+          alert("Error al publicar.");
+        }
+      };
+      if (fileInput.files && fileInput.files[0]) {
+        reader.readAsDataURL(fileInput.files[0]);
+      }
+    });
+
+    window.toggleFollowUser = async (targetUid) => {
+      if (!currentUser || !targetUid || targetUid === currentUser.uid) return;
+      const followRef = ref(db, `follows/${currentUser.uid}/${targetUid}`);
+      if (myFollowsMap[targetUid]) {
+        await remove(followRef);
+      } else {
+        await set(followRef, true);
+        sendNotification(targetUid, "👤 Nuevo Seguidor", `${currentUserData.name || 'Alguien'} comenzó a seguirte.`);
+      }
+    };
+
+    window.openPublicProfile = async (targetUid) => {
+      if (currentUser && targetUid === currentUser.uid) {
+        switchTab('userProfile');
+        return;
+      }
+      const userObj = allUsersData[targetUid] || {};
+      const targetName = userObj.name || 'Usuario';
+      const targetPhoto = userObj.photoURL || 'https://via.placeholder.com/100';
+      const targetCountry = userObj.country || 'Colombia';
+      const targetBanner = userObj.bannerURL || '';
+
+      document.getElementById('pubProfileAvatar').src = targetPhoto;
+      document.getElementById('pubProfileName').textContent = targetName;
+      document.getElementById('pubProfileCountry').innerHTML = `<i class="fa-solid fa-location-dot mr-1"></i> ${targetCountry}`;
+
+      const bannerBox = document.getElementById('pubProfileBannerBox');
+      bannerBox.style.backgroundImage = targetBanner ? `url('${targetBanner}')` : 'none';
+
+      const actionsBox = document.getElementById('pubProfileActions');
+      actionsBox.innerHTML = '';
+
+      const isFollowing = myFollowsMap[targetUid];
+      const followsMe = globalFollowsData[targetUid] && globalFollowsData[targetUid][currentUser.uid];
+
+      let btnClass = "bg-gradient-to-r from-pink-500 to-purple-600 text-white shadow-lg";
+      let btnText = "Seguir";
+
+      if (isFollowing && followsMe) {
+        btnClass = "bg-emerald-600 text-white";
+        btnText = "Amigos";
+      } else if (isFollowing) {
+        btnClass = "bg-slate-800 text-slate-300";
+        btnText = "Siguiendo";
+      }
+
+      actionsBox.innerHTML = `
+        <button onclick="window.toggleFollowUser('${targetUid}')" class="${btnClass} text-xs font-bold px-4 py-2 rounded-xl transition cursor-pointer">
+          ${btnText}
+        </button>
+        <button onclick="window.openChatWithUser('${targetUid}', '${targetName}', '${targetPhoto}')" class="bg-gradient-to-r from-pink-500 to-purple-600 text-white text-xs font-bold px-4 py-2 rounded-xl transition flex items-center gap-1.5 cursor-pointer shadow-md">
+          <i class="fa-solid fa-paper-plane"></i> Mensaje
+        </button>
+      `;
+
+      const grid = document.getElementById('pubProfilePostsGrid');
+      grid.innerHTML = '';
+      let postCount = 0;
+
+      if (allPostsData) {
+        Object.keys(allPostsData).reverse().forEach(pId => {
+          const post = allPostsData[pId];
+          if (post.uid === targetUid) {
+            postCount++;
+            grid.appendChild(buildPostCard(pId, post, userObj));
+          }
+        });
+      }
+
+      let targetFollowersCount = 0;
+      Object.keys(globalFollowsData).forEach(fUid => {
+        if (globalFollowsData[fUid][targetUid]) targetFollowersCount++;
+      });
+
+      document.getElementById('pubProfilePostsCount').textContent = postCount;
+      document.getElementById('pubProfileFollowersCount').textContent = targetFollowersCount;
+
+      switchTab('publicProfile');
+    };
+
+    function buildPostCard(postId, post, authorUser) {
+      const isMine = currentUser && post.uid === currentUser.uid;
+      const likesCount = post.likesCount || 0;
+      const hasLiked = currentUser && post.likes && post.likes[currentUser.uid];
+      const currencyLabel = post.currency || 'USD';
+
+      const commentsCount = post.comments ? Object.keys(post.comments).length : 0;
+
+      const authorName = authorUser.name || post.author || 'Usuario';
+      const authorAvatar = authorUser.photoURL || post.authorPhoto || 'https://via.placeholder.com/40';
+
+      const isFollowing = myFollowsMap[post.uid];
+      const followsMe = globalFollowsData[post.uid] && globalFollowsData[post.uid][currentUser?.uid];
+
+      const isSalePost = post.price && post.price !== "" && parseFloat(post.price) > 0;
+      const badgeHTML = isSalePost 
+        ? `<span class="bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 text-[10px] font-black px-2.5 py-0.5 rounded-full uppercase tracking-wider"><i class="fa-solid fa-bag-shopping mr-1"></i> Venta</span>`
+        : `<span class="bg-pink-500/10 text-pink-400 border border-pink-500/30 text-[10px] font-black px-2.5 py-0.5 rounded-full uppercase tracking-wider"><i class="fa-solid fa-comment-dots mr-1"></i> Cotidiana</span>`;
+
+      let followBtnHTML = '';
+      if (!isMine) {
+        let btnStyle = "bg-pink-500/20 hover:bg-pink-500 text-pink-300 hover:text-white";
+        let btnText = "Seguir";
+
+        if (isFollowing && followsMe) {
+          btnStyle = "bg-emerald-600/20 text-emerald-400 border border-emerald-500/30";
+          btnText = "Amigos";
+        } else if (isFollowing) {
+          btnStyle = "bg-slate-800 text-slate-300";
+          btnText = "Siguiendo";
+        }
+
+        followBtnHTML = `
+          <button onclick="window.toggleFollowUser('${post.uid}')" class="${btnStyle} text-xs font-bold px-3 py-1 rounded-full transition cursor-pointer">
+            ${btnText}
+          </button>
+        `;
+      }
+
+      const dotsMenuHTML = isMine ? `
+        <div class="relative">
+          <button onclick="window.togglePostOptions('${postId}', event)" class="text-slate-400 hover:text-white p-1 text-xs cursor-pointer">
+            <i class="fa-solid fa-ellipsis-vertical"></i>
+          </button>
+          <div id="post-options-${postId}" class="post-options-dropdown hidden absolute right-0 mt-1 w-36 bg-slate-950 border border-slate-800 rounded-xl shadow-2xl py-1 z-30">
+            <button onclick="window.openEditPostModal('${postId}')" class="w-full text-left px-3 py-1.5 text-xs text-slate-200 hover:bg-slate-800 flex items-center gap-2 cursor-pointer">
+              <i class="fa-solid fa-pen text-pink-400"></i> Editar
+            </button>
+            <button onclick="window.deletePost('${postId}')" class="w-full text-left px-3 py-1.5 text-xs text-red-400 hover:bg-red-500/10 flex items-center gap-2 cursor-pointer">
+              <i class="fa-solid fa-trash"></i> Eliminar
+            </button>
+          </div>
+        </div>
+      ` : followBtnHTML;
+
+      const postCard = document.createElement('div');
+      postCard.className = "bg-slate-900/90 border border-purple-500/20 rounded-3xl p-4 sm:p-5 shadow-xl space-y-3.5 relative backdrop-blur-sm";
+
+      postCard.innerHTML = `
+        <div class="flex items-center justify-between pb-2 border-b border-slate-800/80">
+          <div class="flex items-center gap-3 cursor-pointer" onclick="window.openPublicProfile('${post.uid}')">
+            <img src="${authorAvatar}" class="w-10 h-10 sm:w-12 sm:h-12 rounded-full border-2 border-pink-400 object-cover shadow-md">
+            <div>
+              <div class="flex items-center gap-2">
+                <h4 class="text-xs sm:text-sm font-black text-slate-100 hover:text-pink-300 transition">${authorName}</h4>
+                ${badgeHTML}
+              </div>
+              <span class="text-[10px] sm:text-xs text-pink-300/80 font-semibold">${post.category || 'General'} • ${post.gameName || 'General'}</span>
+            </div>
+          </div>
+          ${dotsMenuHTML}
+        </div>
+
+        <div>
+          <h3 class="font-bold text-sm sm:text-base text-slate-100">${post.title || 'Publicación cotidiana'}</h3>
+          <p class="text-slate-300 text-xs sm:text-sm mt-1 leading-relaxed">${post.description}</p>
+        </div>
+
+        <div class="rounded-2xl overflow-hidden border border-slate-800 bg-slate-950 max-h-96 flex items-center justify-center cursor-pointer" onclick="window.openCommentsModal('${postId}')">
+          <img src="${post.image}" class="w-full object-cover hover:scale-102 transition duration-300">
+        </div>
+
+        <div class="flex justify-between items-center pt-1">
+          ${isSalePost 
+            ? `<span class="text-emerald-400 font-black text-sm sm:text-base">$${post.price}${currencyLabel}</span>` 
+            : `<span class="text-slate-400 italic text-xs font-semibold">Publicación cotidiana</span>`}
+          <button onclick="window.openChatWithUser('${post.uid}', '${authorName}', '${authorAvatar}')" class="bg-gradient-to-r from-pink-500 to-purple-600 hover:opacity-90 text-white text-xs sm:text-sm font-extrabold px-4 py-2 rounded-xl transition flex items-center gap-2 cursor-pointer shadow-md">
+            <i class="fa-solid fa-paper-plane"></i> Mensaje
+          </button>
+        </div>
+
+        <div class="flex items-center justify-between pt-2 border-t border-slate-800 text-xs sm:text-sm text-slate-300">
+          <button onclick="window.toggleLikeFB('${postId}', ${hasLiked}, '${post.uid}')" class="flex items-center gap-2 px-3 py-1.5 rounded-xl hover:bg-slate-800 hover:text-pink-400 transition cursor-pointer font-bold ${hasLiked ? 'text-pink-400' : ''}">
+            <i class="fa-solid fa-thumbs-up text-base sm:text-lg"></i> 
+            <span>Me gusta (${likesCount})</span>
+          </button>
+          
+          <button onclick="window.openCommentsModal('${postId}')" class="flex items-center gap-2 px-3 py-1.5 rounded-xl hover:bg-slate-800 hover:text-pink-400 transition cursor-pointer font-bold">
+            <i class="fa-solid fa-comment text-base sm:text-lg text-pink-400"></i> 
+            <span>Comentarios (${commentsCount})</span>
+          </button>
+        </div>
+      `;
+      return postCard;
+    }
+
+    window.openCommentsModal = (postId) => {
+      activeModalPostId = postId;
+      const post = allPostsData[postId];
+      if (!post) return;
+
+      const authorUser = allUsersData[post.uid] || {};
+      const authorName = authorUser.name || post.author || 'Usuario';
+      const authorAvatar = authorUser.photoURL || post.authorPhoto || 'https://via.placeholder.com/40';
+
+      document.getElementById('modalPostImage').src = post.image;
+      document.getElementById('modalAuthorAvatar').src = authorAvatar;
+      document.getElementById('modalAuthorName').textContent = authorName;
+      document.getElementById('modalPostTitle').textContent = post.title || 'Publicación cotidiana';
+
+      renderModalComments(post.comments);
+      document.getElementById('commentsModal').classList.remove('hidden');
+    };
+
+    window.closeCommentsModal = () => {
+      document.getElementById('commentsModal').classList.add('hidden');
+      activeModalPostId = null;
+    };
+
+    window.openPublicProfileFromModal = () => {
+      if (!activeModalPostId) return;
+      const post = allPostsData[activeModalPostId];
+      if (post) {
+        window.closeCommentsModal();
+        window.openPublicProfile(post.uid);
+      }
+    };
+
+    function renderModalComments(commentsObj) {
+      const list = document.getElementById('modalCommentsList');
+      list.innerHTML = '';
+
+      if (!commentsObj || Object.keys(commentsObj).length === 0) {
+        list.innerHTML = `<div class="text-center text-xs text-slate-500 py-8">Aún no hay comentarios. ¡Sé el primero en comentar!</div>`;
+        return;
+      }
+
+      Object.keys(commentsObj).forEach(cId => {
+        const c = commentsObj[cId];
+        const commenterUser = allUsersData[c.uid] || {};
+        const commenterName = commenterUser.name || c.author || 'Usuario';
+        const commenterAvatar = commenterUser.photoURL || 'https://via.placeholder.com/40';
+
+        const div = document.createElement('div');
+        div.className = "flex items-start gap-3 pt-3";
+        div.innerHTML = `
+          <img src="${commenterAvatar}" class="w-8 h-8 rounded-full border border-pink-400 object-cover cursor-pointer shrink-0" onclick="window.closeCommentsModal(); window.openPublicProfile('${c.uid}')">
+          <div class="bg-slate-950 p-3 rounded-2xl border border-slate-800 text-xs flex-1">
+            <p class="font-bold text-pink-400 hover:underline cursor-pointer" onclick="window.closeCommentsModal(); window.openPublicProfile('${c.uid}')">${commenterName}</p>
+            <p class="text-slate-200 mt-1 leading-relaxed">${c.text}</p>
+          </div>
+        `;
+        list.appendChild(div);
+      });
+    }
+
+    window.submitModalComment = async () => {
+      if (!currentUser || !activeModalPostId) return;
+      const input = document.getElementById('modalCommentInput');
+      const text = input.value.trim();
+      if (!text) return;
+
+      const commentRef = ref(db, `posts/${activeModalPostId}/comments`);
+      const newCommentRef = push(commentRef);
+      await set(newCommentRef, {
+        author: currentUserData.name || 'Usuario',
+        uid: currentUser.uid,
+        text: text,
+        createdAt: new Date().toISOString()
+      });
+
+      const post = allPostsData[activeModalPostId];
+      if (post && post.uid) {
+        sendNotification(post.uid, "💬 Nuevo Comentario", `${currentUserData.name || 'Alguien'} comentó: "${text}"`);
+      }
+
+      input.value = '';
+    };
+
+    function listenToPostsFB() {
+      const postsRef = ref(db, 'posts');
+      onValue(postsRef, (snapshot) => {
+        const feedContainer = document.getElementById('feedPostsContainer');
+        const myPostsContainer = document.getElementById('myPostsContainer');
+        const userProfileGrid = document.getElementById('userProfilePostsGrid');
+        
+        feedContainer.innerHTML = '';
+        myPostsContainer.innerHTML = '';
+        userProfileGrid.innerHTML = '';
+
+        if (!snapshot.exists()) {
+          feedContainer.innerHTML = `<div class="text-center text-xs text-slate-500 py-8">No hay publicaciones aún.</div>`;
+          return;
+        }
+
+        allPostsData = snapshot.val();
+        let myPostsCount = 0;
+
+        Object.keys(allPostsData).reverse().forEach((postId) => {
+          const post = allPostsData[postId];
+          const isMine = currentUser && post.uid === currentUser.uid;
+          const authorUser = allUsersData[post.uid] || {};
+
+          const card = buildPostCard(postId, post, authorUser);
+          feedContainer.appendChild(card);
+
+          if (isMine) {
+            myPostsCount++;
+            myPostsContainer.appendChild(buildPostCard(postId, post, authorUser));
+            userProfileGrid.appendChild(buildPostCard(postId, post, authorUser));
+          }
+        });
+
+        document.getElementById('profilePostsCount').textContent = myPostsCount;
+
+        if (activeModalPostId && allPostsData[activeModalPostId]) {
+          renderModalComments(allPostsData[activeModalPostId].comments);
+        }
+      });
+    }
+
+    window.togglePostOptions = (postId, event) => {
+      if (event) event.stopPropagation();
+      document.querySelectorAll('.post-options-dropdown').forEach(el => {
+        if (el.id !== `post-options-${postId}`) el.classList.add('hidden');
+      });
+      const el = document.getElementById(`post-options-${postId}`);
+      if (el) el.classList.toggle('hidden');
+    };
+
+    window.addEventListener('click', () => {
+      document.querySelectorAll('.post-options-dropdown').forEach(el => el.classList.add('hidden'));
+    });
+
+    window.openEditPostModal = (postId) => {
+      const post = allPostsData[postId];
+      if (!post) return;
+
+      document.getElementById('editPostId').value = postId;
+      document.getElementById('editPostTitle').value = post.title || '';
+      document.getElementById('editPostDesc').value = post.description || '';
+      document.getElementById('editPostGame').value = post.gameName || '';
+      document.getElementById('editPostPrice').value = post.price || '';
+
+      document.getElementById('editPostModal').classList.remove('hidden');
+    };
+
+    window.closeEditPostModal = () => {
+      document.getElementById('editPostModal').classList.add('hidden');
+    };
+
+    document.getElementById('editPostForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const pId = document.getElementById('editPostId').value;
+      if (!pId) return;
+
+      const priceVal = document.getElementById('editPostPrice').value.trim();
+      const isSale = priceVal !== "" && !isNaN(priceVal) && parseFloat(priceVal) > 0;
+
+      const updated = {
+        title: document.getElementById('editPostTitle').value.trim() || (isSale ? "Venta" : "Publicación cotidiana"),
+        description: document.getElementById('editPostDesc').value.trim(),
+        gameName: document.getElementById('editPostGame').value.trim() || "General",
+        price: isSale ? priceVal : "",
+        postType: isSale ? "sale" : "daily"
+      };
+
+      await update(ref(db, `posts/${pId}`), updated);
+      window.closeEditPostModal();
+    });
+
+    window.deletePost = async (postId) => {
+      if (confirm("¿Estás seguro de eliminar esta publicación?")) {
+        await remove(ref(db, `posts/${postId}`));
+      }
+    };
+
+    async function sendNotification(targetUid, title, message) {
+      if (!targetUid || targetUid === currentUser.uid) return;
+      const notifRef = ref(db, `notifications/${targetUid}`);
+      const newNotif = push(notifRef);
+      await set(newNotif, {
+        title: title,
+        message: message,
+        createdAt: new Date().toISOString()
+      });
+    }
+
+    function listenToNotifications() {
+      if (!currentUser) return;
+      const notifRef = ref(db, `notifications/${currentUser.uid}`);
+      onValue(notifRef, (snapshot) => {
+        const container = document.getElementById('notificationsContainer');
+        const countSpan = document.getElementById('notifCount');
+        const badge = document.getElementById('notifBadge');
+        const deskBadge = document.getElementById('deskNotifBadge');
+        const mobileBadge = document.getElementById('mobileMenuNotifBadge');
+        container.innerHTML = '';
+
+        if (!snapshot.exists()) {
+          container.innerHTML = `<div class="p-4 text-xs text-slate-500 text-center">No tienes notificaciones recientes.</div>`;
+          countSpan.textContent = "0 nuevas";
+          if (badge) badge.classList.add('hidden');
+          if (deskBadge) deskBadge.classList.add('hidden');
+          if (mobileBadge) mobileBadge.classList.add('hidden');
+          return;
+        }
+
+        const notifs = snapshot.val();
+        const keys = Object.keys(notifs).reverse();
+        countSpan.textContent = `${keys.length} nuevas`;
+        if (badge) badge.classList.remove('hidden');
+        if (deskBadge) deskBadge.classList.remove('hidden');
+        if (mobileBadge) mobileBadge.classList.remove('hidden');
+
+        keys.forEach(k => {
+          const n = notifs[k];
+          const div = document.createElement('div');
+          div.className = "bg-slate-950 border border-slate-800 p-3.5 rounded-2xl text-xs space-y-1";
+          div.innerHTML = `
+            <p class="font-bold text-pink-400">${n.title}</p>
+            <p class="text-slate-200">${n.message}</p>
+          `;
+          container.appendChild(div);
+        });
+      });
+    }
+
+    window.toggleLikeFB = async (postId, currentlyLiked, ownerUid) => {
+      if (!currentUser) return;
+      const postRef = ref(db, `posts/${postId}`);
+      const snapshot = await get(postRef);
+      if (!snapshot.exists()) return;
+
+      const postData = snapshot.val();
+      let count = postData.likesCount || 0;
+      const likes = postData.likes || {};
+
+      if (currentlyLiked) {
+        count = Math.max(0, count - 1);
+        delete likes[currentUser.uid];
+      } else {
+        count += 1;
+        likes[currentUser.uid] = true;
+        sendNotification(ownerUid, "❤️ Nuevo Me Gusta", `${currentUserData.name || 'Alguien'} le dio Me Gusta a tu publicación.`);
+      }
+
+      await update(postRef, { likesCount: count, likes: likes });
+    };
+
+    let targetChatUid = null;
+    let targetChatName = "";
+    let targetChatPhoto = "";
+
+    window.openChatWithUser = (targetUid, targetName, targetPhoto) => {
+      if (currentUser && targetUid === currentUser.uid) {
+        alert("Este es tu propio post.");
+        return;
+      }
+      targetChatUid = targetUid;
+      targetChatName = targetName;
+      targetChatPhoto = targetPhoto || 'https://via.placeholder.com/40';
+
+      switchTab('messages');
+      document.getElementById('activeChatName').textContent = targetName;
+      document.getElementById('activeChatAvatar').src = targetChatPhoto;
+      document.getElementById('chatInput').disabled = false;
+      document.getElementById('sendMsgBtn').disabled = false;
+
+      document.getElementById('chatConversationPanel').classList.remove('hidden');
+      document.getElementById('chatConversationPanel').classList.add('flex');
+
+      listenToChatMessages();
+    };
+
+    window.closeMobileChat = () => {
+      document.getElementById('chatConversationPanel').classList.add('hidden');
+      document.getElementById('chatConversationPanel').classList.remove('flex');
+    };
+
+    function getChatKey(uid1, uid2) {
+      return uid1 < uid2 ? `${uid1}_${uid2}` : `${uid2}_${uid1}`;
+    }
+
+    function listenToChatMessages() {
+      if (!currentUser || !targetChatUid) return;
+      const chatKey = getChatKey(currentUser.uid, targetChatUid);
+      const messagesRef = ref(db, `chats/${chatKey}/messages`);
+
+      onValue(messagesRef, (snapshot) => {
+        const box = document.getElementById('chatMessagesBox');
+        box.innerHTML = '';
+
+        if (!snapshot.exists()) {
+          box.innerHTML = `<div class="text-center text-xs text-slate-500 my-auto pt-10">Inicia la conversación con ${targetChatName}.</div>`;
+          return;
+        }
+
+        const msgs = snapshot.val();
+        Object.keys(msgs).forEach(mId => {
+          const m = msgs[mId];
+          const isMe = m.senderUid === currentUser.uid;
+
+          const msgDiv = document.createElement('div');
+          msgDiv.className = `max-w-[80%] p-3 rounded-2xl text-xs space-y-1 ${isMe ? 'bg-gradient-to-r from-pink-500 to-purple-600 text-white ml-auto rounded-br-xs' : 'bg-slate-800/90 text-slate-100 mr-auto rounded-bl-xs'}`;
+
+          if (m.type === 'text') {
+            msgDiv.textContent = m.content;
+          } else if (m.type === 'image') {
+            msgDiv.innerHTML = `<img src="${m.content}" class="rounded-xl max-h-48 w-full object-cover">`;
+          } else if (m.type === 'audio') {
+            msgDiv.innerHTML = `
+              <div class="flex items-center gap-2 py-1">
+                <i class="fa-solid fa-microphone text-sm"></i>
+                <audio controls class="w-full h-8 max-w-[220px]">
+                  <source src="${m.content}" type="audio/webm">
+                  Tu navegador no soporta el audio.
+                </audio>
+              </div>
+            `;
+          }
+
+          box.appendChild(msgDiv);
+        });
+
+        box.scrollTop = box.scrollHeight;
+      });
+    }
+
+    window.sendTextMessage = async (e) => {
+      e.preventDefault();
+      const input = document.getElementById('chatInput');
+      const text = input.value.trim();
+      if (!text || !targetChatUid || !currentUser) return;
+
+      const chatKey = getChatKey(currentUser.uid, targetChatUid);
+      const messagesRef = ref(db, `chats/${chatKey}/messages`);
+      const newMsgRef = push(messagesRef);
+
+      await set(newMsgRef, {
+        senderUid: currentUser.uid,
+        senderName: currentUserData.name || 'Usuario',
+        type: 'text',
+        content: text,
+        timestamp: new Date().toISOString()
+      });
+
+      await set(ref(db, `userChats/${currentUser.uid}/${targetChatUid}`), { name: targetChatName, uid: targetChatUid, photo: targetChatPhoto });
+      await set(ref(db, `userChats/${targetChatUid}/${currentUser.uid}`), { name: currentUserData.name || 'Usuario', uid: currentUser.uid, photo: currentUserData.photoURL });
+
+      sendNotification(targetChatUid, "📩 Nuevo Mensaje Directo", `${currentUserData.name || 'Alguien'}: "${text}"`);
+      input.value = '';
+    };
+
+    window.sendChatImage = (input) => {
+      if (!input.files || !input.files[0] || !targetChatUid) return;
+      const reader = new FileReader();
+      reader.onload = async (e) => {
+        const imageUrl = e.target.result;
+        const chatKey = getChatKey(currentUser.uid, targetChatUid);
+        const messagesRef = ref(db, `chats/${chatKey}/messages`);
+        const newMsgRef = push(messagesRef);
+
+        await set(newMsgRef, {
+          senderUid: currentUser.uid,
+          senderName: currentUserData.name || 'Usuario',
+          type: 'image',
+          content: imageUrl,
+          timestamp: new Date().toISOString()
+        });
+
+        sendNotification(targetChatUid, "📷 Foto recibida", `${currentUserData.name || 'Alguien'} te envió una foto.`);
+      };
+      reader.readAsDataURL(input.files[0]);
+    };
+
+    let mediaRecorder = null;
+    let audioChunks = [];
+    let isRecording = false;
+
+    window.toggleAudioRecording = async () => {
+      if (!targetChatUid) {
+        alert("Abre una conversación primero.");
+        return;
+      }
+
+      const micBtn = document.getElementById('micBtn');
+
+      if (!isRecording) {
+        try {
+          const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+          mediaRecorder = new MediaRecorder(stream);
+          audioChunks = [];
+
+          mediaRecorder.ondataavailable = (e) => audioChunks.push(e.data);
+          mediaRecorder.onstop = async () => {
+            const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+            const reader = new FileReader();
+            reader.onloadend = async () => {
+              const audioBase64 = reader.result;
+              const chatKey = getChatKey(currentUser.uid, targetChatUid);
+              const messagesRef = ref(db, `chats/${chatKey}/messages`);
+              const newMsgRef = push(messagesRef);
+
+              await set(newMsgRef, {
+                senderUid: currentUser.uid,
+                senderName: currentUserData.name || 'Usuario',
+                type: 'audio',
+                content: audioBase64,
+                timestamp: new Date().toISOString()
+              });
+
+              sendNotification(targetChatUid, "🎙️ Nota de voz", `${currentUserData.name || 'Alguien'} te envió un audio.`);
+            };
+            reader.readAsDataURL(audioBlob);
+          };
+
+          mediaRecorder.start();
+          isRecording = true;
+          micBtn.classList.add('text-red-500', 'animate-pulse');
+        } catch (err) {
+          alert("Error al acceder al micrófono: " + err.message);
+        }
+      } else {
+        mediaRecorder.stop();
+        isRecording = false;
+        micBtn.classList.remove('text-red-500', 'animate-pulse');
+      }
+    };
+
+    function listenToChatsList() {
+      if (!currentUser) return;
+      const listRef = ref(db, `userChats/${currentUser.uid}`);
+      onValue(listRef, (snapshot) => {
+        const chatList = document.getElementById('chatList');
+        chatList.innerHTML = '';
+
+        if (!snapshot.exists()) {
+          chatList.innerHTML = `<div class="p-6 text-xs text-slate-500 text-center">No tienes conversaciones aún.</div>`;
+          return;
+        }
+
+        const chats = snapshot.val();
+        Object.keys(chats).forEach(uId => {
+          const c = chats[uId];
+          const userObj = allUsersData[c.uid] || {};
+          const liveName = userObj.name || c.name;
+          const livePhoto = userObj.photoURL || c.photo || 'https://via.placeholder.com/40';
+
+          const item = document.createElement('div');
+          item.className = "p-3.5 hover:bg-slate-900/80 cursor-pointer flex items-center gap-3 transition border-b border-slate-900/40";
+          item.innerHTML = `
+            <img src="${livePhoto}" class="w-10 h-10 rounded-full border border-pink-400 object-cover flex-shrink-0">
+            <div class="flex-1 min-w-0">
+              <p class="text-xs font-bold text-slate-100 truncate">${liveName}</p>
+              <p class="text-[10px] text-slate-400 truncate mt-0.5">Toca para abrir mensaje</p>
+            </div>
+          `;
+          item.onclick = () => window.openChatWithUser(c.uid, liveName, livePhoto);
+          chatList.appendChild(item);
+        });
+      });
+    }
+
+    function showScreen(screen) {
+      loginScreen.classList.add('hidden');
+      onboardingScreen.classList.add('hidden');
+      mainNavbar.classList.add('hidden');
+      mobileBottomNav.classList.add('hidden');
+      document.getElementById('tabFeed').classList.add('hidden');
+      document.getElementById('tabPublish').classList.add('hidden');
+      document.getElementById('tabPosts').classList.add('hidden');
+      document.getElementById('tabUserProfile').classList.add('hidden');
+      document.getElementById('tabPublicProfile').classList.add('hidden');
+      document.getElementById('tabMessages').classList.add('hidden');
+      document.getElementById('tabNotifications').classList.add('hidden');
+
+      if (screen === 'login') loginScreen.classList.remove('hidden');
+      if (screen === 'onboarding') onboardingScreen.classList.remove('hidden');
+      if (screen === 'app') {
+        mainNavbar.classList.remove('hidden');
+        mobileBottomNav.style.display = window.innerWidth < 768 ? 'flex' : 'none';
+      }
+    }
+
+    function updateNavUser(user, vData) {
+      const avatar = vData.photoURL || 'https://via.placeholder.com/40';
+      const name = vData.name || 'Usuario';
+      const banner = vData.bannerURL || '';
+
+      document.getElementById('navUserAvatar').src = avatar;
+      document.getElementById('navUserName').textContent = name;
+      document.getElementById('dropdownName').textContent = name;
+      document.getElementById('dropdownEmail').textContent = user.email;
+
+      document.getElementById('deskFormUserAvatar').src = avatar;
+      document.getElementById('deskFormUserName').textContent = name;
+
+      document.getElementById('formUserAvatar').src = avatar;
+      document.getElementById('formUserName').textContent = name;
+
+      document.getElementById('profilePageAvatar').src = avatar;
+      document.getElementById('profilePageName').textContent = name;
+      document.getElementById('profilePageEmail').textContent = user.email;
+      document.getElementById('profilePageCountry').innerHTML = `<i class="fa-solid fa-location-dot mr-1"></i> ${vData.country || 'Colombia'}`;
+
+      const bannerBox = document.getElementById('profileBannerBox');
+      bannerBox.style.backgroundImage = banner ? `url('${banner}')` : 'none';
+    }
+
+    function switchTab(tabName) {
+      currentActiveTab = tabName;
+      if (tabName === 'messages') {
+        closeMessageBubble();
+      }
+
+      const profileDropdown = document.getElementById('profileDropdown');
+      if (profileDropdown) profileDropdown.classList.add('hidden');
+
+      document.getElementById('tabFeed').classList.add('hidden');
+      document.getElementById('tabPublish').classList.add('hidden');
+      document.getElementById('tabPosts').classList.add('hidden');
+      document.getElementById('tabUserProfile').classList.add('hidden');
+      document.getElementById('tabPublicProfile').classList.add('hidden');
+      document.getElementById('tabMessages').classList.add('hidden');
+      document.getElementById('tabNotifications').classList.add('hidden');
+
+      if (tabName === 'feed') document.getElementById('tabFeed').classList.remove('hidden');
+      if (tabName === 'publish') document.getElementById('tabPublish').classList.remove('hidden');
+      if (tabName === 'posts') document.getElementById('tabPosts').classList.remove('hidden');
+      if (tabName === 'userProfile') document.getElementById('tabUserProfile').classList.remove('hidden');
+      if (tabName === 'publicProfile') document.getElementById('tabPublicProfile').classList.remove('hidden');
+      if (tabName === 'messages') {
+        document.getElementById('tabMessages').classList.remove('hidden');
+        if (window.innerWidth < 768) {
+          document.getElementById('chatConversationPanel').classList.add('hidden');
+          document.getElementById('chatConversationPanel').classList.remove('flex');
+        }
+      }
+      if (tabName === 'notifications') document.getElementById('tabNotifications').classList.remove('hidden');
+      
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    window.switchTab = switchTab;
+  </script>
+
+  <!-- NAVEGACIÓN GENERAL -->
+  <script>
+    const profileMenuBtn = document.getElementById('profileMenuBtn');
+    const profileDropdown = document.getElementById('profileDropdown');
+
+    if (profileMenuBtn) {
+      profileMenuBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        profileDropdown.classList.toggle('hidden');
+      });
+    }
+
+    window.addEventListener('click', () => {
+      if (profileDropdown) profileDropdown.classList.add('hidden');
+    });
+  </script>
+</body>
+</html>
