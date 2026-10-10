@@ -557,7 +557,8 @@
             </button>
           </div>
 
-          <div class="flex justify-center sm:justify-start gap-6 py-4 border-b border-slate-800/80">
+          <!-- ESTADÍSTICAS DEL PERFIL (AGREGADO APARTADO LIKES) -->
+          <div class="flex justify-center sm:justify-start gap-6 sm:gap-8 py-4 border-b border-slate-800/80 overflow-x-auto">
             <div class="text-center sm:text-left">
               <span id="profilePostsCount" class="block font-black text-base text-slate-100">0</span>
               <span class="text-[10px] text-slate-400 uppercase font-semibold">Posts</span>
@@ -569,6 +570,10 @@
             <div class="text-center sm:text-left">
               <span id="profileFollowingCount" class="block font-black text-base text-slate-100">0</span>
               <span class="text-[10px] text-slate-400 uppercase font-semibold">Siguiendo</span>
+            </div>
+            <div class="text-center sm:text-left">
+              <span id="profileLikesCount" class="block font-black text-base text-purple-400">0</span>
+              <span class="text-[10px] text-slate-400 uppercase font-semibold">Likes</span>
             </div>
           </div>
 
@@ -617,7 +622,9 @@
             </div>
             <div id="pubProfileActions" class="flex gap-2"></div>
           </div>
-          <div class="flex justify-center sm:justify-start gap-6 py-4 border-b border-slate-800/80">
+
+          <!-- ESTADÍSTICAS PERFIL PÚBLICO (AGREGADO APARTADO LIKES) -->
+          <div class="flex justify-center sm:justify-start gap-6 sm:gap-8 py-4 border-b border-slate-800/80 overflow-x-auto">
             <div class="text-center sm:text-left">
               <span id="pubProfilePostsCount" class="block font-black text-base text-slate-100">0</span>
               <span class="text-[10px] text-slate-400 uppercase font-semibold">Posts</span>
@@ -626,7 +633,12 @@
               <span id="pubProfileFollowersCount" class="block font-black text-base text-pink-400">0</span>
               <span class="text-[10px] text-slate-400 uppercase font-semibold">Seguidores</span>
             </div>
+            <div class="text-center sm:text-left">
+              <span id="pubProfileLikesCount" class="block font-black text-base text-purple-400">0</span>
+              <span class="text-[10px] text-slate-400 uppercase font-semibold">Likes</span>
+            </div>
           </div>
+
           <div class="pt-4">
             <h3 class="text-sm font-bold text-slate-300 mb-3"><i class="fa-solid fa-newspaper mr-1"></i> Publicaciones</h3>
             <div id="pubProfilePostsGrid" class="space-y-4"></div>
@@ -781,7 +793,7 @@
 
   </main>
 
-  <!-- SCRIPT PRINCIPAL DE FIREBASE Y LÓGICA DE SEGUIDORES/ADMIN/MEDIA/ALGORITMO HASHTAGS -->
+  <!-- SCRIPT PRINCIPAL DE FIREBASE Y LÓGICA DE PERFIL CON LIKES TOTALES -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
@@ -838,14 +850,11 @@
       return num.toString();
     }
 
-    // EXTRAER Y FORMATEAR HASHTAGS (ALGORITMO)
     function parseHashtagsInText(text) {
       if (!text) return '';
-      // Resalta cualquier palabra que empiece con # con color rosado/morado cute
       return text.replace(/(#[a-zA-Z0-9_áéíóúÁÉÍÓÚñÑ]+)/g, '<span class="text-pink-400 font-bold hover:underline cursor-pointer">$1</span>');
     }
 
-    // LÓGICA DE 6 TOQUES PARA EL PANEL ADMIN
     let logoTapCount = 0;
     let logoTapTimer = null;
     const ADMIN_SECRET_PASS = "moonfed2026";
@@ -1649,12 +1658,14 @@
       const grid = document.getElementById('pubProfilePostsGrid');
       grid.innerHTML = '';
       let postCount = 0;
+      let totalLikesForUser = 0;
 
       if (allPostsData) {
         Object.keys(allPostsData).forEach(pId => {
           const post = allPostsData[pId];
           if (post.uid === targetUid) {
             postCount++;
+            totalLikesForUser += (post.likesCount || 0);
             grid.appendChild(buildPostCard(pId, post, userObj));
           }
         });
@@ -1669,6 +1680,7 @@
 
       document.getElementById('pubProfilePostsCount').textContent = postCount;
       document.getElementById('pubProfileFollowersCount').textContent = formatFollowerCount(targetTotalFollowers);
+      document.getElementById('pubProfileLikesCount').textContent = formatFollowerCount(totalLikesForUser);
 
       switchTab('publicProfile');
     };
@@ -1921,21 +1933,18 @@
 
         allPostsData = snapshot.val();
         let myPostsCount = 0;
+        let myTotalLikes = 0;
 
-        // CONVERTIR A ARRAY Y MEZCLAR AL AZAR PARA EL FEED PRINCIPAL
         let postKeys = Object.keys(allPostsData);
         postKeys.sort(() => Math.random() - 0.5);
 
         postKeys.forEach((postId) => {
           const post = allPostsData[postId];
-          const isMine = currentUser && post.uid === currentUser.uid;
           const authorUser = allUsersData[post.uid] || {};
-
           const card = buildPostCard(postId, post, authorUser);
           feedContainer.appendChild(card);
         });
 
-        // PARA MIS POSTS (MANTENEMOS ORDEN CRONOLÓGICO INVERSO PARA COMODIDAD DEL USUARIO)
         Object.keys(allPostsData).reverse().forEach((postId) => {
           const post = allPostsData[postId];
           const isMine = currentUser && post.uid === currentUser.uid;
@@ -1943,12 +1952,14 @@
 
           if (isMine) {
             myPostsCount++;
+            myTotalLikes += (post.likesCount || 0);
             myPostsContainer.appendChild(buildPostCard(postId, post, authorUser));
             userProfileGrid.appendChild(buildPostCard(postId, post, authorUser));
           }
         });
 
         document.getElementById('profilePostsCount').textContent = myPostsCount;
+        document.getElementById('profileLikesCount').textContent = formatFollowerCount(myTotalLikes);
 
         if (activeModalPostId && allPostsData[activeModalPostId]) {
           renderModalComments(allPostsData[activeModalPostId].comments);
