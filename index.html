@@ -160,7 +160,7 @@
         </button>
       </div>
 
-      <!-- Menú de Usuario / Cuenta (Móvil, Tablet y PC) -->
+      <!-- Menú de Usuario / Cuenta -->
       <div class="flex items-center gap-3 relative">
         <div class="relative">
           <button id="profileMenuBtn" class="flex items-center gap-2.5 bg-slate-900 hover:bg-slate-800 border border-purple-500/30 p-1.5 pr-3.5 rounded-full transition-all cursor-pointer shadow-lg">
@@ -507,7 +507,9 @@
               </div>
 
               <div class="space-y-1">
-                <h2 id="profilePageName" class="text-xl sm:text-2xl font-black text-slate-100">Cargando...</h2>
+                <h2 id="profilePageName" class="text-xl sm:text-2xl font-black text-slate-100 flex items-center justify-center sm:justify-start gap-1.5">
+                  Cargando...
+                </h2>
                 <p id="profilePageEmail" class="text-xs text-slate-400">correo@ejemplo.com</p>
                 <p id="profilePageCountry" class="text-xs text-pink-400 font-bold"><i class="fa-solid fa-location-dot mr-1"></i> Colombia</p>
               </div>
@@ -572,7 +574,7 @@
             <div class="flex flex-col sm:flex-row items-center sm:items-end gap-4 text-center sm:text-left">
               <img id="pubProfileAvatar" src="https://via.placeholder.com/100" class="w-24 h-24 sm:w-28 sm:h-28 rounded-full border-4 border-slate-900 object-cover shadow-2xl bg-slate-950">
               <div class="space-y-1">
-                <h2 id="pubProfileName" class="text-xl sm:text-2xl font-black text-slate-100">Nombre del Usuario</h2>
+                <h2 id="pubProfileName" class="text-xl sm:text-2xl font-black text-slate-100 flex items-center justify-center sm:justify-start gap-1.5">Nombre del Usuario</h2>
                 <p id="pubProfileCountry" class="text-xs text-pink-400 font-bold"><i class="fa-solid fa-location-dot mr-1"></i> Colombia</p>
               </div>
             </div>
@@ -741,7 +743,7 @@
 
   </main>
 
-  <!-- SCRIPT PRINCIPAL DE FIREBASE Y LÓGICA DE 6 TOQUES / ADMIN -->
+  <!-- SCRIPT PRINCIPAL DE FIREBASE Y LÓGICA DE SEGUIDORES/ADMIN -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
@@ -788,7 +790,7 @@
     // LÓGICA DE 6 TOQUES PARA EL PANEL ADMIN
     let logoTapCount = 0;
     let logoTapTimer = null;
-    const ADMIN_SECRET_PASS = "moonfed2026"; // Contraseña secreta (puedes cambiarla aquí)
+    const ADMIN_SECRET_PASS = "moonfed2026";
 
     window.handleLogoTap = () => {
       logoTapCount++;
@@ -1001,16 +1003,16 @@
     };
 
     window.addFollowersToUser = async (targetUid, currentExtra) => {
-      const amountStr = prompt("¿Cuántos seguidores deseas añadir a este usuario?", "100");
+      const amountStr = prompt("¿Cuántos seguidores adicionales deseas añadir a este usuario?", "100");
       if (!amountStr) return;
       const amount = parseInt(amountStr);
-      if (isNaN(amount) || amount <= 0) {
+      if (isNaN(amount)) {
         alert("Ingresa una cantidad válida.");
         return;
       }
       const newTotal = currentExtra + amount;
       await update(ref(db, `vendors/${targetUid}`), { followersExtraCount: newTotal });
-      alert(`¡Se añadieron ${amount} seguidores exitosamente!`);
+      alert(`¡Actualizado! Total de seguidores extra: ${newTotal}`);
     };
 
     async function handleGoogleLogin(isAddingAccount = false) {
@@ -1174,6 +1176,7 @@
           if (currentUser && allUsersData[currentUser.uid]) {
             currentUserData = allUsersData[currentUser.uid];
             updateNavUser(currentUser, currentUserData);
+            updateMyProfileFollowersUI();
           }
         }
       });
@@ -1186,18 +1189,23 @@
         globalFollowsData = snapshot.exists() ? snapshot.val() : {};
         myFollowsMap = globalFollowsData[currentUser.uid] || {};
 
-        let myFollowersCount = 0;
-        Object.keys(globalFollowsData).forEach(fromUid => {
-          if (globalFollowsData[fromUid][currentUser.uid]) {
-            myFollowersCount++;
-          }
-        });
-
-        document.getElementById('profileFollowersCount').textContent = myFollowersCount;
         document.getElementById('profileFollowingCount').textContent = Object.keys(myFollowsMap).length;
-
+        updateMyProfileFollowersUI();
         listenToPostsFB();
       });
+    }
+
+    function updateMyProfileFollowersUI() {
+      if (!currentUser) return;
+      let realFollowersCount = 0;
+      Object.keys(globalFollowsData).forEach(fromUid => {
+        if (globalFollowsData[fromUid][currentUser.uid]) {
+          realFollowersCount++;
+        }
+      });
+      const extra = currentUserData.followersExtraCount || 0;
+      const totalFollowers = realFollowersCount + extra;
+      document.getElementById('profileFollowersCount').textContent = totalFollowers;
     }
 
     async function checkVendorRegistration(user) {
@@ -1235,6 +1243,7 @@
         country: country,
         photoURL: currentUser.photoURL || 'https://via.placeholder.com/100',
         bannerURL: '',
+        followersExtraCount: 0,
         registeredAt: new Date().toISOString()
       };
 
@@ -1438,9 +1447,13 @@
       const targetPhoto = userObj.photoURL || 'https://via.placeholder.com/100';
       const targetCountry = userObj.country || 'Colombia';
       const targetBanner = userObj.bannerURL || '';
+      const isVerifiedUser = userObj.isVerified || false;
 
       document.getElementById('pubProfileAvatar').src = targetPhoto;
-      document.getElementById('pubProfileName').textContent = targetName;
+      document.getElementById('pubProfileName').innerHTML = `
+        ${targetName}
+        ${isVerifiedUser ? '<i class="fa-solid fa-circle-check text-pink-400 text-base" title="Verificado"></i>' : ''}
+      `;
       document.getElementById('pubProfileCountry').innerHTML = `<i class="fa-solid fa-location-dot mr-1"></i> ${targetCountry}`;
 
       const bannerBox = document.getElementById('pubProfileBannerBox');
@@ -1486,13 +1499,15 @@
         });
       }
 
-      let targetFollowersCount = 0;
+      let targetRealFollowers = 0;
       Object.keys(globalFollowsData).forEach(fUid => {
-        if (globalFollowsData[fUid][targetUid]) targetFollowersCount++;
+        if (globalFollowsData[fUid][targetUid]) targetRealFollowers++;
       });
+      const targetExtraFollowers = userObj.followersExtraCount || 0;
+      const targetTotalFollowers = targetRealFollowers + targetExtraFollowers;
 
       document.getElementById('pubProfilePostsCount').textContent = postCount;
-      document.getElementById('pubProfileFollowersCount').textContent = targetFollowersCount;
+      document.getElementById('pubProfileFollowersCount').textContent = targetTotalFollowers;
 
       switchTab('publicProfile');
     };
@@ -1507,6 +1522,7 @@
 
       const authorName = authorUser.name || post.author || 'Usuario';
       const authorAvatar = authorUser.photoURL || post.authorPhoto || 'https://via.placeholder.com/40';
+      const isVerified = authorUser.isVerified || false;
 
       const isFollowing = myFollowsMap[post.uid];
       const followsMe = globalFollowsData[post.uid] && globalFollowsData[post.uid][currentUser?.uid];
@@ -1560,8 +1576,9 @@
           <div class="flex items-center gap-3 cursor-pointer" onclick="window.openPublicProfile('${post.uid}')">
             <img src="${authorAvatar}" class="w-10 h-10 sm:w-12 sm:h-12 rounded-full border-2 border-pink-400 object-cover shadow-md">
             <div>
-              <div class="flex items-center gap-2">
+              <div class="flex items-center gap-1.5">
                 <h4 class="text-xs sm:text-sm font-black text-slate-100 hover:text-pink-300 transition">${authorName}</h4>
+                ${isVerified ? '<i class="fa-solid fa-circle-check text-pink-400 text-xs" title="Verificado"></i>' : ''}
                 ${badgeHTML}
               </div>
               <span class="text-[10px] sm:text-xs text-pink-300/80 font-semibold">${post.category || 'General'} • ${post.gameName || 'General'}</span>
@@ -2096,6 +2113,7 @@
       const avatar = vData.photoURL || 'https://via.placeholder.com/40';
       const name = vData.name || 'Usuario';
       const banner = vData.bannerURL || '';
+      const isVerified = vData.isVerified || false;
 
       document.getElementById('navUserAvatar').src = avatar;
       document.getElementById('navUserName').textContent = name;
@@ -2109,7 +2127,10 @@
       document.getElementById('formUserName').textContent = name;
 
       document.getElementById('profilePageAvatar').src = avatar;
-      document.getElementById('profilePageName').textContent = name;
+      document.getElementById('profilePageName').innerHTML = `
+        ${name}
+        ${isVerified ? '<i class="fa-solid fa-circle-check text-pink-400 text-base" title="Verificado"></i>' : ''}
+      `;
       document.getElementById('profilePageEmail').textContent = user.email;
       document.getElementById('profilePageCountry').innerHTML = `<i class="fa-solid fa-location-dot mr-1"></i> ${vData.country || 'Colombia'}`;
 
