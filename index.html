@@ -316,11 +316,12 @@
       </div>
     </section>
 
-    <!-- 3. FEED ESTILO MOONFED -->
+    <!-- 3. FEED ESTILO MOONFED (LAYOUT CON PANEL DE PUBLICAR CONGELADO / ESTÁTICO) -->
     <section id="tabFeed" class="hidden w-full max-w-7xl mx-auto">
       <div class="grid grid-cols-1 md:grid-cols-12 gap-6 items-start w-full">
         
-        <div class="md:col-span-7 lg:col-span-8 space-y-4 w-full order-2 md:order-1">
+        <!-- COLUMNA IZQUIERDA: FEED Y BÚSQUEDA -->
+        <div class="md:col-span-7 lg:col-span-8 space-y-4 w-full">
           
           <!-- BÚSQUEDA TIKTOK CON FONDO DINÁMICO -->
           <div class="dynamic-card border rounded-3xl p-4 shadow-xl backdrop-blur-md space-y-3">
@@ -379,11 +380,12 @@
           <div id="feedPostsContainer" class="space-y-4 w-full"></div>
         </div>
 
-        <div class="hidden md:block md:col-span-5 lg:col-span-4 sticky top-24 order-1 md:order-2">
+        <!-- COLUMNA DERECHA: PANEL DE CREAR PUBLICACIÓN (ESTÁTICO / CONGELADO CON STICKY) -->
+        <div class="hidden md:block md:col-span-5 lg:col-span-4 sticky top-24 self-start">
           <div class="dynamic-card border rounded-3xl p-6 shadow-2xl backdrop-blur-md space-y-5">
             <div class="text-center pb-3 border-b border-purple-500/20">
               <h2 class="text-sm font-black uppercase tracking-wider flex items-center justify-center gap-2">
-                <i class="fa-solid fa-wand-magic-sparkles text-pink-400"></i> Crear Publicación
+                <i class="fa-solid fa-wand-magic-sparkles text-pink-400"></i> CREAR PUBLICACIÓN
               </h2>
             </div>
 
@@ -1381,7 +1383,6 @@
       });
     }
 
-    // ADAPTACIÓN DINÁMICA DE COLOR DE CONTENEDORES SEGÚN EL FONDO ELEGIDO
     function applyGlobalTheme(vData) {
       const root = document.documentElement;
       const hexColor = vData.bgColor || '#020617';
@@ -1393,18 +1394,15 @@
       const g = parseInt(hex.substring(2, 4) || '06', 16);
       const b = parseInt(hex.substring(4, 6) || '17', 16);
       
-      // Fórmula de luminosidad relativa
       const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
 
       if (luminance > 0.6) {
-        // Fondo Claro (Ej. Blanco o Rosado pálido) -> Tarjetas un poco más oscuras / grisáceas
         root.style.setProperty('--card-bg', 'rgba(0, 0, 0, 0.06)');
         root.style.setProperty('--card-border', 'rgba(0, 0, 0, 0.12)');
         root.style.setProperty('--input-bg', 'rgba(0, 0, 0, 0.08)');
         root.style.setProperty('--text-main', '#0f172a');
         root.style.setProperty('--text-sub', '#475569');
       } else {
-        // Fondo Oscuro (Ej. Negro, Morado oscuro) -> Tarjetas un poquito más claritas (gris/negro suave)
         root.style.setProperty('--card-bg', 'rgba(255, 255, 255, 0.07)');
         root.style.setProperty('--card-border', 'rgba(255, 255, 255, 0.15)');
         root.style.setProperty('--input-bg', 'rgba(255, 255, 255, 0.09)');
