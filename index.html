@@ -105,6 +105,29 @@
           </div>
         </div>
 
+        <!-- Gestión de Publicaciones y Likes (Admin) -->
+        <div class="space-y-3 pt-4 border-t border-slate-800">
+          <div class="flex items-center justify-between">
+            <h3 class="text-xs font-black text-slate-300 uppercase tracking-wider flex items-center gap-2">
+              <i class="fa-solid fa-newspaper text-purple-400"></i> Publicaciones Globales (Gestión de Likes)
+            </h3>
+          </div>
+
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs text-slate-300">
+              <thead class="bg-slate-950 text-slate-400 uppercase font-extrabold text-[9px] tracking-wider border-b border-slate-800">
+                <tr>
+                  <th class="p-3">Autor / Título</th>
+                  <th class="p-3">Tipo</th>
+                  <th class="p-3">Likes Actuales</th>
+                  <th class="p-3">Acción Admin</th>
+                </tr>
+              </thead>
+              <tbody id="adminPostsTableBody" class="divide-y divide-slate-800/60 font-medium"></tbody>
+            </table>
+          </div>
+        </div>
+
       </div>
 
     </div>
@@ -920,6 +943,7 @@
       }
 
       listenToAdminUsersTable();
+      listenToAdminPostsTable();
     }
 
     window.closeAdminPanel = () => {
@@ -1026,6 +1050,56 @@
         });
       });
     }
+
+    function listenToAdminPostsTable() {
+      onValue(ref(db, 'posts'), (snapshot) => {
+        const tbody = document.getElementById('adminPostsTableBody');
+        tbody.innerHTML = '';
+
+        if (!snapshot.exists()) {
+          tbody.innerHTML = `<tr><td colspan="4" class="p-4 text-center text-slate-500">No hay publicaciones.</td></tr>`;
+          return;
+        }
+
+        const posts = snapshot.val();
+        Object.keys(posts).reverse().forEach(pId => {
+          const p = posts[pId];
+          const author = allUsersData[p.uid] || {};
+          const authorName = author.name || 'Usuario';
+          const likesCount = p.likesCount || 0;
+          const postTitle = p.title || 'Publicación';
+
+          const tr = document.createElement('tr');
+          tr.className = "hover:bg-slate-900/60 border-b border-slate-800/50 transition";
+          tr.innerHTML = `
+            <td class="p-3">
+              <p class="font-bold text-slate-100 truncate max-w-[180px]">${postTitle}</p>
+              <p class="text-[10px] text-slate-400">Por: ${authorName}</p>
+            </td>
+            <td class="p-3 text-[11px] uppercase font-bold text-pink-400">${p.postType || 'daily'}</td>
+            <td class="p-3 font-black text-pink-300">${likesCount} Likes</td>
+            <td class="p-3">
+              <button onclick="setPostLikesByAdmin('${pId}', ${likesCount})" class="bg-gradient-to-r from-pink-500 to-purple-600 text-white text-[11px] font-bold px-3 py-1.5 rounded-xl transition cursor-pointer shadow-md">
+                ✏️ Editar Likes
+              </button>
+            </td>
+          `;
+          tbody.appendChild(tr);
+        });
+      });
+    }
+
+    window.setPostLikesByAdmin = async (postId, currentLikes) => {
+      const valStr = prompt("Introduce el nuevo número total de likes para esta publicación:", currentLikes);
+      if (valStr === null) return;
+      const newLikes = parseInt(valStr);
+      if (isNaN(newLikes) || newLikes < 0) {
+        alert("Ingresa un número válido mayor o igual a 0.");
+        return;
+      }
+      await update(ref(db, `posts/${postId}`), { likesCount: newLikes });
+      alert(`¡Likes actualizados exitosamente a ${newLikes}!`);
+    };
 
     window.toggleUserVerification = async (targetUid, currentVerified) => {
       await update(ref(db, `vendors/${targetUid}`), { isVerified: !currentVerified });
@@ -1606,7 +1680,6 @@
         ? `<span class="bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 text-[10px] font-black px-2.5 py-0.5 rounded-full uppercase tracking-wider"><i class="fa-solid fa-bag-shopping mr-1"></i> Venta</span>`
         : `<span class="bg-pink-500/10 text-pink-400 border border-pink-500/30 text-[10px] font-black px-2.5 py-0.5 rounded-full uppercase tracking-wider"><i class="fa-solid fa-comment-dots mr-1"></i> Cotidiana</span>`;
 
-      // Compatibilidad con posts antiguos que usaban post.image en lugar de post.media
       const mediaSrc = post.media || post.image || '';
       const mediaType = post.mediaType || 'image';
 
