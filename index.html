@@ -316,12 +316,12 @@
       </div>
     </section>
 
-    <!-- 3. FEED ESTILO MOONFED (LAYOUT CON PANEL DE PUBLICAR MÁS GRANDE Y FLOTANTE / STICKY QUE BAJA CONTIGO) -->
+    <!-- 3. FEED ESTILO MOONFED (LAYOUT CON PROPORCIÓN DE COLUMNAS ANCHA Y PANEL DE PUBLICAR STICKY QUE BAJA CONTIGO) -->
     <section id="tabFeed" class="hidden w-full max-w-7xl mx-auto">
       <div class="grid grid-cols-1 md:grid-cols-12 gap-6 items-start w-full">
         
-        <!-- COLUMNA IZQUIERDA: FEED Y BÚSQUEDA -->
-        <div class="md:col-span-7 lg:col-span-8 space-y-4 w-full">
+        <!-- COLUMNA IZQUIERDA: FEED Y BÚSQUEDA (MÁS ANCHA: 8 COLUMNAS) -->
+        <div class="md:col-span-8 space-y-4 w-full">
           
           <!-- BÚSQUEDA TIKTOK CON FONDO DINÁMICO -->
           <div class="dynamic-card border rounded-3xl p-4 shadow-xl backdrop-blur-md space-y-3">
@@ -380,38 +380,38 @@
           <div id="feedPostsContainer" class="space-y-4 w-full"></div>
         </div>
 
-        <!-- COLUMNA DERECHA: PANEL DE CREAR PUBLICACIÓN MÁS GRANDE Y FLOTANTE (BAJA CONTIGO CON STICKY) -->
-        <div class="hidden md:block md:col-span-5 lg:col-span-4 sticky top-24 self-start">
-          <div class="dynamic-card border rounded-3xl p-7 lg:p-8 shadow-2xl backdrop-blur-md space-y-6">
+        <!-- COLUMNA DERECHA: PANEL DE CREAR PUBLICACIÓN MÁS GRANDE Y FLOTANTE (BAJA CONTIGO CON STICKY DE 4 COLUMNAS) -->
+        <div class="hidden md:block md:col-span-4 sticky top-24 self-start">
+          <div class="dynamic-card border rounded-3xl p-6 lg:p-7 shadow-2xl backdrop-blur-md space-y-5">
             <div class="text-center pb-3 border-b border-purple-500/20">
-              <h2 class="text-sm sm:text-base font-black uppercase tracking-wider flex items-center justify-center gap-2">
-                <i class="fa-solid fa-wand-magic-sparkles text-pink-400 text-lg"></i> CREAR PUBLICACIÓN
+              <h2 class="text-sm font-black uppercase tracking-wider flex items-center justify-center gap-2">
+                <i class="fa-solid fa-wand-magic-sparkles text-pink-400"></i> CREAR PUBLICACIÓN
               </h2>
             </div>
 
-            <form id="desktopPublishForm" class="space-y-5" onsubmit="handleDesktopPublish(event)">
-              <div class="flex items-center gap-3 dynamic-input p-3.5 rounded-2xl border">
-                <img id="deskFormUserAvatar" src="https://via.placeholder.com/40" class="w-11 h-11 rounded-full border-2 border-pink-400 object-cover">
+            <form id="desktopPublishForm" class="space-y-4" onsubmit="handleDesktopPublish(event)">
+              <div class="flex items-center gap-3 dynamic-input p-3 rounded-2xl border">
+                <img id="deskFormUserAvatar" src="https://via.placeholder.com/40" class="w-10 h-10 rounded-full border-2 border-pink-400 object-cover">
                 <div>
-                  <p id="deskFormUserName" class="text-xs sm:text-sm font-bold">Usuario</p>
+                  <p id="deskFormUserName" class="text-xs font-bold">Usuario</p>
                   <span class="text-[10px] text-pink-400 font-bold"><i class="fa-solid fa-globe"></i> Público</span>
                 </div>
               </div>
 
               <div>
-                <label class="block text-[11px] font-bold uppercase opacity-70 mb-1.5">Título <span class="opacity-50 lowercase">(opcional en cotidianas)</span></label>
-                <input type="text" id="deskPubTitle" placeholder="Ej. Vendo ítem MM2 o Mi experiencia hoy" class="w-full dynamic-input border rounded-2xl px-4 py-3.5 text-xs sm:text-sm focus:outline-none focus:border-pink-500">
+                <label class="block text-[10px] font-bold uppercase opacity-70 mb-1">Título <span class="opacity-50 lowercase">(opcional en cotidianas)</span></label>
+                <input type="text" id="deskPubTitle" placeholder="Ej. Vendo ítem MM2 o Mi experiencia hoy" class="w-full dynamic-input border rounded-xl px-3.5 py-3 text-xs focus:outline-none focus:border-pink-500">
               </div>
 
               <div>
-                <label class="block text-[11px] font-bold uppercase opacity-70 mb-1.5">Descripción <span class="text-pink-400 lowercase">(usa #hashtags)</span></label>
-                <textarea id="deskPubDescription" rows="4" placeholder="¿Qué estás pensando u ofreciendo hoy? #roblox #anime" required class="w-full dynamic-input border rounded-2xl px-4 py-3.5 text-xs sm:text-sm focus:outline-none resize-none"></textarea>
+                <label class="block text-[10px] font-bold uppercase opacity-70 mb-1">Descripción <span class="text-pink-400 lowercase">(usa #hashtags)</span></label>
+                <textarea id="deskPubDescription" rows="4" placeholder="¿Qué estás pensando u ofreciendo hoy? #roblox #anime" required class="w-full dynamic-input border rounded-xl px-3.5 py-3 text-xs focus:outline-none resize-none"></textarea>
               </div>
 
-              <div class="grid grid-cols-2 gap-3.5">
+              <div class="grid grid-cols-2 gap-3">
                 <div>
-                  <label class="block text-[11px] font-bold uppercase opacity-70 mb-1.5">Categoría</label>
-                  <select id="deskPubCategory" class="w-full dynamic-input border rounded-2xl px-3.5 py-3 text-xs sm:text-sm focus:outline-none focus:border-pink-500">
+                  <label class="block text-[10px] font-bold uppercase opacity-70 mb-1">Categoría</label>
+                  <select id="deskPubCategory" class="w-full dynamic-input border rounded-xl px-3 py-2.5 text-xs focus:outline-none focus:border-pink-500">
                     <option value="">Categoría...</option>
                     <option value="Arte / Dibujo">Arte / Dibujo</option>
                     <option value="Videojuegos">Videojuegos</option>
@@ -422,19 +422,19 @@
                   </select>
                 </div>
                 <div>
-                  <label class="block text-[11px] font-bold uppercase opacity-70 mb-1.5">Juego / Tema</label>
-                  <input type="text" id="deskPubGameName" placeholder="Ej. Roblox, Charla" class="w-full dynamic-input border rounded-2xl px-3.5 py-3 text-xs sm:text-sm focus:outline-none focus:border-pink-500">
+                  <label class="block text-[10px] font-bold uppercase opacity-70 mb-1">Juego / Tema</label>
+                  <input type="text" id="deskPubGameName" placeholder="Ej. Roblox, Charla" class="w-full dynamic-input border rounded-xl px-3 py-2.5 text-xs focus:outline-none focus:border-pink-500">
                 </div>
               </div>
 
-              <div class="grid grid-cols-2 gap-3.5">
+              <div class="grid grid-cols-2 gap-3">
                 <div>
-                  <label class="block text-[11px] font-bold uppercase opacity-70 mb-1.5">Precio</label>
-                  <input type="number" step="any" id="deskPubPrice" placeholder="Sin precio = Cotidiana" class="w-full dynamic-input border rounded-2xl px-3.5 py-3 text-xs sm:text-sm focus:outline-none focus:border-pink-500">
+                  <label class="block text-[10px] font-bold uppercase opacity-70 mb-1">Precio</label>
+                  <input type="number" step="any" id="deskPubPrice" placeholder="Sin precio = Cotidiana" class="w-full dynamic-input border rounded-xl px-3 py-2.5 text-xs focus:outline-none focus:border-pink-500">
                 </div>
                 <div>
-                  <label class="block text-[11px] font-bold uppercase opacity-70 mb-1.5">Moneda</label>
-                  <select id="deskPubCurrency" class="w-full dynamic-input border rounded-2xl px-3.5 py-3 text-xs sm:text-sm focus:outline-none focus:border-pink-500">
+                  <label class="block text-[10px] font-bold uppercase opacity-70 mb-1">Moneda</label>
+                  <select id="deskPubCurrency" class="w-full dynamic-input border rounded-xl px-3 py-2.5 text-xs focus:outline-none focus:border-pink-500">
                     <option value="USD">USD ($)</option>
                     <option value="COP">COP ($)</option>
                     <option value="MXN">MXN ($)</option>
@@ -443,26 +443,26 @@
                 </div>
               </div>
 
-              <div class="border border-purple-500/20 rounded-2xl p-3.5 dynamic-input flex items-center justify-between">
+              <div class="border border-purple-500/20 rounded-2xl p-3 dynamic-input flex items-center justify-between">
                 <span class="text-xs font-semibold">Multimedia adjunta</span>
                 <div class="flex gap-2">
-                  <label class="bg-pink-500/20 hover:bg-pink-500 text-pink-400 hover:text-white px-3.5 py-2 rounded-xl text-xs font-bold transition cursor-pointer flex items-center gap-1.5">
+                  <label class="bg-pink-500/20 hover:bg-pink-500 text-pink-400 hover:text-white px-3 py-2 rounded-xl text-xs font-bold transition cursor-pointer flex items-center gap-1.5">
                     <i class="fa-solid fa-image"></i> Foto
                     <input type="file" id="deskPubImageFile" accept="image/*" class="hidden" onchange="previewDeskMedia(this, 'image')">
                   </label>
-                  <label class="bg-purple-500/20 hover:bg-purple-500 text-purple-400 hover:text-white px-3.5 py-2 rounded-xl text-xs font-bold transition cursor-pointer flex items-center gap-1.5">
+                  <label class="bg-purple-500/20 hover:bg-purple-500 text-purple-400 hover:text-white px-3 py-2 rounded-xl text-xs font-bold transition cursor-pointer flex items-center gap-1.5">
                     <i class="fa-solid fa-video"></i> Video
                     <input type="file" id="deskPubVideoFile" accept="video/*" class="hidden" onchange="previewDeskMedia(this, 'video')">
                   </label>
                 </div>
               </div>
 
-              <div id="deskMediaPreviewBox" class="hidden rounded-2xl overflow-hidden border border-purple-500/20 max-h-40 flex items-center justify-center bg-black">
+              <div id="deskMediaPreviewBox" class="hidden rounded-2xl overflow-hidden border border-purple-500/20 max-h-36 flex items-center justify-center bg-black">
                 <img id="deskImagePreview" class="w-full h-full object-cover hidden">
                 <video id="deskVideoPreview" class="w-full h-full object-cover hidden" controls></video>
               </div>
 
-              <button type="submit" class="w-full bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-400 hover:to-purple-500 text-white font-black py-4 rounded-2xl transition shadow-lg shadow-pink-500/30 cursor-pointer text-xs sm:text-sm tracking-wide">
+              <button type="submit" class="w-full bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-400 hover:to-purple-500 text-white font-bold py-3.5 rounded-2xl transition shadow-lg shadow-pink-500/30 cursor-pointer text-xs">
                 Publicar en Moonfed✨
               </button>
             </form>
@@ -2067,19 +2067,23 @@
         return;
       }
 
+      // Si NO hay texto de búsqueda, no mostramos tarjetas en el feed general por defecto (tal como pediste en el video)
+      if (!searchQuery) {
+        feedContainer.innerHTML = `<div class="text-center text-xs opacity-50 py-6">Busca algo en la barra superior (ej. nombres, juegos, hashtags) para ver los resultados aquí.</div>`;
+        return;
+      }
+
       let matchingUsers = [];
       let matchingPosts = [];
 
-      if (searchQuery) {
-        Object.keys(allUsersData).forEach(uId => {
-          const u = allUsersData[uId];
-          const name = (u.name || '').toLowerCase();
-          const bio = (u.bio || '').toLowerCase();
-          if (name.includes(searchQuery) || bio.includes(searchQuery)) {
-            matchingUsers.push(u);
-          }
-        });
-      }
+      Object.keys(allUsersData).forEach(uId => {
+        const u = allUsersData[uId];
+        const name = (u.name || '').toLowerCase();
+        const bio = (u.bio || '').toLowerCase();
+        if (name.includes(searchQuery) || bio.includes(searchQuery)) {
+          matchingUsers.push(u);
+        }
+      });
 
       let postKeys = Object.keys(allPostsData);
       postKeys.reverse().forEach(pId => {
@@ -2091,12 +2095,12 @@
         const game = (post.gameName || '').toLowerCase();
         const authorName = (author.name || '').toLowerCase();
 
-        if (!searchQuery || title.includes(searchQuery) || desc.includes(searchQuery) || cat.includes(searchQuery) || game.includes(searchQuery) || authorName.includes(searchQuery)) {
+        if (title.includes(searchQuery) || desc.includes(searchQuery) || cat.includes(searchQuery) || game.includes(searchQuery) || authorName.includes(searchQuery)) {
           matchingPosts.push({ id: pId, post: post, author: author });
         }
       });
 
-      if (searchQuery && matchingUsers.length === 0 && matchingPosts.length === 0) {
+      if (matchingUsers.length === 0 && matchingPosts.length === 0) {
         feedContainer.innerHTML = `<div class="dynamic-card border rounded-3xl p-8 text-center text-xs opacity-70 space-y-2"><i class="fa-solid fa-magnifying-glass text-2xl text-pink-400"></i><p>No se encontraron resultados para "${searchQuery}".</p></div>`;
         return;
       }
@@ -2261,7 +2265,7 @@
       const postsRef = ref(db, 'posts');
       onValue(postsRef, (snapshot) => {
         if (!snapshot.exists()) {
-          document.getElementById('feedPostsContainer').innerHTML = `<div class="text-center text-xs opacity-50 py-8">No hay publicaciones aún.</div>`;
+          allPostsData = {};
           return;
         }
 
@@ -2269,29 +2273,7 @@
         let myPostsCount = 0;
         let myTotalLikes = 0;
 
-        if (!feedRenderedInitially) {
-          renderFeedItems();
-          feedRenderedInitially = true;
-        } else {
-          Object.keys(allPostsData).forEach(postId => {
-            const post = allPostsData[postId];
-            const hasLiked = currentUser && post.likes && post.likes[currentUser.uid];
-            const likesCount = post.likesCount || 0;
-
-            const likeBtn = document.getElementById(`like-btn-${postId}`);
-            const likeCountSpan = document.getElementById(`like-count-${postId}`);
-
-            if (likeBtn && likeCountSpan) {
-              if (hasLiked) {
-                likeBtn.classList.add('text-pink-400');
-              } else {
-                likeBtn.classList.remove('text-pink-400');
-              }
-              likeBtn.setAttribute('onclick', `window.toggleLikeFB('${postId}', ${!!hasLiked}, '${post.uid}')`);
-              likeCountSpan.textContent = `Me gusta (${formatFollowerCount(likesCount)})`;
-            }
-          });
-        }
+        renderFeedItems(document.getElementById('feedSearchInput').value.trim().toLowerCase());
 
         const myPostsContainer = document.getElementById('myPostsContainer');
         const userProfileGrid = document.getElementById('userProfilePostsGrid');
@@ -2804,8 +2786,8 @@
       if (tabName === 'feed') document.getElementById('tabFeed').classList.remove('hidden');
       if (tabName === 'publish') document.getElementById('tabPublish').classList.remove('hidden');
       if (tabName === 'posts') document.getElementById('tabPosts').classList.add('hidden');
-      if (tabName === 'userProfile') document.getElementById('tabUserProfile').classList.add('hidden');
-      if (tabName === 'publicProfile') document.getElementById('tabPublicProfile').classList.add('hidden');
+      if (tabName === 'userProfile') document.getElementById('tabUserProfile').classList.remove('hidden');
+      if (tabName === 'publicProfile') document.getElementById('tabPublicProfile').classList.remove('hidden');
       if (tabName === 'messages') {
         document.getElementById('tabMessages').classList.remove('hidden');
         if (window.innerWidth < 768) {
