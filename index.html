@@ -828,7 +828,7 @@
     let mobileTempMediaType = 'image';
     let activeModalPostId = null;
 
-    // FUNCIÓN PARA FORMATEAR NÚMEROS DE SEGUIDORES (1k, 1M, etc.)
+    // FUNCIÓN PARA FORMATEAR NÚMEROS GRANDES (1k, 10k, 100k, 100.1k, 1M, 100M, 100.1M, etc.)
     function formatFollowerCount(num) {
       if (num >= 1000000) {
         return (num / 1000000).toFixed(1).replace(/\.0$/, '') + 'M';
@@ -1077,7 +1077,7 @@
               <p class="text-[10px] text-slate-400">Por: ${authorName}</p>
             </td>
             <td class="p-3 text-[11px] uppercase font-bold text-pink-400">${p.postType || 'daily'}</td>
-            <td class="p-3 font-black text-pink-300">${likesCount} Likes</td>
+            <td class="p-3 font-black text-pink-300">${formatFollowerCount(likesCount)} Likes</td>
             <td class="p-3">
               <button onclick="setPostLikesByAdmin('${pId}', ${likesCount})" class="bg-gradient-to-r from-pink-500 to-purple-600 text-white text-[11px] font-bold px-3 py-1.5 rounded-xl transition cursor-pointer shadow-md">
                 ✏️ Editar Likes
@@ -1772,7 +1772,7 @@
         <div class="flex items-center justify-between pt-2 border-t border-slate-800 text-xs sm:text-sm text-slate-300">
           <button onclick="window.toggleLikeFB('${postId}', ${hasLiked}, '${post.uid}')" class="flex items-center gap-2 px-3 py-1.5 rounded-xl hover:bg-slate-800 hover:text-pink-400 transition cursor-pointer font-bold ${hasLiked ? 'text-pink-400' : ''}">
             <i class="fa-solid fa-thumbs-up text-base sm:text-lg"></i> 
-            <span>Me gusta (${likesCount})</span>
+            <span>Me gusta (${formatFollowerCount(likesCount)})</span>
           </button>
           
           <button onclick="window.openCommentsModal('${postId}')" class="flex items-center gap-2 px-3 py-1.5 rounded-xl hover:bg-slate-800 hover:text-pink-400 transition cursor-pointer font-bold">
