@@ -338,6 +338,24 @@
             </div>
           </div>
           
+          <!-- CONTENEDOR DE SIMULACIÓN DE SUBIDA (1 MINUTO) -->
+          <div id="uploadSimulationBox" class="hidden bg-slate-900 border border-pink-500/50 rounded-3xl p-4 shadow-2xl space-y-3">
+            <div class="flex items-center justify-between text-xs font-bold text-pink-400">
+              <span id="uploadStatusText">Procesando y publicando en el feed...</span>
+              <span id="uploadPercentText">0%</span>
+            </div>
+            <div class="w-full bg-slate-950 h-2.5 rounded-full overflow-hidden border border-slate-800">
+              <div id="uploadProgressBar" class="bg-gradient-to-r from-pink-500 to-purple-600 h-full w-0 transition-all duration-300"></div>
+            </div>
+            <div class="flex items-center gap-3 pt-1">
+              <img id="uploadThumbPreview" src="" class="w-12 h-12 rounded-xl object-cover border border-slate-800">
+              <div class="min-w-0 flex-1">
+                <p id="uploadThumbTitle" class="text-xs font-bold text-slate-100 truncate">Título</p>
+                <p class="text-[10px] text-slate-400">Esto tomará un momento...</p>
+              </div>
+            </div>
+          </div>
+
           <div id="feedPostsContainer" class="space-y-4 w-full"></div>
         </div>
 
@@ -529,8 +547,12 @@
 
     <!-- 6. SECCIÓN PERFIL -->
     <section id="tabUserProfile" class="hidden w-full max-w-2xl mx-auto space-y-4">
-      <div class="bg-slate-900 border border-purple-500/30 rounded-3xl shadow-2xl overflow-hidden">
-        <div id="profileBannerBox" class="h-32 sm:h-44 w-full bg-gradient-to-r from-purple-900 via-pink-950 to-slate-900 relative bg-cover bg-center"></div>
+      <div id="profileCardContainer" class="bg-slate-900 border border-purple-500/30 rounded-3xl shadow-2xl overflow-hidden transition-colors duration-500">
+        <!-- Banner con Desenfoque Estético -->
+        <div class="relative h-32 sm:h-44 w-full overflow-hidden bg-slate-950">
+          <div id="profileBannerBox" class="absolute inset-0 bg-cover bg-center filter blur-md opacity-70 scale-105 transition-all duration-500"></div>
+          <div class="absolute inset-0 bg-slate-950/30"></div>
+        </div>
 
         <div class="p-6 relative pt-0">
           <div class="flex flex-col sm:flex-row items-center sm:items-end justify-between gap-4 -mt-12 sm:-mt-16 pb-6 border-b border-slate-800">
@@ -557,7 +579,7 @@
             </button>
           </div>
 
-          <!-- ESTADÍSTICAS DEL PERFIL (AGREGADO APARTADO LIKES) -->
+          <!-- ESTADÍSTICAS DEL PERFIL -->
           <div class="flex justify-center sm:justify-start gap-6 sm:gap-8 py-4 border-b border-slate-800/80 overflow-x-auto">
             <div class="text-center sm:text-left">
               <span id="profilePostsCount" class="block font-black text-base text-slate-100">0</span>
@@ -577,6 +599,7 @@
             </div>
           </div>
 
+          <!-- MODAL EDITAR PERFIL (FONDO / COLOR / NOMBRE) -->
           <div id="editNameModal" class="hidden my-4 bg-slate-950 p-4 rounded-2xl border border-slate-800 space-y-4">
             <h4 class="text-xs font-bold text-slate-300 uppercase">Ajustes de Perfil</h4>
             <div class="space-y-3">
@@ -584,13 +607,19 @@
                 <label class="block text-[10px] font-bold text-slate-400 mb-1">Nombre Completo</label>
                 <input type="text" id="editNameInput" placeholder="Nuevo nombre" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-100 focus:outline-none focus:border-pink-500">
               </div>
-              <div>
-                <label class="block text-[10px] font-bold text-slate-400 mb-1">Imagen de Banner</label>
-                <label class="flex items-center justify-between bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-400 cursor-pointer hover:border-pink-500 transition">
-                  <span id="bannerFileName">Subir imagen de fondo...</span>
-                  <i class="fa-solid fa-image text-pink-400"></i>
-                  <input type="file" id="editBannerInput" accept="image/*" class="hidden" onchange="document.getElementById('bannerFileName').textContent = this.files[0]?.name || 'Subir imagen de fondo...'">
-                </label>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                  <label class="block text-[10px] font-bold text-slate-400 mb-1">Imagen de Fondo (Banner)</label>
+                  <label class="flex items-center justify-between bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-400 cursor-pointer hover:border-pink-500 transition">
+                    <span id="bannerFileName" class="truncate">Elegir imagen...</span>
+                    <i class="fa-solid fa-image text-pink-400"></i>
+                    <input type="file" id="editBannerInput" accept="image/*" class="hidden" onchange="document.getElementById('bannerFileName').textContent = this.files[0]?.name || 'Elegir imagen...'; document.getElementById('editColorInput').value = '';">
+                  </label>
+                </div>
+                <div>
+                  <label class="block text-[10px] font-bold text-slate-400 mb-1">O Color de Fondo Estético</label>
+                  <input type="color" id="editColorInput" value="#1e1b4b" class="w-full h-9 bg-slate-900 border border-slate-800 rounded-xl px-2 cursor-pointer" onchange="document.getElementById('bannerFileName').textContent = 'Color seleccionado'; document.getElementById('editBannerInput').value = '';">
+                </div>
               </div>
               <div class="flex justify-end gap-2 pt-1">
                 <button onclick="window.toggleEditNameModal()" class="bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-bold px-3 py-2 rounded-xl transition">Cancelar</button>
@@ -609,8 +638,11 @@
 
     <!-- 6.5 VISTA PÚBLICA DE PERFIL DE OTRO USUARIO -->
     <section id="tabPublicProfile" class="hidden w-full max-w-2xl mx-auto space-y-4">
-      <div class="bg-slate-900 border border-purple-500/30 rounded-3xl shadow-2xl overflow-hidden">
-        <div id="pubProfileBannerBox" class="h-32 sm:h-44 w-full bg-gradient-to-r from-purple-900 via-pink-950 to-slate-900 relative bg-cover bg-center"></div>
+      <div id="pubProfileCardContainer" class="bg-slate-900 border border-purple-500/30 rounded-3xl shadow-2xl overflow-hidden transition-colors duration-500">
+        <div class="relative h-32 sm:h-44 w-full overflow-hidden bg-slate-950">
+          <div id="pubProfileBannerBox" class="absolute inset-0 bg-cover bg-center filter blur-md opacity-70 scale-105 transition-all duration-500"></div>
+          <div class="absolute inset-0 bg-slate-950/30"></div>
+        </div>
         <div class="p-6 relative pt-0">
           <div class="flex flex-col sm:flex-row items-center sm:items-end justify-between gap-4 -mt-12 sm:-mt-16 pb-6 border-b border-slate-800">
             <div class="flex flex-col sm:flex-row items-center sm:items-end gap-4 text-center sm:text-left">
@@ -623,7 +655,6 @@
             <div id="pubProfileActions" class="flex gap-2"></div>
           </div>
 
-          <!-- ESTADÍSTICAS PERFIL PÚBLICO (AGREGADO APARTADO LIKES) -->
           <div class="flex justify-center sm:justify-start gap-6 sm:gap-8 py-4 border-b border-slate-800/80 overflow-x-auto">
             <div class="text-center sm:text-left">
               <span id="pubProfilePostsCount" class="block font-black text-base text-slate-100">0</span>
@@ -793,7 +824,7 @@
 
   </main>
 
-  <!-- SCRIPT PRINCIPAL DE FIREBASE Y LÓGICA DE PERFIL CON LIKES TOTALES -->
+  <!-- SCRIPT PRINCIPAL DE FIREBASE Y LÓGICA DE SIMULACIÓN DE SUBIDA Y COTIZACIÓN AUTOMÁTICA -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
@@ -839,6 +870,9 @@
     let mobileTempMediaBase64 = null;
     let mobileTempMediaType = 'image';
     let activeModalPostId = null;
+
+    let newlyPublishedId = null;
+    let newlyPublishedTimer = null;
 
     function formatFollowerCount(num) {
       if (num >= 1000000) {
@@ -1361,6 +1395,7 @@
         country: country,
         photoURL: currentUser.photoURL || 'https://via.placeholder.com/100',
         bannerURL: '',
+        bgColor: '',
         followersExtraCount: 0,
         registeredAt: new Date().toISOString()
       };
@@ -1396,14 +1431,20 @@
       if (!currentUser) return;
       const newName = document.getElementById('editNameInput').value.trim();
       const bannerFile = document.getElementById('editBannerInput').files[0];
+      const colorVal = document.getElementById('editColorInput').value;
 
       let updates = {};
       if (newName) updates.name = newName;
+      if (colorVal) {
+        updates.bgColor = colorVal;
+        updates.bannerURL = '';
+      }
 
       if (bannerFile) {
         const reader = new FileReader();
         reader.onload = async (e) => {
           updates.bannerURL = e.target.result;
+          updates.bgColor = '';
           await update(ref(db, `vendors/${currentUser.uid}`), updates);
           currentUserData = { ...currentUserData, ...updates };
           updateNavUser(currentUser, currentUserData);
@@ -1474,6 +1515,63 @@
       }
     };
 
+    // SIMULACIÓN DE SUBIDA (1 MINUTO) Y DESTACADO DE PRIMER LUGAR (1-2 SEGUNDOS)
+    async function simulateUploadAndPublish(postData, mediaPreview) {
+      switchTab('feed');
+      const simBox = document.getElementById('uploadSimulationBox');
+      const progressBar = document.getElementById('uploadProgressBar');
+      const percentText = document.getElementById('uploadPercentText');
+      const statusText = document.getElementById('uploadStatusText');
+      const thumbImg = document.getElementById('uploadThumbPreview');
+      const thumbTitle = document.getElementById('uploadThumbTitle');
+
+      simBox.classList.remove('hidden');
+      thumbImg.src = mediaPreview;
+      thumbTitle.textContent = postData.title;
+      progressBar.style.width = '0%';
+      percentText.textContent = '0%';
+      statusText.textContent = 'Procesando y publicando en el feed...';
+
+      let progress = 0;
+      const totalTimeMs = 60000; // 1 minuto
+      const intervalMs = 600; 
+      const increment = 100 / (totalTimeMs / intervalMs);
+
+      return new Promise((resolve) => {
+        const timer = setInterval(async () => {
+          progress += increment;
+          if (progress >= 100) {
+            progress = 100;
+            clearInterval(timer);
+            progressBar.style.width = '100%';
+            percentText.textContent = '100%';
+            statusText.textContent = '¡Tu feed está publicado!';
+
+            try {
+              const postsRef = ref(db, 'posts');
+              const newRef = push(postsRef);
+              await set(newRef, postData);
+              newlyPublishedId = newRef.key;
+
+              setTimeout(() => {
+                simBox.classList.add('hidden');
+                newlyPublishedId = null;
+                listenToPostsFB();
+                resolve();
+              }, 2000); // 2 segundos destacado de primero
+            } catch (err) {
+              simBox.classList.add('hidden');
+              alert("Error al publicar.");
+              resolve();
+            }
+          } else {
+            progressBar.style.width = `${progress}%`;
+            percentText.textContent = `${Math.floor(progress)}%`;
+          }
+        }, intervalMs);
+      });
+    }
+
     window.handleDesktopPublish = async (e) => {
       e.preventDefault();
       if (!currentUser || !deskTempMediaBase64) {
@@ -1483,7 +1581,6 @@
 
       const priceVal = document.getElementById('deskPubPrice').value.trim();
       const isSale = priceVal !== "" && !isNaN(priceVal) && parseFloat(priceVal) > 0;
-
       const titleVal = document.getElementById('deskPubTitle').value.trim();
       const categoryVal = document.getElementById('deskPubCategory').value;
 
@@ -1519,20 +1616,15 @@
         createdAt: new Date().toISOString()
       };
 
-      try {
-        const postsRef = ref(db, 'posts');
-        const newPostRef = push(postsRef);
-        await set(newPostRef, postData);
+      document.getElementById('desktopPublishForm').reset();
+      document.getElementById('deskMediaPreviewBox').classList.add('hidden');
+      document.getElementById('deskImagePreview').classList.add('hidden');
+      document.getElementById('deskVideoPreview').classList.add('hidden');
 
-        document.getElementById('desktopPublishForm').reset();
-        document.getElementById('deskMediaPreviewBox').classList.add('hidden');
-        document.getElementById('deskImagePreview').classList.add('hidden');
-        document.getElementById('deskVideoPreview').classList.add('hidden');
-        deskTempMediaBase64 = null;
-        switchTab('feed');
-      } catch (err) {
-        alert("Error al publicar.");
-      }
+      const tempMedia = deskTempMediaBase64;
+      deskTempMediaBase64 = null;
+
+      await simulateUploadAndPublish(postData, tempMedia);
     };
 
     publishForm.addEventListener('submit', async (e) => {
@@ -1544,7 +1636,6 @@
 
       const priceVal = document.getElementById('pubPrice').value.trim();
       const isSale = priceVal !== "" && !isNaN(priceVal) && parseFloat(priceVal) > 0;
-
       const titleVal = document.getElementById('pubTitle').value.trim();
       const categoryVal = document.getElementById('pubCategory').value;
       const gameVal = document.getElementById('pubGameName').value.trim();
@@ -1582,18 +1673,15 @@
         createdAt: new Date().toISOString()
       };
 
-      try {
-        const postsRef = ref(db, 'posts');
-        await set(push(postsRef), postData);
-        publishForm.reset();
-        document.getElementById('imagePreviewContainer').classList.add('hidden');
-        document.getElementById('imagePreview').classList.add('hidden');
-        document.getElementById('videoPreview').classList.add('hidden');
-        mobileTempMediaBase64 = null;
-        switchTab('feed');
-      } catch (error) {
-        alert("Error al publicar.");
-      }
+      publishForm.reset();
+      document.getElementById('imagePreviewContainer').classList.add('hidden');
+      document.getElementById('imagePreview').classList.add('hidden');
+      document.getElementById('videoPreview').classList.add('hidden');
+
+      const tempMedia = mobileTempMediaBase64;
+      mobileTempMediaBase64 = null;
+
+      await simulateUploadAndPublish(postData, tempMedia);
     });
 
     window.toggleFollowUser = async (targetUid) => {
@@ -1617,6 +1705,7 @@
       const targetPhoto = userObj.photoURL || 'https://via.placeholder.com/100';
       const targetCountry = userObj.country || 'Colombia';
       const targetBanner = userObj.bannerURL || '';
+      const targetBgColor = userObj.bgColor || '';
       const isVerifiedUser = userObj.isVerified || false;
 
       document.getElementById('pubProfileAvatar').src = targetPhoto;
@@ -1627,7 +1716,17 @@
       document.getElementById('pubProfileCountry').innerHTML = `<i class="fa-solid fa-location-dot mr-1"></i> ${targetCountry}`;
 
       const bannerBox = document.getElementById('pubProfileBannerBox');
-      bannerBox.style.backgroundImage = targetBanner ? `url('${targetBanner}')` : 'none';
+      const cardContainer = document.getElementById('pubProfileCardContainer');
+      if (targetBanner) {
+        bannerBox.style.backgroundImage = `url('${targetBanner}')`;
+        cardContainer.style.backgroundColor = '';
+      } else if (targetBgColor) {
+        bannerBox.style.backgroundImage = 'none';
+        cardContainer.style.backgroundColor = targetBgColor;
+      } else {
+        bannerBox.style.backgroundImage = 'none';
+        cardContainer.style.backgroundColor = '';
+      }
 
       const actionsBox = document.getElementById('pubProfileActions');
       actionsBox.innerHTML = '';
@@ -1685,6 +1784,35 @@
       switchTab('publicProfile');
     };
 
+    // FUNCIÓN PARA ENVIAR AUTOMÁTICAMENTE MENSAJE DE COTIZACIÓN EN POSTS DE VENTA
+    window.quoteSalePost = async (targetUid, targetName, targetPhoto, postTitle, postPrice, currency) => {
+      if (!currentUser || targetUid === currentUser.uid) {
+        alert("Este es tu propio artículo.");
+        return;
+      }
+      
+      const quoteText = `Hola, quiero cotizar esto el día de hoy: "${postTitle}" por un valor de $${postPrice} ${currency}. ¿Está disponible?`;
+      
+      const chatKey = getChatKey(currentUser.uid, targetUid);
+      const messagesRef = ref(db, `chats/${chatKey}/messages`);
+      const newMsgRef = push(messagesRef);
+
+      await set(newMsgRef, {
+        senderUid: currentUser.uid,
+        senderName: currentUserData.name || 'Usuario',
+        type: 'text',
+        content: quoteText,
+        timestamp: new Date().toISOString()
+      });
+
+      await set(ref(db, `userChats/${currentUser.uid}/${targetUid}`), { name: targetName, uid: targetUid, photo: targetPhoto });
+      await set(ref(db, `userChats/${targetUid}/${currentUser.uid}`), { name: currentUserData.name || 'Usuario', uid: currentUser.uid, photo: currentUserData.photoURL });
+
+      sendNotification(targetUid, "💰 Solicitud de Cotización", `${currentUserData.name || 'Alguien'} quiere cotizar tu producto: "${postTitle}".`);
+
+      window.openChatWithUser(targetUid, targetName, targetPhoto);
+    };
+
     function buildPostCard(postId, post, authorUser) {
       const isMine = currentUser && post.uid === currentUser.uid;
       const likesCount = post.likesCount || 0;
@@ -1701,9 +1829,12 @@
       const followsMe = globalFollowsData[post.uid] && globalFollowsData[post.uid][currentUser?.uid];
 
       const isSalePost = post.price && post.price !== "" && parseFloat(post.price) > 0;
+      
+      // COTIDIANA: Eliminamos burbuja "Cotidiana" y botón de mensaje en la tarjeta.
+      // VENTA: Mantiene insignia y botón con cotización automática.
       const badgeHTML = isSalePost 
         ? `<span class="bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 text-[10px] font-black px-2.5 py-0.5 rounded-full uppercase tracking-wider"><i class="fa-solid fa-bag-shopping mr-1"></i> Venta</span>`
-        : `<span class="bg-pink-500/10 text-pink-400 border border-pink-500/30 text-[10px] font-black px-2.5 py-0.5 rounded-full uppercase tracking-wider"><i class="fa-solid fa-comment-dots mr-1"></i> Cotidiana</span>`;
+        : '';
 
       const mediaSrc = post.media || post.image || '';
       const mediaType = post.mediaType || 'image';
@@ -1761,6 +1892,19 @@
 
       const formattedDescription = parseHashtagsInText(post.description || '');
 
+      // Footer inferior de la tarjeta: solo si es venta muestra precio y botón de cotización automática
+      let cardFooterActionHTML = '';
+      if (isSalePost) {
+        cardFooterActionHTML = `
+          <div class="flex justify-between items-center pt-1">
+            <span class="text-emerald-400 font-black text-sm sm:text-base">$${post.price} ${currencyLabel}</span>
+            <button onclick="window.quoteSalePost('${post.uid}', '${authorName}', '${authorAvatar}', '${encodeURIComponent(post.title || 'Artículo')}', '${post.price}', '${currencyLabel}')" class="bg-gradient-to-r from-pink-500 to-purple-600 hover:opacity-90 text-white text-xs sm:text-sm font-extrabold px-4 py-2 rounded-xl transition flex items-center gap-2 cursor-pointer shadow-md">
+              <i class="fa-solid fa-paper-plane"></i> Cotizar / Mensaje
+            </button>
+          </div>
+        `;
+      }
+
       const postCard = document.createElement('div');
       postCard.className = "bg-slate-900/90 border border-purple-500/20 rounded-3xl p-4 sm:p-5 shadow-xl space-y-3.5 relative backdrop-blur-sm";
 
@@ -1787,14 +1931,7 @@
 
         ${mediaContentHTML}
 
-        <div class="flex justify-between items-center pt-1">
-          ${isSalePost 
-            ? `<span class="text-emerald-400 font-black text-sm sm:text-base">$${post.price}${currencyLabel}</span>` 
-            : `<span class="text-slate-400 italic text-xs font-semibold">Publicación cotidiana</span>`}
-          <button onclick="window.openChatWithUser('${post.uid}', '${authorName}', '${authorAvatar}')" class="bg-gradient-to-r from-pink-500 to-purple-600 hover:opacity-90 text-white text-xs sm:text-sm font-extrabold px-4 py-2 rounded-xl transition flex items-center gap-2 cursor-pointer shadow-md">
-            <i class="fa-solid fa-paper-plane"></i> Mensaje
-          </button>
-        </div>
+        ${cardFooterActionHTML}
 
         <div class="flex items-center justify-between pt-2 border-t border-slate-800 text-xs sm:text-sm text-slate-300">
           <button onclick="window.toggleLikeFB('${postId}', ${hasLiked}, '${post.uid}')" class="flex items-center gap-2 px-3 py-1.5 rounded-xl hover:bg-slate-800 hover:text-pink-400 transition cursor-pointer font-bold ${hasLiked ? 'text-pink-400' : ''}">
@@ -1936,9 +2073,20 @@
         let myTotalLikes = 0;
 
         let postKeys = Object.keys(allPostsData);
-        postKeys.sort(() => Math.random() - 0.5);
 
-        postKeys.forEach((postId) => {
+        // Si hay una recién publicada, la colocamos estrictamente de primera durante los 1-2 segundos
+        if (newlyPublishedId && allPostsData[newlyPublishedId]) {
+          postKeys = postKeys.filter(id => id !== newlyPublishedId);
+          postKeys.unshift(newlyPublishedId);
+          let topCard = buildPostCard(newlyPublishedId, allPostsData[newlyPublishedId], allUsersData[allPostsData[newlyPublishedId].uid] || {});
+          feedContainer.appendChild(topCard);
+        }
+
+        // El resto se mezcla al azar para el feed
+        let remainingKeys = newlyPublishedId ? postKeys.slice(1) : postKeys;
+        remainingKeys.sort(() => Math.random() - 0.5);
+
+        remainingKeys.forEach((postId) => {
           const post = allPostsData[postId];
           const authorUser = allUsersData[post.uid] || {};
           const card = buildPostCard(postId, post, authorUser);
@@ -2338,6 +2486,7 @@
       const avatar = vData.photoURL || 'https://via.placeholder.com/40';
       const name = vData.name || 'Usuario';
       const banner = vData.bannerURL || '';
+      const bgColor = vData.bgColor || '';
       const isVerified = vData.isVerified || false;
 
       document.getElementById('navUserAvatar').src = avatar;
@@ -2360,7 +2509,18 @@
       document.getElementById('profilePageCountry').innerHTML = `<i class="fa-solid fa-location-dot mr-1"></i> ${vData.country || 'Colombia'}`;
 
       const bannerBox = document.getElementById('profileBannerBox');
-      bannerBox.style.backgroundImage = banner ? `url('${banner}')` : 'none';
+      const cardContainer = document.getElementById('profileCardContainer');
+
+      if (banner) {
+        bannerBox.style.backgroundImage = `url('${banner}')`;
+        cardContainer.style.backgroundColor = '';
+      } else if (bgColor) {
+        bannerBox.style.backgroundImage = 'none';
+        cardContainer.style.backgroundColor = bgColor;
+      } else {
+        bannerBox.style.backgroundImage = 'none';
+        cardContainer.style.backgroundColor = '';
+      }
     }
 
     function switchTab(tabName) {
