@@ -41,7 +41,6 @@
       animation: floatBounce 3s ease-in-out infinite;
     }
 
-    /* Estilos dinámicos adaptables para contenedores en PC, Tablet y Móvil */
     .dynamic-card {
       background-color: var(--card-bg);
       border-color: var(--card-border);
@@ -169,82 +168,77 @@
     </div>
   </div>
 
-  <!-- NAVBAR SUPERIOR -->
-  <header id="mainNavbar" class="hidden border-b border-purple-500/20 dynamic-card backdrop-blur-md sticky top-0 z-50">
-    <div class="max-w-7xl mx-auto px-4 h-20 flex items-center justify-between">
-      
-      <div class="flex items-center cursor-pointer select-none group" onclick="handleLogoTap()">
-        <span class="font-black text-3xl sm:text-4xl tracking-tight bg-gradient-to-r from-pink-400 via-purple-300 to-indigo-300 bg-clip-text text-transparent drop-shadow-[0_0_18px_rgba(244,114,182,0.6)] group-hover:scale-105 transition-transform duration-300">
-          Moonfed✨
-        </span>
-      </div>
+  <!-- NAVBAR / SIDEBAR SUPERIOR O LATERAL SEGÚN DISPOSITIVO -->
+  <!-- En móvil se oculta (o actúa mediante barra inferior móvil intacta), en PC y Tablet se convierte en Barra Lateral Vertical Izquierda -->
+  <header id="mainNavbar" class="hidden md:fixed md:top-0 md:left-0 md:bottom-0 md:w-64 md:flex md:flex-col border-r border-purple-500/20 dynamic-card backdrop-blur-md z-50 p-4 overflow-y-auto">
+    
+    <!-- Logo Moonfed -->
+    <div class="flex items-center cursor-pointer select-none group mb-6 px-2 pt-2" onclick="handleLogoTap()">
+      <span class="font-black text-2xl sm:text-3xl tracking-tight bg-gradient-to-r from-pink-400 via-purple-300 to-indigo-300 bg-clip-text text-transparent drop-shadow-[0_0_18px_rgba(244,114,182,0.6)] group-hover:scale-105 transition-transform duration-300">
+        Moonfed✨
+      </span>
+    </div>
 
-      <div class="hidden md:flex items-center gap-2 lg:gap-3">
-        <button onclick="switchTab('feed')" class="text-xs lg:text-sm font-extrabold hover:text-pink-400 dynamic-input border px-3.5 py-2.5 rounded-2xl transition-all duration-200 cursor-pointer flex items-center gap-2 hover:scale-105 shadow-md">
-          <i class="fa-solid fa-house text-base text-pink-400"></i> Feed
-        </button>
-        <button onclick="switchTab('messages')" class="text-xs lg:text-sm font-extrabold hover:text-indigo-400 dynamic-input border px-3.5 py-2.5 rounded-2xl transition-all duration-200 cursor-pointer flex items-center gap-2 hover:scale-105 shadow-md relative">
-          <i class="fa-solid fa-paper-plane text-base text-indigo-400"></i> Mensajes
-        </button>
-        <button onclick="switchTab('userProfile')" class="text-xs lg:text-sm font-extrabold hover:text-pink-400 dynamic-input border px-3.5 py-2.5 rounded-2xl transition-all duration-200 cursor-pointer flex items-center gap-2 hover:scale-105 shadow-md">
-          <i class="fa-solid fa-user text-base text-pink-400"></i> Mi Perfil
-        </button>
-        <button onclick="switchTab('posts')" class="text-xs lg:text-sm font-extrabold hover:text-purple-400 dynamic-input border px-3.5 py-2.5 rounded-2xl transition-all duration-200 cursor-pointer flex items-center gap-2 hover:scale-105 shadow-md">
-          <i class="fa-solid fa-store text-base text-purple-400"></i> Mis Posts
-        </button>
-        <button onclick="switchTab('notifications')" class="text-xs lg:text-sm font-extrabold hover:text-indigo-400 dynamic-input border px-3.5 py-2.5 rounded-2xl transition-all duration-200 cursor-pointer flex items-center gap-2 hover:scale-105 shadow-md relative">
-          <i class="fa-solid fa-bell text-base text-indigo-400"></i> Notificaciones
-          <span id="deskNotifBadge" class="hidden absolute top-2 right-2 w-2 h-2 rounded-full bg-pink-500"></span>
-        </button>
-      </div>
+    <!-- Perfil de Usuario Rápido en Sidebar -->
+    <div class="relative mb-6">
+      <button id="profileMenuBtn" class="w-full flex items-center gap-3 dynamic-input border p-2.5 rounded-2xl transition-all cursor-pointer shadow-lg text-left">
+        <img id="navUserAvatar" src="https://via.placeholder.com/40" alt="Avatar" class="w-10 h-10 rounded-full border-2 border-pink-400 object-cover shrink-0">
+        <div class="min-w-0 flex-1">
+          <span id="navUserName" class="block text-xs font-bold truncate">Usuario</span>
+          <span class="text-[10px] text-pink-400 font-bold block truncate">Conectado(a)</span>
+        </div>
+        <i class="fa-solid fa-chevron-down text-xs text-pink-400 shrink-0"></i>
+      </button>
 
-      <div class="flex items-center gap-3 relative">
-        <div class="relative">
-          <button id="profileMenuBtn" class="flex items-center gap-2.5 dynamic-input border p-1.5 pr-3.5 rounded-full transition-all cursor-pointer shadow-lg">
-            <img id="navUserAvatar" src="https://via.placeholder.com/40" alt="Avatar" class="w-9 h-9 sm:w-10 sm:h-10 rounded-full border-2 border-pink-400 object-cover">
-            <span id="navUserName" class="text-xs sm:text-sm font-bold hidden sm:inline">Usuario</span>
-            <i class="fa-solid fa-chevron-down text-xs text-pink-400"></i>
+      <!-- Dropdown de Perfil / Cuentas -->
+      <div id="profileDropdown" class="hidden absolute left-0 right-0 mt-2 dynamic-card border rounded-2xl shadow-2xl py-2 z-50">
+        <div class="px-4 py-2 border-b border-purple-500/20 mb-1">
+          <p id="dropdownName" class="text-xs font-bold truncate">Nombre</p>
+          <p id="dropdownEmail" class="text-[10px] opacity-70 truncate">correo@ejemplo.com</p>
+        </div>
+
+        <div id="linkedAccountsSection" class="border-t border-purple-500/20 mt-1 pt-1 hidden">
+          <div class="px-4 py-1 text-[10px] font-bold opacity-60 uppercase">Cambiar cuenta</div>
+          <div id="linkedAccountsList" class="space-y-0.5 px-2"></div>
+        </div>
+
+        <div class="border-t border-purple-500/20 mt-1 pt-1">
+          <button id="addAccountBtn" class="w-full text-left px-4 py-2 text-xs text-pink-400 hover:bg-pink-500/10 flex items-center gap-3 transition cursor-pointer font-bold">
+            <i class="fa-solid fa-user-plus w-4 text-center"></i> Agregar cuenta
           </button>
-
-          <div id="profileDropdown" class="hidden absolute right-0 mt-2 w-56 dynamic-card border rounded-2xl shadow-2xl py-2 z-50">
-            <div class="px-4 py-2 border-b border-purple-500/20 mb-1">
-              <p id="dropdownName" class="text-xs font-bold">Nombre</p>
-              <p id="dropdownEmail" class="text-[10px] opacity-70 truncate">correo@ejemplo.com</p>
-            </div>
-            
-            <div class="md:hidden border-b border-purple-500/20 pb-1 mb-1">
-              <button onclick="switchTab('userProfile')" class="w-full text-left px-4 py-2 text-xs font-bold hover:bg-black/10 flex items-center gap-3 transition cursor-pointer">
-                <i class="fa-solid fa-user w-4 text-center text-pink-400"></i> Mi Perfil
-              </button>
-              <button onclick="switchTab('posts')" class="w-full text-left px-4 py-2 text-xs font-bold hover:bg-black/10 flex items-center gap-3 transition cursor-pointer">
-                <i class="fa-solid fa-store w-4 text-center text-purple-400"></i> Mis Posts
-              </button>
-              <button onclick="switchTab('notifications')" class="w-full text-left px-4 py-2 text-xs font-bold hover:bg-black/10 flex items-center gap-3 transition cursor-pointer relative">
-                <i class="fa-solid fa-bell w-4 text-center text-indigo-400"></i> Notificaciones
-                <span id="mobileMenuNotifBadge" class="hidden ml-auto w-2 h-2 rounded-full bg-pink-500"></span>
-              </button>
-            </div>
-
-            <div id="linkedAccountsSection" class="border-t border-purple-500/20 mt-1 pt-1 hidden">
-              <div class="px-4 py-1 text-[10px] font-bold opacity-60 uppercase">Cambiar cuenta</div>
-              <div id="linkedAccountsList" class="space-y-0.5 px-2"></div>
-            </div>
-
-            <div class="border-t border-purple-500/20 mt-1 pt-1">
-              <button id="addAccountBtn" class="w-full text-left px-4 py-2 text-xs text-pink-400 hover:bg-pink-500/10 flex items-center gap-3 transition cursor-pointer font-bold">
-                <i class="fa-solid fa-user-plus w-4 text-center"></i> Agregar cuenta
-              </button>
-              <button id="logoutBtn" class="w-full text-left px-4 py-2.5 text-sm text-red-400 hover:bg-red-500/10 flex items-center gap-3 transition cursor-pointer font-bold">
-                <i class="fa-solid fa-right-from-bracket w-4 text-center"></i> Cerrar sesión
-              </button>
-            </div>
-          </div>
+          <button id="logoutBtn" class="w-full text-left px-4 py-2.5 text-sm text-red-400 hover:bg-red-500/10 flex items-center gap-3 transition cursor-pointer font-bold">
+            <i class="fa-solid fa-right-from-bracket w-4 text-center"></i> Cerrar sesión
+          </button>
         </div>
       </div>
     </div>
+
+    <!-- Opciones de Navegación Verticales (Pestañas) -->
+    <div class="flex flex-col gap-2 flex-1">
+      <button onclick="switchTab('feed')" class="text-xs font-extrabold hover:text-pink-400 dynamic-input border px-4 py-3 rounded-2xl transition-all duration-200 cursor-pointer flex items-center gap-3 hover:scale-102 shadow-md">
+        <i class="fa-solid fa-house text-base text-pink-400 w-5 text-center"></i> Feed
+      </button>
+      <button onclick="switchTab('messages')" class="text-xs font-extrabold hover:text-indigo-400 dynamic-input border px-4 py-3 rounded-2xl transition-all duration-200 cursor-pointer flex items-center gap-3 hover:scale-102 shadow-md relative">
+        <i class="fa-solid fa-paper-plane text-base text-indigo-400 w-5 text-center"></i> Mensajes
+      </button>
+      <button onclick="switchTab('userProfile')" class="text-xs font-extrabold hover:text-pink-400 dynamic-input border px-4 py-3 rounded-2xl transition-all duration-200 cursor-pointer flex items-center gap-3 hover:scale-102 shadow-md">
+        <i class="fa-solid fa-user text-base text-pink-400 w-5 text-center"></i> Mi Perfil
+      </button>
+      <button onclick="switchTab('posts')" class="text-xs font-extrabold hover:text-purple-400 dynamic-input border px-4 py-3 rounded-2xl transition-all duration-200 cursor-pointer flex items-center gap-3 hover:scale-102 shadow-md">
+        <i class="fa-solid fa-store text-base text-purple-400 w-5 text-center"></i> Mis Posts
+      </button>
+      <button onclick="switchTab('notifications')" class="text-xs font-extrabold hover:text-indigo-400 dynamic-input border px-4 py-3 rounded-2xl transition-all duration-200 cursor-pointer flex items-center gap-3 hover:scale-102 shadow-md relative">
+        <i class="fa-solid fa-bell text-base text-indigo-400 w-5 text-center"></i> Notificaciones
+        <span id="deskNotifBadge" class="hidden absolute top-3 right-3 w-2 h-2 rounded-full bg-pink-500"></span>
+      </button>
+    </div>
+
+    <div class="pt-4 border-t border-purple-500/20 text-center">
+      <p class="text-[10px] opacity-50 font-bold">Moonfed Community © 2026</p>
+    </div>
   </header>
 
-  <!-- NAVBAR INFERIOR MÓVIL -->
+  <!-- NAVBAR INFERIOR MÓVIL (Intacto) -->
   <nav id="mobileBottomNav" class="hidden fixed bottom-0 left-0 right-0 dynamic-card backdrop-blur border-t border-purple-500/20 h-16 z-50 px-4 justify-around items-center md:hidden">
     <button onclick="switchTab('feed')" class="flex flex-col items-center justify-center opacity-80 hover:text-pink-400 transition cursor-pointer py-1">
       <i class="fa-solid fa-house text-xl"></i>
@@ -264,8 +258,8 @@
     </button>
   </nav>
 
-  <!-- CONTENEDOR PRINCIPAL -->
-  <main class="flex-1 max-w-7xl w-full mx-auto p-3 md:p-6 flex flex-col justify-center items-center overflow-x-hidden relative z-10">
+  <!-- CONTENEDOR PRINCIPAL (Con margen izquierdo en PC/Tablet para dejar espacio a la barra lateral vertical) -->
+  <main class="flex-1 w-full max-w-7xl mx-auto p-3 md:p-6 md:pl-72 flex flex-col justify-center items-center overflow-x-hidden relative z-10">
 
     <!-- 1. LOGIN CON GOOGLE -->
     <section id="loginScreen" class="max-w-md w-full text-center py-12 px-4">
@@ -316,11 +310,11 @@
       </div>
     </section>
 
-    <!-- 3. FEED ESTILO MOONFED (LAYOUT CON PANEL DE PUBLICAR STICKY Y DISTRIBUCIÓN AMPLIA EN PC Y TABLET) -->
+    <!-- 3. FEED ESTILO MOONFED (LAYOUT CON COLUMNA LATERAL DE PUBLICACIÓN STICKY) -->
     <section id="tabFeed" class="hidden w-full max-w-7xl mx-auto">
       <div class="grid grid-cols-1 md:grid-cols-12 gap-8 items-start w-full">
         
-        <!-- COLUMNA IZQUIERDA: FEED Y BÚSQUEDA (Más amplia y espaciosa) -->
+        <!-- COLUMNA IZQUIERDA: FEED Y BÚSQUEDA -->
         <div class="md:col-span-7 lg:col-span-8 space-y-5 w-full">
           
           <!-- BÚSQUEDA TIKTOK CON FONDO DINÁMICO -->
@@ -380,8 +374,8 @@
           <div id="feedPostsContainer" class="space-y-4 w-full"></div>
         </div>
 
-        <!-- COLUMNA DERECHA: PANEL DE CREAR PUBLICACIÓN (PERSISTENTE / STICKY EN PC Y TABLET) -->
-        <div class="hidden md:block md:col-span-5 lg:col-span-4 sticky top-24 self-start">
+        <!-- COLUMNA DERECHA: PANEL DE CREAR PUBLICACIÓN (STICKY EN PC Y TABLET) -->
+        <div class="hidden md:block md:col-span-5 lg:col-span-4 sticky top-6 self-start">
           <div class="dynamic-card border rounded-3xl p-6 shadow-2xl backdrop-blur-md space-y-5">
             <div class="text-center pb-3 border-b border-purple-500/20">
               <h2 class="text-sm font-black uppercase tracking-wider flex items-center justify-center gap-2">
@@ -2397,14 +2391,12 @@
         const container = document.getElementById('notificationsContainer');
         const countSpan = document.getElementById('notifCount');
         const deskBadge = document.getElementById('deskNotifBadge');
-        const mobileBadge = document.getElementById('mobileMenuNotifBadge');
         container.innerHTML = '';
 
         if (!snapshot.exists()) {
           container.innerHTML = `<div class="p-4 text-xs opacity-50 text-center">No tienes notificaciones recientes.</div>`;
           countSpan.textContent = "0 nuevas";
           if (deskBadge) deskBadge.classList.add('hidden');
-          if (mobileBadge) mobileBadge.classList.add('hidden');
           return;
         }
 
@@ -2412,7 +2404,6 @@
         const keys = Object.keys(notifs).reverse();
         countSpan.textContent = `${keys.length} nuevas`;
         if (deskBadge) deskBadge.classList.remove('hidden');
-        if (mobileBadge) mobileBadge.classList.remove('hidden');
 
         keys.forEach(k => {
           const n = notifs[k];
